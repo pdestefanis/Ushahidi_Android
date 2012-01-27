@@ -27,7 +27,7 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 	
 	 public static final String PREFS_NAME = "UshahidiService";
 	
-	private static final String TAG= "MapUserLocation";
+	private static final String TAG= "Ushahidi/MapUserLocation";
 
     protected static final int ONE_MINUTE = 60 * 1000;
 
