@@ -99,6 +99,8 @@
 		the
 		selected deployment.</string>
 	<string name="no_reports">There are no reports to be shown</string>
+	<string name="txt_gps_timeout">GPS Timeout</string>
+	<string name="txt_gps_timeout_in_sec">GPS Timeout in seconds</string>
 	<!-- Menu -->
 	<string name="incident_menu_map">View Map</string>
 	<string name="incident_menu_refresh">Refresh</string>

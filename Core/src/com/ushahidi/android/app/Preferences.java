@@ -20,6 +20,8 @@ public class Preferences {
     public static int countries = 0;
 
     public static int AutoUpdateDelay = 0;
+    
+    public static int gpsTimeout = 0;
 
     public static final int NOTIFICATION_ID = 1;
 
@@ -90,7 +92,8 @@ public class Preferences {
         appRunsFirstTime = settings.getInt("AppRunsFirstTime", appRunsFirstTime);
         username = settings.getString("username", "");
         password = settings.getString("password","");
-				
+		
+        gpsTimeout = Integer.parseInt(settings.getString("gps_timeout_preference", "60"));
 				//@inoran
         phonenumber = settings.getString("Phonenumber", "");
         

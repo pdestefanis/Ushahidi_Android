@@ -54,6 +54,8 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	private EditTextPreference phoneNumberPref;
 
     private CheckBoxPreference autoFetchCheckBoxPref;
+    
+    private EditTextPreference gpsTimeoutPref;
 
     private CheckBoxPreference vibrateCheckBoxPref;
 
@@ -288,6 +290,16 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         PreferenceCategory notificationPrefCat = new PreferenceCategory(this);
         notificationPrefCat.setTitle(R.string.bg_notification);
         advancedScreenPref.addPreference(notificationPrefCat);
+        
+        //gps timeout Preferences
+        gpsTimeoutPref = new EditTextPreference(this);
+        gpsTimeoutPref.setDialogTitle(R.string.txt_gps_timeout);
+        gpsTimeoutPref.setKey("gps_timeout_preference");
+        gpsTimeoutPref.setTitle(R.string.txt_gps_timeout);
+        gpsTimeoutPref.setSummary(R.string.txt_gps_timeout_in_sec);
+        gpsTimeoutPref.setDefaultValue("60");
+        gpsTimeoutPref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
+        advancedScreenPref.addPreference(gpsTimeoutPref);
 
         // vibrate
         vibrateCheckBoxPref.setKey("vibrate_preference");
@@ -352,6 +364,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         editor.putString("TotalReports", totalReports);
         editor.putInt("CheckinEnabled", Preferences.isCheckinEnabled);
         editor.putInt("PhotoWidth", photoSizePref.getProgress());
+        editor.putString("gps_timeout_preference", gpsTimeoutPref.getText());
         editor.commit();
 
     }

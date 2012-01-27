@@ -1,20 +1,20 @@
 
 package com.ushahidi.android.app;
 
-import java.util.Date;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.MotionEvent;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
@@ -24,13 +24,23 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 public abstract class MapUserLocation extends MapActivity implements LocationListener {
+	
+	 public static final String PREFS_NAME = "UshahidiService";
+	
+	private static final String TAG= "MapUserLocation";
 
     protected static final int ONE_MINUTE = 60 * 1000;
 
     protected static final int FIVE_MINUTES = 5 * ONE_MINUTE;
 
     protected static final int ACCURACY_THRESHOLD = 30; //in meters
+    
+    protected int gpsTimeout = 0;
+    
+    private CountDownTimer countDownTimer;
 
+    protected boolean didFindLocation;
+    
     protected MapView mapView;
 
     protected MapController mapController;
@@ -54,12 +64,15 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
     }
 
     protected void setDeviceLocation() {
+    	
+    	Log.d(TAG, "setDeviceLocation");
+    	
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
-        Location lastNetLocation = null;
-        Location lastGpsLocation = null;
+        //Location lastNetLocation = null;
+        // Location lastGpsLocation = null;
 
-        boolean netAvailable = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        /*boolean netAvailable = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         boolean gpsAvailable = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!netAvailable && !gpsAvailable) {
@@ -78,8 +91,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
                    })
             .create()
             .show();
-        }
-        if (netAvailable) {
+        }*/
+        /*if (netAvailable) {
             lastNetLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
         if (gpsAvailable) {
@@ -94,16 +107,114 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
             if (gpsAvailable) {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
             }
+        }*/
+        
+        useGPSProvider();
+    }
+    
+    protected void useGPSProvider(){
+    	
+    	Log.d(TAG, "useGPSProvider");
+    	
+    	boolean gpsAvailable = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    	
+    	Log.d(TAG, "gpsAvailable: "+gpsAvailable);
+    	
+    	if(!gpsAvailable){
+    		useNetworkProvider();
+    		return;
+    	}
+    	
+    	
+    	
+    	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+    	startTimer();    	
+    }
+    
+    protected void useNetworkProvider(){
+    	
+    	Log.d(TAG, "useNetworkProvider");
+    	
+    	boolean netAvailable = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    	
+    	if (!netAvailable) {
+    		Log.d(TAG, "!netAvailable");
+    		showLocationDisabledDialog();
+    		return;
         }
+    	
+    	Log.d(TAG, "requestLocationUpdates(LocationManager.NETWORK_PROVIDER)");
+    	locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+    }
+    
+    protected void getLastKnownLocation(){
+    	Log.d(TAG, "getLastKnownLocation");
+    	Location lastNetLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);    	
+    	Location lastGPSLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    	setBestLocation(lastNetLocation, lastGPSLocation);
+    }
+    
+    private void startTimer() {
+    	
+    	Log.d(TAG, "startTimer");
+    	
+        if(countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+        
+        Log.d(TAG, "gpsTimeout: "+gpsTimeout);
+        
+        countDownTimer = new CountDownTimer(gpsTimeout * 1000L, 1000L) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            	
+            	 Log.d(TAG, "millisUntilFinished: "+millisUntilFinished);
+            	
+                if(didFindLocation) {
+                	Log.d(TAG, "didFindLocation: "+didFindLocation);
+                	stopLocating();
+                    cancel();
+                }
+            }
+            @Override
+            public void onFinish() {
+            	
+                if(!didFindLocation) {
+                	useNetworkProvider();                	
+                }        
+            }
+        };
+        countDownTimer.start();
+    }
+    
+    protected void showLocationDisabledDialog(){
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.location_disabled))
+               .setMessage(getString(R.string.location_reenable))
+               .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                       startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                   }
+               })
+               .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                       dialog.cancel();
+                   }
+               })
+        .create()
+        .show();
     }
 
     public void stopLocating() {
         if (locationManager != null) {
             try {
+            	
+            	Log.d(TAG, "locationManager.removeUpdates");
                 locationManager.removeUpdates(this);
             }
             catch (Exception ex) {
-                Log.e(getClass().getSimpleName(), "stopLocating", ex);
+                Log.e(TAG, "stopLocating", ex);
             }
             locationManager = null;
         }
@@ -135,13 +246,13 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
     /**
      * Convert latitude and longitude to a GeoPoint
      * @param latitude Latitude
-     * @param longitude Lingitude
+     * @param longitude Longitude
      * @return GeoPoint
      */
     protected GeoPoint getPoint(double latitude, double longitude) {
         return (new GeoPoint((int)(latitude * 1E6), (int)(longitude * 1E6)));
     }
-
+    
     protected void setBestLocation(Location location1, Location location2) {
         if (location1 != null && location2 != null) {
             boolean location1Newer = location1.getTime() - location2.getTime() > FIVE_MINUTES;
@@ -235,6 +346,15 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
     @Override
     protected void onResume() {
         super.onResume();
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
+        try{
+        	gpsTimeout = Integer.parseInt(prefs.getString("gps_timeout_preference", "60"));
+        
+        }catch(NumberFormatException nfe){
+        	Log.e(TAG, nfe.getMessage());
+        	nfe.printStackTrace();
+        	gpsTimeout = 60;
+        }
         setDeviceLocation();
     }
 
