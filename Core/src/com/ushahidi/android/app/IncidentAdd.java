@@ -116,7 +116,7 @@ public class IncidentAdd extends MapUserLocation {
 	// date and time
 	private Calendar mCalendar;
 
-	private int mCounter = 0;
+	//private int mCounter = 0;
 
 	private String mErrorMessage = "";
 
@@ -176,7 +176,7 @@ public class IncidentAdd extends MapUserLocation {
 
 	private boolean draft = true;
 
-	private int mCategoryLength;
+	//private int mCategoryLength;
 
 	private EditText mPhoneNumber;
 
@@ -387,7 +387,7 @@ public class IncidentAdd extends MapUserLocation {
 		mBtnAddCategory.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				showDialog(DIALOG_MULTIPLE_CATEGORY);
-				mCounter++;
+				//mCounter++;
 			}
 		});
 
@@ -431,7 +431,7 @@ public class IncidentAdd extends MapUserLocation {
 		}
 
 		String categories[] = new String[categoryAmount];
-		mCategoryLength = categories.length;
+		//mCategoryLength = categories.length;
 
 		int i = 0;
 
@@ -495,7 +495,7 @@ public class IncidentAdd extends MapUserLocation {
 		mSelectedPhoto.setImageDrawable(null);
 		mSelectedPhoto.setImageBitmap(null);
 		mSelectedPhoto.setMinimumHeight(0);
-		mCounter = 0;
+		//mCounter = 0;
 		updateDisplay();
 
 		// clear persistent data
@@ -1236,7 +1236,7 @@ public class IncidentAdd extends MapUserLocation {
 	/*
 	 * Implementation of MapUserLocation abstract methods
 	 */
-	protected void locationChanged(double latitude, double longitude) {
+	protected void locationChanged(double latitude, double longitude, boolean doReverseGeocode) {
 		
 		mCurrentLatitude = String.valueOf(latitude);
 		mCurrentLongitude = String.valueOf(longitude);
@@ -1255,7 +1255,8 @@ public class IncidentAdd extends MapUserLocation {
 			mLatitude.setText(String.valueOf(latitude));
 			mLongitude.setText(String.valueOf(longitude));
 		}*/
-		if (reverseGeocoderTask == null || !reverseGeocoderTask.isExecuting()) {
+		if (doReverseGeocode && (reverseGeocoderTask == null || !reverseGeocoderTask.isExecuting())) {
+			Log.d(CLASS_TAG, "doReverseGeocode");
 			reverseGeocoderTask = new ReverseGeocoderTask(this);
 			reverseGeocoderTask.execute(latitude, longitude);
 		}

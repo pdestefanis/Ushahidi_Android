@@ -350,7 +350,7 @@ public class CheckinActivity extends MapUserLocation {
      * @param latitude Latitude
      * @param longitude Longitude
      */
-    protected void locationChanged(double latitude, double longitude) {
+    protected void locationChanged(double latitude, double longitude, boolean doReverseGeocode) {
         this.latitude = latitude;
         this.longitude = longitude;
         mCheckinLocation.setText(String.format("%f, %f", latitude, longitude));

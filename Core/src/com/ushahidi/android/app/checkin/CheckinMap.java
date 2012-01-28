@@ -225,7 +225,7 @@ public class CheckinMap extends MapUserLocation {
      * @param latitude Latitude
      * @param longitude Longitude
      */
-    protected void locationChanged(double latitude, double longitude) {
+    protected void locationChanged(double latitude, double longitude, boolean doReverseGeocode) {
         Log.i(getClass().getSimpleName(), String.format("locationChanged: %f, %f", latitude, longitude));
     }
 

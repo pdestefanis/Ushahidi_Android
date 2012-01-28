@@ -25,7 +25,7 @@ import com.google.android.maps.OverlayItem;
 
 public abstract class MapUserLocation extends MapActivity implements LocationListener {
 	
-	 public static final String PREFS_NAME = "UshahidiService";
+	public static final String PREFS_NAME = "UshahidiService";
 	
 	private static final String TAG= "Ushahidi/MapUserLocation";
 
@@ -56,7 +56,7 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
      * elements when the location changes. e.g. TextViews displaying the
      * location.
      */
-    protected abstract void locationChanged(double latitude, double longitude);
+    protected abstract void locationChanged(double latitude, double longitude, boolean doReverseGeocode);
 
     /* Override this to set a custom marker */
     protected UpdatableMarker createUpdatableMarker(Drawable marker, GeoPoint point) {
@@ -260,17 +260,17 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
             boolean location1MoreAccurate = location1.getAccuracy() < location2.getAccuracy();
             boolean location2MoreAccurate = location2.getAccuracy() < location1.getAccuracy();
             if (location1Newer || location1MoreAccurate) {
-                locationChanged(location1.getLatitude(), location1.getLongitude());
+                locationChanged(location1.getLatitude(), location1.getLongitude(), true);
             }
             else if (location2Newer || location2MoreAccurate) {
-                locationChanged(location2.getLatitude(), location2.getLongitude());
+                locationChanged(location2.getLatitude(), location2.getLongitude(), true);
             }
         }
         else if (location1 != null) {
-            locationChanged(location1.getLatitude(), location1.getLongitude());
+            locationChanged(location1.getLatitude(), location1.getLongitude(), true);
         }
         else if (location2 != null) {
-            locationChanged(location2.getLatitude(), location2.getLongitude());
+            locationChanged(location2.getLatitude(), location2.getLongitude(), true);
         }
     }
 
@@ -311,7 +311,7 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
                     double latitude = geoPoint.getLatitudeE6() / 1E6;
                     double longitude = geoPoint.getLongitudeE6() / 1E6;
                     Log.i(getClass().getSimpleName(), String.format("%d, %d >> %f, %f", x, y, latitude, longitude));
-                    locationChanged(latitude, longitude);
+                    locationChanged(latitude, longitude, false);
                     return true;
                 }
                 else {
@@ -329,7 +329,7 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 
     public void onLocationChanged(Location location) {
         if (location != null) {
-            locationChanged(location.getLatitude(), location.getLongitude());
+            locationChanged(location.getLatitude(), location.getLongitude(), true);
             if (location.hasAccuracy() && location.getAccuracy() < ACCURACY_THRESHOLD) {
                 //accuracy is within ACCURACY_THRESHOLD, de-activate location detection
                 stopLocating();

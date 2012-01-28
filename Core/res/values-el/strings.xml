@@ -44,6 +44,7 @@
 	<string name="incident_add_category">Επιλογή Κατηγορίας</string>
 	<string name="incident_menu_add">Προσθήκη Αναφοράς</string>
 	<string name="incident_list">Εμφάνιση Αναφορών</string>
+	<string name="google_map_api_key_dev2">0bajWfh6C_eOpMddxA1zYFRl0C-PB4MKQ_TJIqg</string>
 	<string name="google_map_api_key_dev">02cv5Q8Rob0ChOFNh6Gf_ePmVHYlVgA_pgJIHRA</string>
 	<string name="google_map_api_key">02cv5Q8Rob0CKZ9PP72gMQ10QuVVFv8q4zZ91yA</string>
 	<string name="menu_home">Αρχική</string>
