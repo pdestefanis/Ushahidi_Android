@@ -66,7 +66,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.maps.MapView;
 import com.ushahidi.android.app.checkin.NetworkServices;
 import com.ushahidi.android.app.data.AddIncidentData;
 import com.ushahidi.android.app.data.Database;
@@ -296,7 +295,26 @@ public class IncidentAdd extends MapUserLocation {
 		mIncidentTitle = (EditText) findViewById(R.id.incident_title);
 		mIncidentLocation = (EditText) findViewById(R.id.incident_location);
 		mIncidentDesc = (EditText) findViewById(R.id.incident_desc);
-		mapView = (MapView) findViewById(R.id.location_map);
+		mapView = (IncidentMapView) findViewById(R.id.location_map);
+		/*mapView.setOnTouchListener(new OnTouchListener() {
+			
+			public boolean onTouch(View v, MotionEvent event) {
+				int action = event.getAction();
+			    switch (action) {
+			    case MotionEvent.ACTION_DOWN:
+			        // Disallow ScrollView to intercept touch events.
+			    	mapView.requestDisallowInterceptTouchEvent(true);
+			        break;
+
+			    case MotionEvent.ACTION_UP:
+			        // Allow ScrollView to intercept touch events.
+			    	mapView.requestDisallowInterceptTouchEvent(false);
+			        break;
+			    }
+
+			    return false;
+			}
+		});*/
 		mapController = mapView.getController();
 
 		mBtnSend.setOnClickListener(new View.OnClickListener() {
