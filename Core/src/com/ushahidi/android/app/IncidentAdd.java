@@ -51,9 +51,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.telephony.SmsManager;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -123,6 +121,10 @@ public class IncidentAdd extends MapUserLocation {
 	private String mErrorMessage = "";
 
 	private String mDateToSubmit = "";
+	
+	private String mCurrentLatitude = "";
+	
+	private String mCurrentLongitude = "";
 
 	private boolean mError = false;
 
@@ -134,9 +136,9 @@ public class IncidentAdd extends MapUserLocation {
 
 	private ImageView mSelectedPhoto;
 
-	private EditText mLatitude;
+	//private EditText mLatitude;
 
-	private EditText mLongitude;
+	//private EditText mLongitude;
 
 	private TextView activityTitle;
 
@@ -282,10 +284,10 @@ public class IncidentAdd extends MapUserLocation {
 		mBtnSend = (Button) findViewById(R.id.incident_add_btn);
 		mPickDate = (Button) findViewById(R.id.pick_date);
 		mPickTime = (Button) findViewById(R.id.pick_time);
-		mLatitude = (EditText) findViewById(R.id.incident_latitude);
+		/*mLatitude = (EditText) findViewById(R.id.incident_latitude);
 		mLatitude.addTextChangedListener(latLonTextWatcher);
 		mLongitude = (EditText) findViewById(R.id.incident_longitude);
-		mLongitude.addTextChangedListener(latLonTextWatcher);
+		mLongitude.addTextChangedListener(latLonTextWatcher);*/
 		mSelectedPhoto = (ImageView) findViewById(R.id.sel_photo_prev);
 		activityTitle = (TextView) findViewById(R.id.title_text);
 		if (activityTitle != null) {
@@ -324,7 +326,7 @@ public class IncidentAdd extends MapUserLocation {
 					mError = true;
 				}
 
-				// validate lat long
+				/*// validate lat long
 				if (TextUtils.isEmpty(mLatitude.getText().toString())) {
 					mErrorMessage += getString(R.string.empty_latitude) + "\n";
 					mError = true;
@@ -350,7 +352,7 @@ public class IncidentAdd extends MapUserLocation {
 					mErrorMessage += getString(R.string.invalid_longitude)
 							+ "\n";
 					mError = true;
-				}
+				}*/
 
 				if (!mError) {
 
@@ -486,8 +488,8 @@ public class IncidentAdd extends MapUserLocation {
 		mIncidentTitle.setText("");
 		mIncidentLocation.setText("");
 		mIncidentDesc.setText("");
-		mLatitude.setText("");
-		mLongitude.setText("");
+		/*mLatitude.setText("");
+		mLongitude.setText("");*/
 		mVectorCategories.clear();
 		mBtnAddCategory.setText(R.string.incident_add_category);
 		mSelectedPhoto.setImageDrawable(null);
@@ -501,8 +503,8 @@ public class IncidentAdd extends MapUserLocation {
 		editor.putString("title", "");
 		editor.putString("description", "");
 		editor.putString("date", "");
-		editor.putString("latitude", mLatitude.getText().toString());
-		editor.putString("longitude", mLongitude.getText().toString());
+		/*editor.putString("latitude", mLatitude.getText().toString());
+		editor.putString("longitude", mLongitude.getText().toString());*/
 		editor.putString("categories", "");
 		editor.putString("photo", "");
 		editor.commit();
@@ -904,9 +906,9 @@ public class IncidentAdd extends MapUserLocation {
 		addIncidentData.setIncidentCategories(Util.implode(mVectorCategories));
 		addIncidentData.setIncidentLocName(mIncidentLocation.getText()
 				.toString());
-		addIncidentData.setIncidentLocLatitude(mLatitude.getText().toString());
+		addIncidentData.setIncidentLocLatitude(mCurrentLatitude);
 		addIncidentData
-				.setIncidentLocLongitude(mLongitude.getText().toString());
+				.setIncidentLocLongitude(mCurrentLatitude);
 		addIncidentData.setIncidentPhoto(Preferences.fileName);
 		addIncidentData.setPersonFirst(Preferences.firstname);
 		addIncidentData.setPersonLast(Preferences.lastname);
@@ -985,9 +987,9 @@ public class IncidentAdd extends MapUserLocation {
 		StringBuilder urlBuilder = new StringBuilder(Preferences.domain);
 
 		String phoneNumber = mPhoneNumber.getText().toString();
-		String latitude = mLatitude.getText().toString();
+		/*String latitude = mLatitude.getText().toString();
 		String longitude = mLongitude.getText().toString();
-
+*/
 		mParams.put("task", "report");
 		mParams.put("incident_title", mIncidentTitle.getText().toString());
 		mParams.put("incident_description", mIncidentDesc.getText().toString());
@@ -1000,7 +1002,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		try {
 			smsNum = new OpenGeoSMSSender().SendOpenGeoSMS(phoneNumber,
-					urlBuilder.toString(), latitude, longitude, mParams, this);
+					urlBuilder.toString(), mCurrentLatitude, mCurrentLongitude, mParams, this);
 
 			if (smsNum != 0) {
 				SMSSentReceiver = new SMSSendingReceiver();
@@ -1054,8 +1056,8 @@ public class IncidentAdd extends MapUserLocation {
 		mParams.put("incident_minute", time[1]);
 		mParams.put("incident_ampm", dates[2].toLowerCase());
 		mParams.put("incident_category", categories);
-		mParams.put("latitude", mLatitude.getText().toString());
-		mParams.put("longitude", mLongitude.getText().toString());
+		mParams.put("latitude", mCurrentLatitude);
+		mParams.put("longitude", mCurrentLongitude);
 		mParams.put("location_name", mIncidentLocation.getText().toString());
 		mParams.put("person_first", Preferences.firstname);
 		mParams.put("person_last", Preferences.lastname);
@@ -1129,8 +1131,8 @@ public class IncidentAdd extends MapUserLocation {
 		editor.putString("title", mIncidentTitle.getText().toString());
 		editor.putString("description", mIncidentDesc.getText().toString());
 		editor.putString("location", mIncidentLocation.getText().toString());
-		editor.putString("latitude", mLatitude.getText().toString());
-		editor.putString("longitude", mLongitude.getText().toString());
+		editor.putString("latitude", mCurrentLatitude);
+		editor.putString("longitude", mCurrentLongitude);
 
 		if (selectedCategories != null) {
 			editor.putString("categories", selectedCategories);
@@ -1177,7 +1179,7 @@ public class IncidentAdd extends MapUserLocation {
 			mIncidentLocation.setText(location, TextView.BufferType.EDITABLE);
 		}
 
-		String latitude = prefs.getString("latitude", null);
+		/*String latitude = prefs.getString("latitude", null);
 		if (latitude != null) {
 			mLatitude.setText(latitude, TextView.BufferType.EDITABLE);
 		}
@@ -1185,7 +1187,7 @@ public class IncidentAdd extends MapUserLocation {
 		String longitude = prefs.getString("longitude", null);
 		if (longitude != null) {
 			mLongitude.setText(longitude, TextView.BufferType.EDITABLE);
-		}
+		}*/
 
 		String categories = prefs.getString("categories", null);
 		// @inoran fix
@@ -1236,6 +1238,11 @@ public class IncidentAdd extends MapUserLocation {
 	 * Implementation of MapUserLocation abstract methods
 	 */
 	protected void locationChanged(double latitude, double longitude) {
+		
+		mCurrentLatitude = String.valueOf(latitude);
+		mCurrentLongitude = String.valueOf(longitude);
+		
+		
 		updateMarker(latitude, longitude, true);
 
 		didFindLocation = true;
@@ -1245,10 +1252,10 @@ public class IncidentAdd extends MapUserLocation {
 			return;
 		}	
 
-		if (!mLatitude.hasFocus() && !mLongitude.hasFocus()) {
+		/*if (!mLatitude.hasFocus() && !mLongitude.hasFocus()) {
 			mLatitude.setText(String.valueOf(latitude));
 			mLongitude.setText(String.valueOf(longitude));
-		}
+		}*/
 		if (reverseGeocoderTask == null || !reverseGeocoderTask.isExecuting()) {
 			reverseGeocoderTask = new ReverseGeocoderTask(this);
 			reverseGeocoderTask.execute(latitude, longitude);
@@ -1286,7 +1293,7 @@ public class IncidentAdd extends MapUserLocation {
 		}
 	}
 
-	private TextWatcher latLonTextWatcher = new TextWatcher() {
+	/*private TextWatcher latLonTextWatcher = new TextWatcher() {
 		public void afterTextChanged(Editable s) {
 		}
 
@@ -1306,7 +1313,7 @@ public class IncidentAdd extends MapUserLocation {
 				Log.w("IncidentAdd", "Exception TextWatcher", ex);
 			}
 		}
-	};
+	};*/
 
 	/**
 	 * Sets nVectorCategories
