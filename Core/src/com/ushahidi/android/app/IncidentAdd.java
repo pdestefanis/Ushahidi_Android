@@ -680,7 +680,7 @@ public class IncidentAdd extends MapUserLocation {
 								public void onClick(DialogInterface dialog,
 										int whichButton) {
 
-									/* User clicked Yes so do some stuff */
+									
 								}
 							}).create();
 		}
@@ -829,8 +829,7 @@ public class IncidentAdd extends MapUserLocation {
 				for (String s : mVectorCategories) {
 					try {
 						// @inoran fix
-						list.setItemChecked(
-								mCategoryLength - Integer.parseInt(s), true);
+						list.setItemChecked(Integer.parseInt(s)-1, true);
 					} catch (NumberFormatException e) {
 						Log.e(CLASS_TAG,
 								"numberFormatException " + s + " "
