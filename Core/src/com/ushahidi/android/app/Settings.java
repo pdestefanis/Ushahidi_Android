@@ -147,6 +147,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         autoUpdateTimePref = new ListPreference(this);
         saveItemsPref = new ListPreference(this);
         totalReportsPref = new ListPreference(this);
+        gpsTimeoutPref = new EditTextPreference(this);
 
         new ListPreference(this);
 
@@ -245,6 +246,15 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         autoFetchCheckBoxPref.setTitle(R.string.chk_auto_fetch);
         autoFetchCheckBoxPref.setSummary(R.string.hint_auto_fetch);
         advancedScreenPref.addPreference(autoFetchCheckBoxPref);
+        
+        //gps timeout Preferences
+        gpsTimeoutPref.setDialogTitle(R.string.txt_gps_timeout);
+        gpsTimeoutPref.setKey("gps_timeout_preference");
+        gpsTimeoutPref.setTitle(R.string.txt_gps_timeout);
+        gpsTimeoutPref.setSummary(R.string.txt_gps_timeout_in_sec);
+        gpsTimeoutPref.setDefaultValue("60");
+        gpsTimeoutPref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
+        advancedScreenPref.addPreference(gpsTimeoutPref);
 
         // Auto update reports time interval
         // set list values
@@ -291,16 +301,6 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         notificationPrefCat.setTitle(R.string.bg_notification);
         advancedScreenPref.addPreference(notificationPrefCat);
         
-        //gps timeout Preferences
-        gpsTimeoutPref = new EditTextPreference(this);
-        gpsTimeoutPref.setDialogTitle(R.string.txt_gps_timeout);
-        gpsTimeoutPref.setKey("gps_timeout_preference");
-        gpsTimeoutPref.setTitle(R.string.txt_gps_timeout);
-        gpsTimeoutPref.setSummary(R.string.txt_gps_timeout_in_sec);
-        gpsTimeoutPref.setDefaultValue("60");
-        gpsTimeoutPref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
-        advancedScreenPref.addPreference(gpsTimeoutPref);
-
         // vibrate
         vibrateCheckBoxPref.setKey("vibrate_preference");
         vibrateCheckBoxPref.setTitle(R.string.vibrate);

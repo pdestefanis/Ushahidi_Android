@@ -242,11 +242,11 @@ public class ApiUtils {
             if (Util.isConnected(context)) {
 
                 if (Categories.getAllCategoriesFromWeb()) {
-                    mNewCategories = HandleXml.processCategoriesXml(Preferences.categoriesResponse);
+                    mNewCategories = HandleXml.processCategoriesXml(Preferences.categoriesResponse);                    
                 }
 
                 if (Incidents.getAllIncidentsFromWeb()) {
-                    mNewIncidents = HandleXml.processIncidentsXml(Preferences.incidentsResponse);
+                    mNewIncidents = HandleXml.processIncidentsXml(Preferences.incidentsResponse);                    
                 }
 
                 Preferences.totalReportsFetched = mNewCategories.size() + " Categories \n"

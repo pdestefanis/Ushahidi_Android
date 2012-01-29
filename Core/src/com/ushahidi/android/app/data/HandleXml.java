@@ -346,7 +346,7 @@ public class HandleXml {
 
                     NodeList title = titleElement.getChildNodes();
                     if (title.getLength() != 0) {
-
+                    	Log.d("XXX", "category title: "+(title.item(0)).getNodeValue());
                         category.setCategoryTitle((title.item(0)).getNodeValue());
                         categories += (title.item(0)).getNodeValue() + ", ";
 
