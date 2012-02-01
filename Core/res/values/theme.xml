@@ -80,5 +80,6 @@
     <string name="about_text"/>
 
     <!--GOOGLE MAPS API-->
-	<string name="google_map_api_key">0VTyb20YRViel4f7bslzHyBArOG6CfDg6llGJnQ</string>
+    <!-- C:\Android\.android\debug.keystore -->
+	<string name="google_map_api_key">04CNkh38yW0WU0O8WMsWtv7S_A6AlIAdiOjiyNA</string>
 </resources>
