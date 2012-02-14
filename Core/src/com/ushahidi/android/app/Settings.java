@@ -33,6 +33,8 @@ import android.preference.CheckBoxPreference;
 import android.preference.DialogPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
@@ -43,7 +45,7 @@ import com.ushahidi.android.app.ui.SeekBarPreference;
 import com.ushahidi.android.app.util.ApiUtils;
 import com.ushahidi.android.app.util.Util;
 
-public class Settings extends PreferenceActivity implements OnSharedPreferenceChangeListener {
+public class Settings extends PreferenceActivity implements OnSharedPreferenceChangeListener, OnPreferenceChangeListener {
 
     private EditTextPreference firstNamePref;
 
@@ -120,6 +122,8 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
+        
+       
 
         firstNamePref = new EditTextPreference(this);
 
@@ -136,6 +140,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 
         photoSizePref = (SeekBarPreference)getPreferenceScreen().findPreference(
                 PHOTO_SIZE_PREFERENCE);
+        photoSizePref.setOnPreferenceChangeListener(this);
 
         recentReports = getString(R.string.recent_reports);
         onPhone = getString(R.string.on_phone);
@@ -362,8 +367,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         editor.putInt("AutoUpdateDelay", autoUdateDelay);
         editor.putBoolean("AutoFetch", autoFetchCheckBoxPref.isChecked());
         editor.putString("TotalReports", totalReports);
-        editor.putInt("CheckinEnabled", Preferences.isCheckinEnabled);
-        editor.putInt("PhotoWidth", photoSizePref.getProgress());
+        editor.putInt("CheckinEnabled", Preferences.isCheckinEnabled);        
         editor.putString("gps_timeout_preference", gpsTimeoutPref.getText());
         editor.commit();
 
@@ -433,13 +437,16 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
             }
         }
         
-        //photo size
+       /* //photo size
         if (key.equals(PHOTO_SIZE_PREFERENCE)) {
-            if (sharedPreferences.getInt(PHOTO_SIZE_PREFERENCE, 200) > Preferences.photoWidth) {
-                Preferences.photoWidth = sharedPreferences.getInt(PHOTO_SIZE_PREFERENCE, 200);
-
+        	int size = sharedPreferences.getInt(PHOTO_SIZE_PREFERENCE, 200);
+        	
+        	Log.d(CLASS_TAG, "Photo Size: "+size+", Preferences.photoWidth: "+Preferences.photoWidth);
+        	
+        	if (size > Preferences.photoWidth) {
+                //Preferences.photoWidth = size;
             }
-        }
+        }*/
 
         // validate email address
         if (key.equals(EMAIL_ADDRESS_PREFERENCE)) {
@@ -563,5 +570,17 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         }
         Preferences.saveSettings(Settings.this);
     }
+
+	public boolean onPreferenceChange(Preference preference, Object newValue) {
+		
+		if(preference.getKey().equalsIgnoreCase(PHOTO_SIZE_PREFERENCE)){
+			Log.d(CLASS_TAG, "Preferences.photoWidth: "+newValue);
+			Preferences.photoWidth = (Integer) newValue;
+			editor.putInt("PhotoWidth", Preferences.photoWidth);
+			editor.commit();
+		}
+		
+		return true;
+	}
 
 }

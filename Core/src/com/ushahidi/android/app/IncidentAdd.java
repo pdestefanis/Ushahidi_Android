@@ -330,9 +330,9 @@ public class IncidentAdd extends MapUserLocation{
 			public void onScrollChanged(IncidentScrollView scrollView, int x,
 					int y, int oldx, int oldy) {
 				
-				Log.d(TAG, "x: "+x+", oldx: "+oldx+", y: "+y+", oldy: "+oldy);
+				//Log.d(TAG, "x: "+x+", oldx: "+oldx+", y: "+y+", oldy: "+oldy);
 				
-				Log.d(TAG, "mapZoomButtonsController: "+mapZoomButtonsController);
+				//Log.d(TAG, "mapZoomButtonsController: "+mapZoomButtonsController);
 				
 				if(mapZoomButtonsController!=null){
 					mapZoomButtonsController.setVisible(false);
