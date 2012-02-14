@@ -75,7 +75,9 @@ import com.ushahidi.android.app.util.ApiUtils;
 import com.ushahidi.android.app.util.PhotoUtils;
 import com.ushahidi.android.app.util.Util;
 
-public class IncidentAdd extends MapUserLocation {
+public class IncidentAdd extends MapUserLocation{
+	
+	private static final String TAG= "Ushahidi/IncidentAdd";
 
 	/**
 	 * category that exists on the phone before any connection to a server, at
@@ -150,6 +152,8 @@ public class IncidentAdd extends MapUserLocation {
 	private Button mPickDate;
 
 	private Button mBtnPicture;
+	
+	private IncidentScrollView mScrollView;
 
 	private static final int DIALOG_ERROR_NETWORK = 0;
 
@@ -278,6 +282,8 @@ public class IncidentAdd extends MapUserLocation {
 		mPhoneNumber = (EditText) findViewById(R.id.phoneNumber);
 		mPhoneNumber.setText(Preferences.phonenumber);
 
+		mScrollView = (IncidentScrollView) findViewById(R.id.scrollView);
+		
 		mBtnPicture = (Button) findViewById(R.id.btnPicture);
 		mBtnAddCategory = (Button) findViewById(R.id.add_category);
 		mBtnSend = (Button) findViewById(R.id.incident_add_btn);
@@ -296,6 +302,7 @@ public class IncidentAdd extends MapUserLocation {
 		mIncidentLocation = (EditText) findViewById(R.id.incident_location);
 		mIncidentDesc = (EditText) findViewById(R.id.incident_desc);
 		mapView = (IncidentMapView) findViewById(R.id.location_map);
+		mapView.setBuiltInZoomControls(true);
 		/*mapView.setOnTouchListener(new OnTouchListener() {
 			
 			public boolean onTouch(View v, MotionEvent event) {
@@ -315,7 +322,24 @@ public class IncidentAdd extends MapUserLocation {
 			    return false;
 			}
 		});*/
+		mapZoomButtonsController = mapView.getZoomButtonsController();
 		mapController = mapView.getController();
+		
+		mScrollView.setScrollViewListener(new ScrollViewListener(){
+
+			public void onScrollChanged(IncidentScrollView scrollView, int x,
+					int y, int oldx, int oldy) {
+				
+				Log.d(TAG, "x: "+x+", oldx: "+oldx+", y: "+y+", oldy: "+oldy);
+				
+				Log.d(TAG, "mapZoomButtonsController: "+mapZoomButtonsController);
+				
+				if(mapZoomButtonsController!=null){
+					mapZoomButtonsController.setVisible(false);
+				}
+			}
+			
+		});
 
 		mBtnSend.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {

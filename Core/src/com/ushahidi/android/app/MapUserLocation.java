@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.ZoomButtonsController;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -42,6 +43,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
     protected boolean didFindLocation;
     
     protected MapView mapView;
+    
+    protected ZoomButtonsController mapZoomButtonsController;
 
     protected MapController mapController;
 
@@ -231,7 +234,7 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
             marker.setBounds(0, 0, marker.getIntrinsicWidth(), marker.getIntrinsicHeight());
             mapController.setZoom(14);
 
-            mapView.setBuiltInZoomControls(true);
+            
             updatableMarker = createUpdatableMarker(marker, point);
             mapView.getOverlays().add((Overlay) updatableMarker);
         }

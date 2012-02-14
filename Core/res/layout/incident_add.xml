@@ -42,7 +42,8 @@
 
     <ImageView style="@style/ActionBarSeparator" />
 
-    <ScrollView
+    <com.ushahidi.android.app.IncidentScrollView
+        android:id="@+id/scrollView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
@@ -188,7 +189,8 @@
                     android:clickable="true"
                     android:enabled="true" />
 
-                <!-- <LinearLayout
+                <!--
+                <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -209,7 +211,8 @@
                         android:layout_weight="1"
                         android:hint="@string/incident_longitude"
                         android:inputType="numberDecimal|numberSigned" />
-                </LinearLayout> -->
+                </LinearLayout>
+                -->
             </LinearLayout>
             <!-- Location layout ends. -->
 
@@ -303,6 +306,6 @@
 
         </LinearLayout>
         <!-- Parent layout ends. -->
-    </ScrollView>
+    </com.ushahidi.android.app.IncidentScrollView>
 
 </LinearLayout>
