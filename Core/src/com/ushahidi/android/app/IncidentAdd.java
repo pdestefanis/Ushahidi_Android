@@ -537,8 +537,8 @@ public class IncidentAdd extends MapUserLocation{
 		mIncidentTitle.setText("");
 		mIncidentLocation.setText("");
 		mIncidentDesc.setText("");
-		/*mLatitude.setText("");
-		mLongitude.setText("");*/
+		//mLatitude.setText("");
+		//mLongitude.setText("");
 		if (mVectorCategories != null)
 		mVectorCategories.clear();
 		mBtnAddCategory.setText(R.string.incident_add_category);
@@ -603,6 +603,8 @@ public class IncidentAdd extends MapUserLocation{
 							public void onClick(DialogInterface dialog, int id) {
 								// delete all messages
 								clearFields();
+								draft = false;
+								finish();
 							}
 						});
 		AlertDialog alert = builder.create();
