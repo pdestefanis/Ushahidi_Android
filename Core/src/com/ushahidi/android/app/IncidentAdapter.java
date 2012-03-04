@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,14 +98,16 @@ public class IncidentAdapter extends BaseAdapter {
         holder.title.setText(iItems.get(position).getTitle());
         holder.date.setText(iItems.get(position).getDate());
         holder.iLocation.setText(iItems.get(position).getLocation());
-        // change the status color
+        /*// change the status color
         if (iItems.get(position).getStatus().equalsIgnoreCase("Verified")) {
             holder.status.setTextColor(R.color.verified_text_color); // green
         }
         else if (iItems.get(position).getStatus().equalsIgnoreCase("Unverified")) {
             holder.status.setTextColor(R.color.unverified_text_color); // red
-        }
-        holder.status.setText(iItems.get(position).getStatus());
+        }*/
+        //holder.status.setText(iItems.get(position).getStatus());
+        Log.d("XXX", "cat: "+iItems.get(position).getCategories());
+        holder.mCategories.setText("-  "+iItems.get(position).getCategories());
         holder.arrow.setImageDrawable(iItems.get(position).getArrow());
 
         return row;
@@ -117,7 +120,7 @@ public class IncidentAdapter extends BaseAdapter {
 
         TextView date;
 
-        TextView status;
+        //TextView status;
 
         TextView mCategories;
 
@@ -130,7 +133,7 @@ public class IncidentAdapter extends BaseAdapter {
             this.title = (TextView)convertView.findViewById(R.id.report_title);
             this.date = (TextView)convertView.findViewById(R.id.report_date);
             this.iLocation = (TextView)convertView.findViewById(R.id.report_location);
-            this.status = (TextView)convertView.findViewById(R.id.report_status);
+            this.mCategories = (TextView)convertView.findViewById(R.id.report_category);
             this.arrow = (ImageView)convertView.findViewById(R.id.report_arrow);
         }
     }
