@@ -23,8 +23,8 @@ package com.ushahidi.android.app;
 import java.io.File;
 
 import com.ushahidi.android.app.util.Util;
-
 import android.util.Log;
+
 
 public class SaveIncidentsImage extends Thread {
 
@@ -44,7 +44,7 @@ public class SaveIncidentsImage extends Thread {
         Log.i("Capture Me", "What: " + filename);
 
         ImageManager.writeImage(mData, filename, Preferences.savePath);
-        Preferences.fileName = filename;
+        Preferences.fileName.add(filename);
 
         File f = new File(Preferences.savePath, filename);
         if (f.exists()) {

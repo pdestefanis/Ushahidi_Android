@@ -2,6 +2,7 @@
 package com.ushahidi.android.app;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -43,7 +44,9 @@ public class Preferences {
 
     public static String totalReports = "";
 
-    public static String fileName = "";
+    //public static String fileName = "";
+	
+	public static ArrayList<String> fileName = new ArrayList<String>();
 
     public static int isCheckinEnabled = 0;
 

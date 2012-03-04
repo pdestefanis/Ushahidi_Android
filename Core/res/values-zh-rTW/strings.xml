@@ -168,7 +168,7 @@
   <string name="notification_status_bar_message">送出事件報告</string>
   <string name="notification_expanded_title">Ushahidi事件報告</string>
   <string name="notification_expanded_message">事件報告成功送出</string>
-  <string name="change_photo">更改照片</string>
+  <!-- <string name="change_photo">更改照片</string> -->
   <string name="search_label">查詢</string>
   <string name="search_hint">尋找程式</string>
   <string name="deployment_fetched_successful">已成功讀取程式</string>

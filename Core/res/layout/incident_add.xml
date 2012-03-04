@@ -296,11 +296,17 @@
                     android:text="@string/btn_add_photo"
                     android:textStyle="bold" />
 
+			    <Gallery
+			        xmlns:android="http://schemas.android.com/apk/res/android"
+			        android:id="@+id/capturePhotos"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content" />
                 <ImageView
                     android:id="@+id/sel_photo_prev"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="fitCenter"
+                    android:layout_marginTop="5dip" />
             </LinearLayout>
             <!-- Photo layout ends. -->
 

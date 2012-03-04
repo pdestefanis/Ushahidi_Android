@@ -38,9 +38,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ushahidi.android.app.data.Database;
 import com.ushahidi.android.app.data.DeploymentProvider;
 import com.ushahidi.android.app.data.DeploymentsData;
-import com.ushahidi.android.app.data.Database;
 import com.ushahidi.android.app.net.Deployments;
 import com.ushahidi.android.app.util.ApiUtils;
 import com.ushahidi.android.app.util.Util;
@@ -461,10 +461,13 @@ public class DeploymentSearch extends Dashboard implements LocationListener {
     public void clearCachedReports() {
 
         // delete unset photo
-        if (Preferences.fileName != null) {
-            File f = new File(Preferences.fileName);
-            if (f != null) {
-                if (f.exists()) {
+    	for (int i = 0; i < Preferences.fileName.size(); i++) 
+    	{
+    		File f = new File(Preferences.fileName.get(i));
+            if (f != null) 
+            {
+                if (f.exists()) 
+                {
                     f.delete();
                 }
             }

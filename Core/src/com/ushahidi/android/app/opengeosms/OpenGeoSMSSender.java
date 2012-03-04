@@ -1,13 +1,14 @@
 package com.ushahidi.android.app.opengeosms;
 
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import android.util.Log;
+
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsManager;
+import android.util.Log;
 
 /**
  * @inoran

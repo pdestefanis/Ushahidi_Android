@@ -15,11 +15,11 @@ import java.util.Map;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import com.ushahidi.android.app.MainApplication;
-
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+
+import com.ushahidi.android.app.MainApplication;
 
 public final class TrustManagerFactory {
     private static final String LOG_TAG = "TrustManagerFactory";

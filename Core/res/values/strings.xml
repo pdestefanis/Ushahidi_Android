@@ -206,7 +206,7 @@
 	<string name="notification_status_bar_message">Report Sent</string>
 	<string name="notification_expanded_title">Ushahidi Report</string>
 	<string name="notification_expanded_message">Reports Sent Successfully</string>
-	<string name="change_photo">Change Photo</string>
+	<!-- <string name="change_photo">Change Photo</string> -->
 
 	<!-- Deployment search -->
 	<string name="search_label">Deployments </string>
@@ -312,4 +312,10 @@
 	<string name="report_opengeosms_without_picture">This Report would be send without picture</string>
 	<string name="airplane_mode_on">Airplane mode is on!! Please turn it off to send report</string>
     <string name="reporting_via">Reporting via</string>
+    
+    <string name="Photo_Change">Update Gallery</string>
+	<string name="Photo_Change_Des">Please choose one of it.</string>
+	<string name="Photo_Change_Remove">Remove Image</string>
+	<string name="Photo_Change_Change">Change Image</string>
+    
 </resources>

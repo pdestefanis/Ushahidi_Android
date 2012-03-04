@@ -31,8 +31,8 @@ import android.widget.ViewSwitcher;
 
 import com.ushahidi.android.app.Dashboard;
 import com.ushahidi.android.app.ImageManager;
-import com.ushahidi.android.app.R;
 import com.ushahidi.android.app.Preferences;
+import com.ushahidi.android.app.R;
 
 public class ImagePreviewer extends Dashboard implements
         AdapterView.OnItemSelectedListener, ViewSwitcher.ViewFactory {

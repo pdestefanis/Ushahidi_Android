@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.http.HttpResponse;
@@ -27,12 +28,12 @@ import com.ushahidi.android.app.net.MainHttpClient;
  */
 public class NetworkServices {
 
-    public static String fileName;
+    public static ArrayList<String> fileName = new ArrayList<String>();
 
     private static MultipartEntity entity = new MultipartEntity();
 
     public static String postToOnline(String IMEI, String domainName, String checkinDetails,
-            String filename, String firstname, String lastname, String email, double latitude,
+            ArrayList<String> filename, String firstname, String lastname, String email, double latitude,
             double longitude) {
         HashMap<String, String> myParams = new HashMap<String, String>();
 
@@ -50,7 +51,9 @@ public class NetworkServices {
         myParams.put("email", email);
 
         // Specify the file name
-        myParams.put("filename", filename);
+        for (int i = 0; i < filename.size(); i++) {
+        	myParams.put("filename" + i, filename.get(i));
+		}
 
         try {
             return PostFileUpload(urlBuilder.toString(), myParams);
@@ -78,12 +81,9 @@ public class NetworkServices {
             entity.addPart("lastname", new StringBody(params.get("lastname")));
             entity.addPart("email", new StringBody(params.get("email")));
 
-            if (params.get("filename") != null) {
-                if (!TextUtils.isEmpty(params.get("filename"))
-                        || !(params.get("filename").equals(""))) {
+            if (!TextUtils.isEmpty(params.get("filename")) || !(params.get("filename").equals(""))) {
                     Log.i("NeworkServices", "Posting file online");
                     entity.addPart("photo", new FileBody(new File(params.get("filename"))));
-                }
             }
 
             return MainHttpClient.SendMultiPartData(URL, entity);

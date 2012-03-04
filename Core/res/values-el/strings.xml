@@ -199,7 +199,7 @@
 	<string name="notification_status_bar_message">Αναφορά εστάλη</string>
 	<string name="notification_expanded_title">Αναφορά Ushahidi</string>
 	<string name="notification_expanded_message">Αναφορές Εστάλησαν Επιτυχώς</string>
-	<string name="change_photo">Αλλαγή φωτογραφίας</string>
+	<!-- <string name="change_photo">Αλλαγή φωτογραφίας</string> -->
 
 	<!-- Deployment search -->
 	<string name="search_label">Deployments </string>

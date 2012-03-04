@@ -25,8 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.ushahidi.android.app.util.Util;
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -44,6 +42,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+
+import com.ushahidi.android.app.util.Util;
 
 public class ImageCapture extends Activity implements SurfaceHolder.Callback {
     private Camera mCamera;

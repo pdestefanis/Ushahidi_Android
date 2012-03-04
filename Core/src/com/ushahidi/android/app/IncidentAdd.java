@@ -57,9 +57,13 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -167,6 +171,7 @@ public class IncidentAdd extends MapUserLocation{
 
 	private static final int DATE_DIALOG_ID = 5;
 
+	private static final int PHOTO_CHANGE = 66;
 	private Vector<String> mVectorCategories = new Vector<String>();
 
 	private Vector<String> mCategoriesId = new Vector<String>();
@@ -198,6 +203,11 @@ public class IncidentAdd extends MapUserLocation{
 	public int mCurSMSReceivedNumber = 0;
 
 	private ProgressDialog sendSMSProgressDialog;
+
+	private int ImageCount = -1;
+	private int ImageIndex = 0;
+
+	private Gallery gal;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -419,9 +429,10 @@ public class IncidentAdd extends MapUserLocation{
 
 		mBtnPicture.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (!TextUtils.isEmpty(Preferences.fileName)) {
-					ImageManager.deleteImage(Preferences.fileName, "");
-				}
+				/*
+				 * (!TextUtils.isEmpty(Preferences.fileName.get(i))) {
+				 * ImageManager.deleteImage(Preferences.fileName.get(i), ""); }
+				 * }*/
 				showDialog(DIALOG_CHOOSE_IMAGE_METHOD);
 			}
 		});
@@ -516,15 +527,11 @@ public class IncidentAdd extends MapUserLocation{
 	// reset records in the field
 	private void clearFields() {
 		Log.d(CLASS_TAG, "clearFields(): clearing fields");
+		ImageCount = -1;
+		//IsLocationSet = true; // Set Location flag to set.
 		mBtnPicture = (Button) findViewById(R.id.btnPicture);
 		mBtnAddCategory = (Button) findViewById(R.id.add_category);
-		// delete unset photo
-		if (Preferences.fileName != null) {
-			File file = new File(Preferences.fileName);
-			if (file.exists() && file.delete()) {
-				Log.i("IncidentAdd", "File deleted " + file.getName());
-			}
-		}
+		
 		mBtnPicture.setText(getString(R.string.btn_add_photo));
 		mPhoneNumber.setText("");
 		mIncidentTitle.setText("");
@@ -532,11 +539,15 @@ public class IncidentAdd extends MapUserLocation{
 		mIncidentDesc.setText("");
 		/*mLatitude.setText("");
 		mLongitude.setText("");*/
+		if (mVectorCategories != null)
 		mVectorCategories.clear();
 		mBtnAddCategory.setText(R.string.incident_add_category);
+		if (mSelectedPhoto != null) {
 		mSelectedPhoto.setImageDrawable(null);
 		mSelectedPhoto.setImageBitmap(null);
 		mSelectedPhoto.setMinimumHeight(0);
+			mSelectedPhoto.invalidate();
+		}
 		//mCounter = 0;
 		updateDisplay();
 
@@ -545,11 +556,35 @@ public class IncidentAdd extends MapUserLocation{
 		editor.putString("title", "");
 		editor.putString("description", "");
 		editor.putString("date", "");
-		/*editor.putString("latitude", mLatitude.getText().toString());
-		editor.putString("longitude", mLongitude.getText().toString());*/
+		editor.putString("latitude", mCurrentLatitude);
+		editor.putString("longitude", mCurrentLongitude);
 		editor.putString("categories", "");
-		editor.putString("photo", "");
+		if (Preferences.fileName != null) {
+			for (int i = 0; i < Preferences.fileName.size(); i++) {
+				editor.putString("photo" + i, "");
+			}
+		}
 		editor.commit();
+		
+		// delete unset photo
+		if (Preferences.fileName != null) {
+			for (int i = 0; i < Preferences.fileName.size(); i++) {
+				if (!TextUtils.isEmpty(Preferences.fileName.get(i))) {
+					File file = new File(Preferences.fileName.get(i));
+					if (file.exists() && file.delete()) {
+						Log.i("IncidentAdd", "File deleted " + file.getName());
+					}
+				}
+			}
+		}
+		if (Preferences.fileName != null) {
+			Preferences.fileName.clear();
+			CaptureImageTemplate captureImageTemplate = new CaptureImageTemplate(
+					getApplicationContext(), R.layout.main_list_template,
+					Preferences.fileName);
+			gal = (Gallery) findViewById(R.id.capturePhotos);
+			gal.setAdapter(captureImageTemplate);
+		}
 	}
 
 	// discard reports
@@ -606,24 +641,73 @@ public class IncidentAdd extends MapUserLocation{
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == REQUEST_CODE_CAMERA) {
-				Uri uri = PhotoUtils.getPhotoUri("photo.jpg", this);
+				Uri uri = PhotoUtils.getPhotoUri("photo" + ImageCount + ".jpg",
+						this);
+				Log.d("URI", "URI: " + uri.getPath());
 				Bitmap bitmap = PhotoUtils.getCameraPhoto(this, uri);
-				PhotoUtils.savePhoto(this, bitmap);
+				if (bitmap != null)
+					PhotoUtils.savePhoto(this, bitmap, ImageCount);
 				Log.i(CLASS_TAG,
 						String.format("REQUEST_CODE_CAMERA %dx%d",
 								bitmap.getWidth(), bitmap.getHeight()));
 			} else if (requestCode == REQUEST_CODE_IMAGE) {
 				Bitmap bitmap = PhotoUtils
 						.getGalleryPhoto(this, data.getData());
-				PhotoUtils.savePhoto(this, bitmap);
+				PhotoUtils.savePhoto(this, bitmap, ImageCount);
 				Log.i(CLASS_TAG,
 						String.format("REQUEST_CODE_IMAGE %dx%d",
 								bitmap.getWidth(), bitmap.getHeight()));
 			}
 			SharedPreferences.Editor editor = getPreferences(0).edit();
-			editor.putString("photo", PhotoUtils.getPhotoUri("photo.jpg", this)
+			editor.putString("photo" + ImageCount,
+					PhotoUtils.getPhotoUri("photo" + ImageCount + ".jpg", this)
 					.getPath());
 			editor.commit();
+			Preferences.fileName.add(PhotoUtils.getPhotoUri(
+					"photo" + ImageCount + ".jpg", this).getPath());
+			NetworkServices.fileName.add(PhotoUtils.getPhotoUri(
+					"photo" + ImageCount + ".jpg", this).getPath());
+			Log.i(CLASS_TAG, "ImageCount" + Preferences.fileName.size());
+			if (Preferences.fileName != null && Preferences.fileName.size() > 0) {
+				CaptureImageTemplate captureImageTemplate = new CaptureImageTemplate(
+						getApplicationContext(), R.layout.main_list_template,
+						Preferences.fileName);
+				gal = (Gallery) findViewById(R.id.capturePhotos);
+				gal.setAdapter(captureImageTemplate);
+			}
+			gal.setOnItemLongClickListener(new OnItemLongClickListener() {
+				public boolean onItemLongClick(AdapterView<?> parent,
+						View view, int position, long id) {
+					ImageIndex = position;
+					showDialog(PHOTO_CHANGE);
+					return false;
+				}
+			});
+			gal.setOnItemClickListener(new OnItemClickListener() {
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					Bitmap selectedImage = null;
+					if (PhotoUtils.imageExist(
+							Preferences.fileName.get(position),
+							IncidentAdd.this)) {
+						//mBtnPicture.setText(getString(R.string.change_photo));
+						try {
+							BitmapFactory.Options options = new BitmapFactory.Options();
+							options.inSampleSize = 8;
+							options.inTempStorage = new byte[16 * 1024];
+							selectedImage = BitmapFactory.decodeFile(
+									Preferences.fileName.get(position), options);
+							mSelectedPhoto.setMinimumHeight(300);
+							mSelectedPhoto.setMinimumWidth(300);
+							mSelectedPhoto.setImageBitmap(selectedImage);
+						} catch (Exception e) {
+							Log.d("Exception", "" + e.getMessage());
+							e.printStackTrace();
+						} finally {
+						}
+					}
+				}
+			});
 		}
 	}
 
@@ -660,6 +744,80 @@ public class IncidentAdd extends MapUserLocation{
 			return dialog;
 		}
 
+		case PHOTO_CHANGE: {
+			AlertDialog dialog = (new AlertDialog.Builder(this)).create();
+			dialog.setTitle(getString(R.string.Photo_Change));
+			dialog.setMessage(getString(R.string.Photo_Change_Des));
+			dialog.setButton(getString(R.string.Photo_Change_Change),
+					new Dialog.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							showDialog(DIALOG_CHOOSE_IMAGE_METHOD);
+							if (ImageIndex >= 0
+									&& ImageCount >= Preferences.fileName
+											.size()) {
+								if (!TextUtils.isEmpty(Preferences.fileName
+										.get(ImageIndex))) {
+									File file = new File(Preferences.fileName
+											.get(ImageIndex));
+									if (file.exists() && file.delete()) {
+										Log.i("IncidentAdd", "File deleted "
+												+ file.getName());
+									} else {
+										Toast.makeText(getApplicationContext(),
+												"File does not exists.",
+												Toast.LENGTH_LONG);
+									}
+									Preferences.fileName.remove(ImageIndex);
+									if (Preferences.fileName != null) {
+										CaptureImageTemplate captureImageTemplate = new CaptureImageTemplate(
+												getApplicationContext(),
+												R.layout.main_list_template,
+												Preferences.fileName);
+										gal = (Gallery) findViewById(R.id.capturePhotos);
+										gal.setAdapter(captureImageTemplate);
+									}
+								}
+							}
+							if (mSelectedPhoto != null) {
+								mSelectedPhoto.setImageDrawable(null);
+								mSelectedPhoto.setImageBitmap(null);
+								mSelectedPhoto.setMinimumHeight(0);
+								mSelectedPhoto.invalidate();
+							}
+							dialog.dismiss();
+						}
+					});
+			dialog.setButton3(getString(R.string.Photo_Change_Remove),
+					new Dialog.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							if (ImageIndex >= 0) {
+								Preferences.fileName.remove(ImageIndex);
+								if (Preferences.fileName != null) {
+									CaptureImageTemplate captureImageTemplate = new CaptureImageTemplate(
+											getApplicationContext(),
+											R.layout.main_list_template,
+											Preferences.fileName);
+									gal = (Gallery) findViewById(R.id.capturePhotos);
+									gal.setAdapter(captureImageTemplate);
+								}
+							}
+							if (mSelectedPhoto != null) {
+								mSelectedPhoto.setImageDrawable(null);
+								mSelectedPhoto.setImageBitmap(null);
+								mSelectedPhoto.setMinimumHeight(0);
+								mSelectedPhoto.invalidate();
+							}
+							dialog.dismiss();
+						}
+					});
+			dialog.setButton2("Cancel", new Dialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			dialog.setCancelable(false);
+			return dialog;
+		}
 		case DIALOG_CHOOSE_IMAGE_METHOD: {
 			AlertDialog dialog = (new AlertDialog.Builder(this)).create();
 			dialog.setTitle(getString(R.string.choose_method));
@@ -667,6 +825,7 @@ public class IncidentAdd extends MapUserLocation{
 			dialog.setButton(getString(R.string.gallery_option),
 					new Dialog.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
+							ImageCount++;
 							Intent intent = new Intent();
 							intent.setAction(Intent.ACTION_PICK);
 							intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -683,10 +842,13 @@ public class IncidentAdd extends MapUserLocation{
 			dialog.setButton3(getString(R.string.camera_option),
 					new Dialog.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
+							ImageCount++;
 							Intent intent = new Intent(
 									android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-							intent.putExtra(MediaStore.EXTRA_OUTPUT, PhotoUtils
-									.getPhotoUri("photo.jpg", IncidentAdd.this));
+							intent.putExtra(
+									MediaStore.EXTRA_OUTPUT,
+									PhotoUtils.getPhotoUri("photo" + ImageCount
+											+ ".jpg", IncidentAdd.this));
 							startActivityForResult(intent, REQUEST_CODE_CAMERA);
 							dialog.dismiss();
 						}
@@ -706,6 +868,9 @@ public class IncidentAdd extends MapUserLocation{
 									// see if categories have previously
 
 									if (isChecked) {
+										if (!mVectorCategories
+												.contains(mCategoriesId
+														.get(whichButton)))
 										mVectorCategories.add(mCategoriesId
 												.get(whichButton));
 										mError = false;
@@ -1103,7 +1268,9 @@ public class IncidentAdd extends MapUserLocation{
 		mParams.put("person_first", Preferences.firstname);
 		mParams.put("person_last", Preferences.lastname);
 		mParams.put("person_email", Preferences.email);
-		mParams.put("filename", Preferences.fileName);
+		for (int j = 0; j < Preferences.fileName.size(); j++) {
+			mParams.put("filename" + j, Preferences.fileName.get(j));
+		}
 
 		try {
 			final int status = MainHttpClient.PostFileUpload(
@@ -1178,7 +1345,9 @@ public class IncidentAdd extends MapUserLocation{
 		if (selectedCategories != null) {
 			editor.putString("categories", selectedCategories);
 		}
-		editor.putString("photo", Preferences.fileName);
+		for (int i = 0; i < Preferences.fileName.size(); i++) {
+			editor.putString("photo" + i, Preferences.fileName.get(i));
+		}
 		editor.commit();
 		// Notify user that report has been saved as draft.
 		if (draft) {
@@ -1246,7 +1415,7 @@ public class IncidentAdd extends MapUserLocation{
 			this.setSelectedCategories(mVectorCategories);
 		}
 
-		String photo = prefs.getString("photo", null);
+		/*String photo = prefs.getString("photo", null);
 		if (photo != null) {
 			Preferences.fileName = photo;
 			NetworkServices.fileName = photo;
@@ -1271,7 +1440,7 @@ public class IncidentAdd extends MapUserLocation{
 		} else {
 			Preferences.fileName = null;
 			NetworkServices.fileName = null;
-		}
+		}*/
 
 	}
 
@@ -1490,11 +1659,13 @@ public class IncidentAdd extends MapUserLocation{
 				draft = false;
 				clearFields();
 				// after a successful upload, delete the file
-				if (Preferences.fileName != null) {
-					File file = new File(Preferences.fileName);
+				for (int i = 0; i < Preferences.fileName.size(); i++) {
+					if (Preferences.fileName.get(i) != null) {
+						File file = new File(Preferences.fileName.get(i));
 					if (file.exists() && file.delete()) {
 						Log.i(getClass().getSimpleName(), "File deleted "
 								+ file.getName());
+						}
 					}
 				}
 

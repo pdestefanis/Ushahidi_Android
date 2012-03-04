@@ -59,8 +59,10 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
      * elements when the location changes. e.g. TextViews displaying the
      * location.
      */
-    protected abstract void locationChanged(double latitude, double longitude, boolean doReverseGeocode);
+	protected abstract void locationChanged(double latitude, double longitude, boolean doReverseGeocode);
 
+	/*protected abstract void locationLatLonChanged(double latitude,
+			double longitude);*/
     /* Override this to set a custom marker */
     protected UpdatableMarker createUpdatableMarker(Drawable marker, GeoPoint point) {
         return new MapMarker(marker, point);

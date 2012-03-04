@@ -3,8 +3,6 @@ package com.ushahidi.android.app.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.ushahidi.android.app.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,13 +13,15 @@ import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.AbsListView.OnScrollListener;
+
+import com.ushahidi.android.app.R;
 
 /**
  * This class implements the pull to refresh list just like it happens with the official 
