@@ -68,14 +68,16 @@
                     android:text="@string/report_title"
                     android:textColor="@color/title_color"
                     android:textStyle="bold" />
-           <!--  </LinearLayout>
+                <!--
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/top_items_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/table_even_row_color"
-                android:orientation="vertical" > -->
+                android:orientation="vertical" >
+                -->
 
                 <TextView
                     android:id="@+id/title"
@@ -90,107 +92,6 @@
                     android:textStyle="bold" />
             </LinearLayout>
             <!-- Title ends -->
-
-
-            <!-- Status starts -->
-
-            <LinearLayout
-                android:id="@+id/top_items_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/table_even_row_color"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/report_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
-                    android:singleLine="false"
-                    android:text="@string/report_verified"
-                    android:textColor="@color/title_color"
-                    android:textStyle="bold" />
-            <!-- </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/top_items_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/table_even_row_color"
-                android:orientation="vertical" > -->
-
-                <TextView
-                    android:id="@+id/status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
-                    android:singleLine="false"
-                    android:textColor="@color/black_color"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Status ends -->
-
-
-            <!-- Description starts -->
-
-            <LinearLayout
-                android:id="@+id/report_status_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/table_odd_row_color"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/report_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
-                    android:singleLine="false"
-                    android:text="@string/report_desc"
-                    android:textColor="@color/title_color"
-                    android:textStyle="bold" />
-            <!-- </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/top_items_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/table_even_row_color"
-                android:orientation="vertical" > -->
-
-                <!-- Main content area. -->
-
-                <ScrollView
-                    android:id="@+id/description"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:fadingEdge="none"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px">
-
-                    <TextView
-                        android:id="@+id/webview"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:autoLink="all"
-                        android:fadingEdge="none"
-                        android:singleLine="false"
-                        android:textColor="@color/black_color"
-                        android:textStyle="bold" />
-                </ScrollView>
-            </LinearLayout>
-            <!-- Description ends -->
 
 
             <!-- Category starts -->
@@ -214,14 +115,16 @@
                     android:text="@string/report_category"
                     android:textColor="@color/title_color"
                     android:textStyle="bold" />
-            <!-- </LinearLayout>
+                <!--
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/top_items_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/table_even_row_color"
-                android:orientation="vertical" > -->
+                android:orientation="vertical" >
+                -->
 
                 <TextView
                     android:id="@+id/category"
@@ -259,14 +162,16 @@
                     android:text="@string/report_date"
                     android:textColor="@color/title_color"
                     android:textStyle="bold" />
-           <!--  </LinearLayout>
+                <!--
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/date_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/table_even_row_color"
-                android:orientation="vertical" > -->
+                android:orientation="vertical" >
+                -->
 
                 <TextView
                     android:id="@+id/date"
@@ -282,13 +187,71 @@
             <!-- Date ends -->
 
 
+            <!-- Description starts -->
+
+            <LinearLayout
+                android:id="@+id/report_status_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/table_even_row_color"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/report_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="15px"
+                    android:paddingLeft="10px"
+                    android:paddingRight="10px"
+                    android:paddingTop="15px"
+                    android:singleLine="false"
+                    android:text="@string/report_desc"
+                    android:textColor="@color/title_color"
+                    android:textStyle="bold" />
+                <!--
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/top_items_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/table_even_row_color"
+                android:orientation="vertical" >
+                -->
+
+
+                <!-- Main content area. -->
+
+                <ScrollView
+                    android:id="@+id/description"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:fadingEdge="none"
+                    android:paddingLeft="10px"
+                    android:paddingRight="10px"
+                    android:paddingTop="15px" >
+
+                    <TextView
+                        android:id="@+id/webview"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:autoLink="all"
+                        android:fadingEdge="none"
+                        android:singleLine="false"
+                        android:textColor="@color/black_color"
+                        android:textStyle="bold" />
+                </ScrollView>
+            </LinearLayout>
+            <!-- Description ends -->
+
+
             <!-- Location starts -->
 
             <LinearLayout
                 android:id="@+id/location_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/table_even_row_color"
+                android:background="@color/table_odd_row_color"
                 android:orientation="horizontal" >
 
                 <TextView
@@ -303,14 +266,16 @@
                     android:text="@string/report_location"
                     android:textColor="@color/title_color"
                     android:textStyle="bold" />
-           <!--  </LinearLayout>
+                <!--
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/location_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/table_even_row_color"
-                android:orientation="vertical" > -->
+                android:orientation="vertical" >
+                -->
 
                 <TextView
                     android:id="@+id/location"
@@ -324,6 +289,56 @@
                     android:textStyle="bold" />
             </LinearLayout>
             <!-- Location ends -->
+
+
+            <!-- Status starts -->
+
+            <LinearLayout
+                android:id="@+id/top_items_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/table_even_row_color"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/report_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="15px"
+                    android:paddingLeft="10px"
+                    android:paddingRight="10px"
+                    android:paddingTop="15px"
+                    android:singleLine="false"
+                    android:text="@string/report_verified"
+                    android:textColor="@color/title_color"
+                    android:textStyle="bold" />
+                <!--
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/top_items_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/table_even_row_color"
+                android:orientation="vertical" >
+                -->
+
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="15px"
+                    android:paddingLeft="10px"
+                    android:paddingRight="10px"
+                    android:paddingTop="15px"
+                    android:singleLine="false"
+                    android:textColor="@color/black_color"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Status ends -->
+
+
             <!-- Map starts -->
 
             <LinearLayout
@@ -334,8 +349,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="15px"
                 android:paddingLeft="10px"
-                android:paddingRight="10px"
-                android:paddingTop="15px" >
+                android:paddingRight="10px" >
 
                 <com.google.android.maps.MapView
                     android:id="@+id/loc_map"
