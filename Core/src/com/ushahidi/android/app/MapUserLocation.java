@@ -316,7 +316,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
                     double latitude = geoPoint.getLatitudeE6() / 1E6;
                     double longitude = geoPoint.getLongitudeE6() / 1E6;
                     Log.i(getClass().getSimpleName(), String.format("%d, %d >> %f, %f", x, y, latitude, longitude));
-                    locationChanged(latitude, longitude, false);
+                    locationChanged(latitude, longitude, true);
+                    stopLocating();
                     return true;
                 }
                 else {

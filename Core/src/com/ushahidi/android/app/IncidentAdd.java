@@ -51,7 +51,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.telephony.SmsManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -310,6 +312,7 @@ public class IncidentAdd extends MapUserLocation{
 		}
 		mIncidentTitle = (EditText) findViewById(R.id.incident_title);
 		mIncidentLocation = (EditText) findViewById(R.id.incident_location);
+		mIncidentLocation.addTextChangedListener(locationTextWatcher);
 		mIncidentDesc = (EditText) findViewById(R.id.incident_desc);
 		mapView = (IncidentMapView) findViewById(R.id.location_map);
 		mapView.setBuiltInZoomControls(true);
@@ -1500,13 +1503,13 @@ public class IncidentAdd extends MapUserLocation{
 		protected void onPostExecute(String result) {
 			Log.i(getClass().getSimpleName(),
 					String.format("onPostExecute %s", result));
-			if (TextUtils.isEmpty(mIncidentLocation.getText().toString()))
+			//if (TextUtils.isEmpty(mIncidentLocation.getText().toString()))
 				mIncidentLocation.setText(result);
 			executing = false;
 		}
 	}
 
-	/*private TextWatcher latLonTextWatcher = new TextWatcher() {
+	private TextWatcher locationTextWatcher = new TextWatcher() {
 		public void afterTextChanged(Editable s) {
 		}
 
@@ -1517,16 +1520,14 @@ public class IncidentAdd extends MapUserLocation{
 		public void onTextChanged(CharSequence s, int start, int before,
 				int count) {
 			try {
-				if (mLatitude.hasFocus() || mLongitude.hasFocus()) {
-					locationChanged(
-							Double.parseDouble(mLatitude.getText().toString()),
-							Double.parseDouble(mLongitude.getText().toString()));
+				if (mIncidentLocation.hasFocus()) {
+					stopLocating();
 				}
 			} catch (Exception ex) {
-				Log.w("IncidentAdd", "Exception TextWatcher", ex);
+				Log.w(TAG, "Exception TextWatcher", ex);
 			}
 		}
-	};*/
+	};
 
 	/**
 	 * Sets nVectorCategories
