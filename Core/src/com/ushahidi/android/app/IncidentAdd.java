@@ -314,27 +314,9 @@ public class IncidentAdd extends MapUserLocation{
 		mIncidentLocation = (EditText) findViewById(R.id.incident_location);
 		mIncidentLocation.addTextChangedListener(locationTextWatcher);
 		mIncidentDesc = (EditText) findViewById(R.id.incident_desc);
-		mapView = (IncidentMapView) findViewById(R.id.location_map);
+		mapView = (IncidentMapView) findViewById(R.id.location_map);		
 		mapView.setBuiltInZoomControls(true);
-		/*mapView.setOnTouchListener(new OnTouchListener() {
-			
-			public boolean onTouch(View v, MotionEvent event) {
-				int action = event.getAction();
-			    switch (action) {
-			    case MotionEvent.ACTION_DOWN:
-			        // Disallow ScrollView to intercept touch events.
-			    	mapView.requestDisallowInterceptTouchEvent(true);
-			        break;
-
-			    case MotionEvent.ACTION_UP:
-			        // Allow ScrollView to intercept touch events.
-			    	mapView.requestDisallowInterceptTouchEvent(false);
-			        break;
-			    }
-
-			    return false;
-			}
-		});*/
+		mapView.getOverlays().add(new MapOverlay());
 		mapZoomButtonsController = mapView.getZoomButtonsController();
 		mapController = mapView.getController();
 		
@@ -1034,11 +1016,13 @@ public class IncidentAdd extends MapUserLocation{
 		case DIALOG_MULTIPLE_CATEGORY:
 			final AlertDialog alert = (AlertDialog) dialog;
 			final ListView list = alert.getListView();
+			list.clearChoices();
 			// been
 			// selected, then uncheck
 			// selected categories
 			if (mVectorCategories.size() > 0) {
 				for (String s : mVectorCategories) {
+					Log.d(TAG, "checked category id: "+s);
 					try {
 						// @inoran fix
 						list.setItemChecked(Integer.parseInt(s)-1, true);
