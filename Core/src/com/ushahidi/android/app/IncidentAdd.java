@@ -638,6 +638,8 @@ public class IncidentAdd extends MapUserLocation{
 						String.format("REQUEST_CODE_CAMERA %dx%d",
 								bitmap.getWidth(), bitmap.getHeight()));
 			} else if (requestCode == REQUEST_CODE_IMAGE) {
+				
+				Log.d(CLASS_TAG, "data.getData(): " + data.getData());
 				Bitmap bitmap = PhotoUtils
 						.getGalleryPhoto(this, data.getData());
 				PhotoUtils.savePhoto(this, bitmap, ImageCount);

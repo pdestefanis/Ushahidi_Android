@@ -23,7 +23,6 @@ package com.ushahidi.android.app.util;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -90,6 +89,9 @@ public class PhotoUtils {
 		Log.d("XXX", "uri: " + uri);
 
 		if (uri != null) {
+			
+			if(uri.toString().startsWith("file")) return getCameraPhoto(activity, uri);
+			
 			String[] columns = { MediaStore.Images.Media.DATA,
 					MediaStore.Images.Media.ORIENTATION };
 			Cursor cursor = activity.getContentResolver().query(uri, columns,
@@ -173,6 +175,9 @@ public class PhotoUtils {
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+		
+		}catch(NullPointerException npe){
+			npe.printStackTrace();
 		}
 		return false;
 	}
