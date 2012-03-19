@@ -638,6 +638,8 @@ public class IncidentAdd extends MapUserLocation{
 						String.format("REQUEST_CODE_CAMERA %dx%d",
 								bitmap.getWidth(), bitmap.getHeight()));
 			} else if (requestCode == REQUEST_CODE_IMAGE) {
+				
+				Log.d(CLASS_TAG, "data.getData(): " + data.getData());
 				Bitmap bitmap = PhotoUtils
 						.getGalleryPhoto(this, data.getData());
 				PhotoUtils.savePhoto(this, bitmap, ImageCount);
@@ -1487,7 +1489,7 @@ public class IncidentAdd extends MapUserLocation{
 		protected void onPostExecute(String result) {
 			Log.i(getClass().getSimpleName(),
 					String.format("onPostExecute %s", result));
-			//if (TextUtils.isEmpty(mIncidentLocation.getText().toString()))
+			if (TextUtils.isEmpty(mIncidentLocation.getText().toString()))
 				mIncidentLocation.setText(result);
 			executing = false;
 		}
