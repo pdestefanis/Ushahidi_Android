@@ -217,7 +217,7 @@ public abstract class MapUserLocation extends MapActivity implements
 			countDownTimer.cancel();
 			countDownTimer = null;
 		}
-		countDownTimer = new AsyncTimer(60 * 1000L, 1000L);
+		countDownTimer = new AsyncTimer(gpsTimeout * 1000L, 1000L);
 		countDownTimer.start();
 	}
 	
