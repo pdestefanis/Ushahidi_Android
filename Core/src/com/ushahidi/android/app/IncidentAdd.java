@@ -25,11 +25,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -67,7 +67,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -90,9 +89,9 @@ public class IncidentAdd extends MapUserLocation{
 	 * present it is trusted reporter, id number 4 but will change to specific
 	 * 'uncategorized' category when it is ready on the server
 	 */
-	private static final String UNCATEGORIZED_CATEGORY_ID = "4";
+	//private static final String UNCATEGORIZED_CATEGORY_ID = "4";
 
-	private static final String UNCATEGORIZED_CATEGORY_TITLE = "uncategorized";
+	//private static final String UNCATEGORIZED_CATEGORY_TITLE = "uncategorized";
 
 	private static final int INCIDENT_CLEAR = Menu.FIRST + 1;
 
@@ -174,11 +173,11 @@ public class IncidentAdd extends MapUserLocation{
 	private static final int DATE_DIALOG_ID = 5;
 
 	private static final int PHOTO_CHANGE = 66;
-	private Vector<String> mVectorCategories = new Vector<String>();
+	//private List<String> mVectorCategories = new ArrayList<String>();
 
-	private Vector<String> mCategoriesId = new Vector<String>();
+	//private List<String> mCategoriesId = new ArrayList<String>();
 
-	private HashMap<String, String> mCategoriesTitle = new HashMap<String, String>();
+	private HashMap<Integer, String> mCategoriesMap = new HashMap<Integer, String>();
 
 	private HashMap<String, String> mParams = new HashMap<String, String>();
 
@@ -357,7 +356,7 @@ public class IncidentAdd extends MapUserLocation{
 				}
 
 				// Dipo Fix
-				if (mVectorCategories.size() == 0) {
+				if (mCategoriesMap.size() == 0) {
 					mErrorMessage += getString(R.string.empty_report_categories)
 							+ "\n";
 					mError = true;
@@ -455,6 +454,13 @@ public class IncidentAdd extends MapUserLocation{
 
 	// fetch categories
 	public String[] showCategories() {
+		
+		if(mCategoriesMap!=null && !mCategoriesMap.isEmpty()){
+			String[] categories = new String[mCategoriesMap.size()];
+			mCategoriesMap.values().toArray(categories);
+			return categories;
+		}
+		
 		Cursor cursor = MainApplication.mDb.fetchAllCategories();
 
 		// check if there are any existing categories in the database
@@ -463,8 +469,9 @@ public class IncidentAdd extends MapUserLocation{
 		if (categoryCount > 0) {
 			categoryAmount = categoryCount;
 		} else {
-			mCategoriesId.clear();
-			mCategoriesTitle.clear();
+			//mCategoriesId.clear();
+			//mCategoriesTitle.clear();
+			mCategoriesMap.clear();
 			categoryAmount = 1;
 		}
 
@@ -484,9 +491,10 @@ public class IncidentAdd extends MapUserLocation{
 				// want it, don't add it to the list of categories.
 
 				categories[i] = cursor.getString(titleIndex);
-				mCategoriesTitle.put(String.valueOf(cursor.getInt(idIndex)),
+				/*mCategoriesTitle.put(String.valueOf(cursor.getInt(idIndex)),
 						cursor.getString(titleIndex));
-				mCategoriesId.add(String.valueOf(cursor.getInt(idIndex)));
+				mCategoriesId.add(String.valueOf(cursor.getInt(idIndex)));*/
+				mCategoriesMap.put(i, cursor.getString(titleIndex));
 				Log.d(CLASS_TAG,
 						"Title: "
 								+ String.valueOf(cursor.getString(titleIndex)
@@ -498,12 +506,12 @@ public class IncidentAdd extends MapUserLocation{
 
 		// sets category to be on the phone from the beginning if there aren't
 		// any already
-		if (mCategoriesId.isEmpty()) {
+		/*if (mCategoriesId.isEmpty()) {
 			categories[0] = UNCATEGORIZED_CATEGORY_TITLE;
 			mCategoriesId.add(UNCATEGORIZED_CATEGORY_ID);
 			mCategoriesTitle.put(UNCATEGORIZED_CATEGORY_ID,
 					UNCATEGORIZED_CATEGORY_TITLE);
-		}
+		}*/
 
 		cursor.close();
 		return categories;
@@ -524,8 +532,10 @@ public class IncidentAdd extends MapUserLocation{
 		mIncidentDesc.setText("");
 		//mLatitude.setText("");
 		//mLongitude.setText("");
-		if (mVectorCategories != null)
-		mVectorCategories.clear();
+		/*if (mVectorCategories != null)
+		mVectorCategories.clear();*/
+		if(mCategoriesMap!=null)
+			mCategoriesMap.clear();
 		mBtnAddCategory.setText(R.string.incident_add_category);
 		if (mSelectedPhoto != null) {
 		mSelectedPhoto.setImageDrawable(null);
@@ -848,27 +858,44 @@ public class IncidentAdd extends MapUserLocation{
 		}
 
 		case DIALOG_MULTIPLE_CATEGORY: {
+			
+			final String[] items = showCategories();
+			final boolean[] checkedItems = new boolean[items.length];
+			
+			if(mCategoriesMap!=null && !mCategoriesMap.isEmpty()){
+				for(int i=0; i<items.length; ++i){
+					checkedItems[i] = mCategoriesMap.containsKey(i);					
+				}
+			}
+			
 			return new AlertDialog.Builder(this)
 					.setTitle(R.string.add_categories)
-					.setMultiChoiceItems(showCategories(), null,
+					.setMultiChoiceItems(items, checkedItems,
 							new DialogInterface.OnMultiChoiceClickListener() {
 								public void onClick(DialogInterface dialog,
 										int whichButton, boolean isChecked) {
+									Log.d(CLASS_TAG, "which: "+whichButton);
+									
 									// see if categories have previously
 
 									if (isChecked) {
-										if (!mVectorCategories
+										/*if (!mVectorCategories
 												.contains(mCategoriesId
 														.get(whichButton)))
 										mVectorCategories.add(mCategoriesId
-												.get(whichButton));
+												.get(whichButton));*/
+										
+										if(!mCategoriesMap.containsKey(whichButton))
+											mCategoriesMap.put(whichButton, items[whichButton]);
+										
 										mError = false;
 									} else {
-										mVectorCategories.remove(mCategoriesId
-												.get(whichButton));
+										/*mVectorCategories.remove(mCategoriesId
+												.get(whichButton));*/
+										mCategoriesMap.remove(whichButton);
 									}
 
-									setSelectedCategories(mVectorCategories);
+									setSelectedCategories();
 								}
 							})
 					.setPositiveButton(R.string.btn_ok,
@@ -971,8 +998,7 @@ public class IncidentAdd extends MapUserLocation{
 
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// TODO Auto-generated method stub
-
+									
 									// report via Internet with photo
 									addReports();
 								}
@@ -1016,7 +1042,7 @@ public class IncidentAdd extends MapUserLocation{
 			break;
 
 		case DIALOG_MULTIPLE_CATEGORY:
-			final AlertDialog alert = (AlertDialog) dialog;
+			/*final AlertDialog alert = (AlertDialog) dialog;
 			final ListView list = alert.getListView();
 			list.clearChoices();
 			// been
@@ -1027,7 +1053,7 @@ public class IncidentAdd extends MapUserLocation{
 					Log.d(TAG, "checked category id: "+s);
 					try {
 						// @inoran fix
-						list.setItemChecked(Integer.parseInt(s)-1, true);
+						list.setItemChecked((mVectorCategories.size()-Integer.parseInt(s))-1, true);
 					} catch (NumberFormatException e) {
 						Log.e(CLASS_TAG,
 								"numberFormatException " + s + " "
@@ -1036,7 +1062,9 @@ public class IncidentAdd extends MapUserLocation{
 				}
 			} else {
 				list.clearChoices();
-			}
+			}*/
+			
+			removeDialog(DIALOG_MULTIPLE_CATEGORY);
 
 			break;
 
@@ -1100,7 +1128,7 @@ public class IncidentAdd extends MapUserLocation{
 		addIncidentData.setIncidentHour(Integer.parseInt(time[0]));
 		addIncidentData.setIncidentMinute(Integer.parseInt(time[1]));
 		addIncidentData.setIncidentAmPm(dates[2].toLowerCase());
-		addIncidentData.setIncidentCategories(Util.implode(mVectorCategories));
+		addIncidentData.setIncidentCategories(Util.implode(mCategoriesMap.values()));
 		addIncidentData.setIncidentLocName(mIncidentLocation.getText()
 				.toString());
 		addIncidentData.setIncidentLocLatitude(mCurrentLatitude);
@@ -1178,7 +1206,7 @@ public class IncidentAdd extends MapUserLocation{
 			Util.showToast(this, R.string.deployment_domain_error);
 		}
 
-		String categories = Util.implode(mVectorCategories);
+		String categories = Util.implode(mCategoriesMap.values());
 		Log.d(CLASS_TAG, "AM: PM " + categories);
 
 		StringBuilder urlBuilder = new StringBuilder(Preferences.domain);
@@ -1241,7 +1269,7 @@ public class IncidentAdd extends MapUserLocation{
 		String dates[] = mDateToSubmit.split(" ");
 		String time[] = dates[1].split(":");
 
-		String categories = Util.implode(mVectorCategories);
+		String categories = Util.implode(mCategoriesMap.values());
 		StringBuilder urlBuilder = new StringBuilder(Preferences.domain);
 		urlBuilder.append("/api");
 
@@ -1397,13 +1425,19 @@ public class IncidentAdd extends MapUserLocation{
 			String[] splitter = categories.split(",");
 
 			// clear any existing categories
-			mVectorCategories.clear();
+			//mVectorCategories.clear();
+			mCategoriesMap.clear();
 
-			for (String s : splitter) {
+			/*for (String s : splitter) {
 				mVectorCategories.add(s.trim());
 
+			}*/
+			
+			for(int i=0; i<splitter.length; ++i){
+				mCategoriesMap.put(i, splitter[i].trim());
 			}
-			this.setSelectedCategories(mVectorCategories);
+			
+			setSelectedCategories();
 		}
 
 		/*String photo = prefs.getString("photo", null);
@@ -1521,17 +1555,20 @@ public class IncidentAdd extends MapUserLocation{
 	 * @param aVectorCategories
 	 *            categories
 	 */
-	public void setVectorCategories(Vector<String> aVectorCategories) {
+	/*public void setListCategories(List<String> aVectorCategories) {
 		mVectorCategories = aVectorCategories;
-	}
+	}*/
 
 	/**
 	 * Sets the selected categories for submission
 	 * 
 	 * @param aSelectedCategories
 	 */
-	private void setSelectedCategories(Vector<String> aSelectedCategories) {
+	private void setSelectedCategories() {
 		// clear
+		
+		Collection<String> aSelectedCategories = mCategoriesMap.values();
+		
 		mBtnAddCategory.setText(R.string.incident_add_category);
 		if (aSelectedCategories.size() > 0) {
 			StringBuilder categories = new StringBuilder();
@@ -1540,7 +1577,7 @@ public class IncidentAdd extends MapUserLocation{
 					categories.append(", ");
 				}
 				if (!TextUtils.isEmpty(category)) {
-					categories.append(mCategoriesTitle.get(category));
+					categories.append(category);
 				}
 			}
 
@@ -1559,10 +1596,10 @@ public class IncidentAdd extends MapUserLocation{
 	 * @param aSelectedCategories
 	 */
 	private String getSelectedCategories() {
-		if (mVectorCategories != null) {
-			if (mVectorCategories.size() > 0) {
+		if (mCategoriesMap != null) {
+			if (mCategoriesMap.size() > 0) {
 				StringBuilder categories = new StringBuilder();
-				for (String catetory : mVectorCategories) {
+				for (String catetory : mCategoriesMap.values()) {
 					if (categories.length() > 0) {
 						categories.append(", ");
 					}

@@ -9,10 +9,8 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ZoomButtonsController;
@@ -44,7 +42,7 @@ public abstract class MapUserLocation extends MapActivity implements
 
 	private AsyncTimer countDownTimer;
 
-	private AsyncTimerTask timerTask;
+	//private AsyncTimerTask timerTask;
 
 	protected boolean didFindLocation;
 
@@ -149,6 +147,13 @@ public abstract class MapUserLocation extends MapActivity implements
 
 		Log.d(TAG, "useNetworkProvider");
 
+		if (locationManager==null) {
+			Log.d(TAG, "locationManager==null");
+			showLocationDisabledDialog();
+			return;
+		}
+		
+		
 		boolean netAvailable = locationManager
 				.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
@@ -200,16 +205,36 @@ public abstract class MapUserLocation extends MapActivity implements
 	private void startTimer() {
 		Log.d(TAG, "startTimer");
 
-		if (timerTask != null) {
-			timerTask.cancel(true);
+		/*if (timerTask != null) {
+			timerTask.interrupt();
 			timerTask = null;
 		}
 
 		timerTask = new AsyncTimerTask();
-		timerTask.execute();
+		timerTask.start();*/
+		
+		if (countDownTimer != null) {
+			countDownTimer.cancel();
+			countDownTimer = null;
+		}
+		countDownTimer = new AsyncTimer(60 * 1000L, 1000L);
+		countDownTimer.start();
 	}
+	
+	/*private class AsyncTimerTask extends Thread{
+		@Override
+		public void run() {
+			if (countDownTimer != null) {
+				countDownTimer.cancel();
+				countDownTimer = null;
+			}
+			countDownTimer = new AsyncTimer(60 * 1000L, 1000L);
+			countDownTimer.start();
+			super.run();
+		}
+	}*/
 
-	private class AsyncTimerTask extends AsyncTask<Void, Void, Void> {
+	/*private class AsyncTimerTask extends AsyncTask<Void, Void, Void> {
 
 		@Override
 		protected void onPreExecute() {
@@ -222,10 +247,19 @@ public abstract class MapUserLocation extends MapActivity implements
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			Looper.prepare();
-			countDownTimer = new AsyncTimer(gpsTimeout * 1000L, 1000L);
+			Log.d(TAG, "AsyncTimerTask - doInBackground");
+			//Looper.prepare();
+			//Looper.loop();
+			countDownTimer = new AsyncTimer(60 * 1000L, 1000L);
 			countDownTimer.start();
+			//Looper.myLooper().quit();
 			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			Log.d(TAG, "AsyncTimerTask - onPostExecute");
+			super.onPostExecute(result);
 		}
 
 		@Override
@@ -234,17 +268,20 @@ public abstract class MapUserLocation extends MapActivity implements
 				countDownTimer.cancel();			
 			super.onCancelled();
 		}
-	}
+	}*/
 
 	private class AsyncTimer extends CountDownTimer {
 
 		public AsyncTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
-
+			Log.d(TAG, "<AsyncTimer>");
 		}
+		
+	
 
 		@Override
 		public void onFinish() {
+			Log.d(TAG, "<AsyncTimer> - onFinish");
 			if (!didFindLocation) {
 				useNetworkProvider();
 			}
@@ -255,9 +292,9 @@ public abstract class MapUserLocation extends MapActivity implements
 			Log.d(TAG, "millisUntilFinished: " + millisUntilFinished);
 
 			if (didFindLocation) {
-				Log.d(TAG, "didFindLocation: " + didFindLocation);
+				Log.d(TAG, "didFindLocation");
 				stopLocating();
-				timerTask.cancel(true);
+				//timerTask.interrupt();
 			}
 		}
 	}
@@ -291,6 +328,11 @@ public abstract class MapUserLocation extends MapActivity implements
 				Log.e(TAG, "stopLocating", ex);
 			}
 			locationManager = null;
+		}
+		
+		if(countDownTimer!=null){
+			countDownTimer.cancel();
+			countDownTimer = null;
 		}
 	}
 
@@ -420,6 +462,7 @@ public abstract class MapUserLocation extends MapActivity implements
 				// accuracy is within ACCURACY_THRESHOLD, de-activate location
 				// detection
 				stopLocating();
+				didFindLocation =true;
 			}
 		}
 	}
