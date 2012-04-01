@@ -23,6 +23,8 @@ public class Preferences {
     public static int AutoUpdateDelay = 0;
     
     public static int gpsTimeout = 0;
+    
+    public static int locationTolerance = 0;
 
     public static final int NOTIFICATION_ID = 1;
 
@@ -96,8 +98,10 @@ public class Preferences {
         username = settings.getString("username", "");
         password = settings.getString("password","");
 		
+        locationTolerance = Integer.parseInt(settings.getString("location_tolerance_preference", "5"));        
         gpsTimeout = Integer.parseInt(settings.getString("gps_timeout_preference", "60"));
-				//@inoran
+		
+        //@inoran
         phonenumber = settings.getString("Phonenumber", "");
         
         // make sure folder exists

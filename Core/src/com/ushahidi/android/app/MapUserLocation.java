@@ -1,5 +1,7 @@
 package com.ushahidi.android.app;
 
+import java.util.Date;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,11 +40,13 @@ public abstract class MapUserLocation extends MapActivity implements
 
 	protected int gpsTimeout = 0;
 
+	protected int locationTolerance = 0;
+
 	// private CountDownTimer countDownTimer;
 
 	private AsyncTimer countDownTimer;
 
-	//private AsyncTimerTask timerTask;
+	// private AsyncTimerTask timerTask;
 
 	protected boolean didFindLocation;
 
@@ -64,7 +68,7 @@ public abstract class MapUserLocation extends MapActivity implements
 	 * location.
 	 */
 	protected abstract void locationChanged(double latitude, double longitude,
-			boolean doReverseGeocode);
+			boolean doReverseGeocode, boolean valueFromNetworkProvider);
 
 	/*
 	 * protected abstract void locationLatLonChanged(double latitude, double
@@ -82,51 +86,48 @@ public abstract class MapUserLocation extends MapActivity implements
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-		// Location lastNetLocation = null;
-		// Location lastGpsLocation = null;
+		/*Location lastNetLocation = null;
+		Location lastGpsLocation = null;*/
 
-		/*
-		 * boolean netAvailable =
-		 * locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-		 * boolean gpsAvailable =
-		 * locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		 * 
-		 * if (!netAvailable && !gpsAvailable) { AlertDialog.Builder builder =
-		 * new AlertDialog.Builder(this);
-		 * builder.setTitle(getString(R.string.location_disabled))
-		 * .setMessage(getString(R.string.location_reenable))
-		 * .setPositiveButton(android.R.string.yes, new
-		 * DialogInterface.OnClickListener() { public void
-		 * onClick(DialogInterface dialog, int id) { startActivity(new
-		 * Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)); }
-		 * }) .setNegativeButton(android.R.string.no, new
-		 * DialogInterface.OnClickListener() { public void
-		 * onClick(DialogInterface dialog, int id) { dialog.cancel(); } })
-		 * .create() .show(); }
-		 */
-		/*
-		 * if (netAvailable) { lastNetLocation =
-		 * locationManager.getLastKnownLocation
-		 * (LocationManager.NETWORK_PROVIDER); } if (gpsAvailable) {
-		 * lastGpsLocation =
-		 * locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER); }
-		 * setBestLocation(lastNetLocation, lastGpsLocation); // If chosen
-		 * location is more than a minute old, start querying network/GPS if
-		 * (currrentLocation == null || (new Date()).getTime() -
-		 * currrentLocation.getTime() > ONE_MINUTE) { if (netAvailable) {
-		 * locationManager
-		 * .requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
-		 * this); } if (gpsAvailable) {
-		 * locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-		 * 0, 0, this); } }
-		 */
+		boolean netAvailable = locationManager
+				.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+		boolean gpsAvailable = locationManager
+				.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-		useGPSProvider();
+		if (!netAvailable && !gpsAvailable) {
+			showLocationDisabledDialog();
+			return;
+		}
+
+		/*if (netAvailable) {
+			lastNetLocation = locationManager
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		}
+		if (gpsAvailable) {
+			lastGpsLocation = locationManager
+					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		}*/
+		//setBestLocation(lastNetLocation, lastGpsLocation);
+		// If chosen location is more than a minute old, start querying
+		// network/GPS
+		if (currrentLocation == null
+				|| (new Date()).getTime() - currrentLocation.getTime() > ONE_MINUTE) {
+			
+			if (gpsAvailable) {
+				useGPSProvider();			
+			
+			}else if (netAvailable) {
+				useNetworkProvider();			
+			}
+			
+		}
+
+		//useGPSProvider();
 	}
 
 	protected void useGPSProvider() {
 
-		Log.d(TAG, "useGPSProvider");
+		/*Log.d(TAG, "useGPSProvider");
 
 		boolean gpsAvailable = locationManager
 				.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -136,7 +137,7 @@ public abstract class MapUserLocation extends MapActivity implements
 		if (!gpsAvailable) {
 			useNetworkProvider();
 			return;
-		}
+		}*/
 
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 				0, this);
@@ -147,21 +148,20 @@ public abstract class MapUserLocation extends MapActivity implements
 
 		Log.d(TAG, "useNetworkProvider");
 
-		if (locationManager==null) {
+		if (locationManager == null) {
 			Log.d(TAG, "locationManager==null");
 			showLocationDisabledDialog();
 			return;
 		}
-		
-		
-		boolean netAvailable = locationManager
+
+		/*boolean netAvailable = locationManager
 				.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
 		if (!netAvailable) {
 			Log.d(TAG, "!netAvailable");
 			showLocationDisabledDialog();
 			return;
-		}
+		}*/
 
 		Log.d(TAG, "requestLocationUpdates(LocationManager.NETWORK_PROVIDER)");
 		locationManager.requestLocationUpdates(
@@ -170,11 +170,24 @@ public abstract class MapUserLocation extends MapActivity implements
 
 	protected void getLastKnownLocation() {
 		Log.d(TAG, "getLastKnownLocation");
+		Location lastGPSLocation = locationManager
+		.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		
+		if(lastGPSLocation!=null){
+			locationChanged(lastGPSLocation.getLatitude(), lastGPSLocation.getLongitude(),
+					true, false);
+			return;
+		}
+		
 		Location lastNetLocation = locationManager
 				.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		Location lastGPSLocation = locationManager
-				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		setBestLocation(lastNetLocation, lastGPSLocation);
+		
+		if(lastNetLocation!=null){
+			locationChanged(lastNetLocation.getLatitude(), lastNetLocation.getLongitude(),
+					true, true);
+		}
+		
+		//setBestLocation(lastNetLocation, lastGPSLocation);
 	}
 
 	/*
@@ -205,14 +218,12 @@ public abstract class MapUserLocation extends MapActivity implements
 	private void startTimer() {
 		Log.d(TAG, "startTimer");
 
-		/*if (timerTask != null) {
-			timerTask.interrupt();
-			timerTask = null;
-		}
+		/*
+		 * if (timerTask != null) { timerTask.interrupt(); timerTask = null; }
+		 * 
+		 * timerTask = new AsyncTimerTask(); timerTask.start();
+		 */
 
-		timerTask = new AsyncTimerTask();
-		timerTask.start();*/
-		
 		if (countDownTimer != null) {
 			countDownTimer.cancel();
 			countDownTimer = null;
@@ -220,55 +231,32 @@ public abstract class MapUserLocation extends MapActivity implements
 		countDownTimer = new AsyncTimer(gpsTimeout * 1000L, 1000L);
 		countDownTimer.start();
 	}
-	
-	/*private class AsyncTimerTask extends Thread{
-		@Override
-		public void run() {
-			if (countDownTimer != null) {
-				countDownTimer.cancel();
-				countDownTimer = null;
-			}
-			countDownTimer = new AsyncTimer(60 * 1000L, 1000L);
-			countDownTimer.start();
-			super.run();
-		}
-	}*/
 
-	/*private class AsyncTimerTask extends AsyncTask<Void, Void, Void> {
+	/*
+	 * private class AsyncTimerTask extends Thread{
+	 * 
+	 * @Override public void run() { if (countDownTimer != null) {
+	 * countDownTimer.cancel(); countDownTimer = null; } countDownTimer = new
+	 * AsyncTimer(60 * 1000L, 1000L); countDownTimer.start(); super.run(); } }
+	 */
 
-		@Override
-		protected void onPreExecute() {
-			if (countDownTimer != null) {
-				countDownTimer.cancel();
-				countDownTimer = null;
-			}
-			super.onPreExecute();
-		}
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			Log.d(TAG, "AsyncTimerTask - doInBackground");
-			//Looper.prepare();
-			//Looper.loop();
-			countDownTimer = new AsyncTimer(60 * 1000L, 1000L);
-			countDownTimer.start();
-			//Looper.myLooper().quit();
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void result) {
-			Log.d(TAG, "AsyncTimerTask - onPostExecute");
-			super.onPostExecute(result);
-		}
-
-		@Override
-		protected void onCancelled() {
-			if (countDownTimer != null)
-				countDownTimer.cancel();			
-			super.onCancelled();
-		}
-	}*/
+	/*
+	 * private class AsyncTimerTask extends AsyncTask<Void, Void, Void> {
+	 * 
+	 * @Override protected void onPreExecute() { if (countDownTimer != null) {
+	 * countDownTimer.cancel(); countDownTimer = null; } super.onPreExecute(); }
+	 * 
+	 * @Override protected Void doInBackground(Void... params) { Log.d(TAG,
+	 * "AsyncTimerTask - doInBackground"); //Looper.prepare(); //Looper.loop();
+	 * countDownTimer = new AsyncTimer(60 * 1000L, 1000L);
+	 * countDownTimer.start(); //Looper.myLooper().quit(); return null; }
+	 * 
+	 * @Override protected void onPostExecute(Void result) { Log.d(TAG,
+	 * "AsyncTimerTask - onPostExecute"); super.onPostExecute(result); }
+	 * 
+	 * @Override protected void onCancelled() { if (countDownTimer != null)
+	 * countDownTimer.cancel(); super.onCancelled(); } }
+	 */
 
 	private class AsyncTimer extends CountDownTimer {
 
@@ -276,8 +264,6 @@ public abstract class MapUserLocation extends MapActivity implements
 			super(millisInFuture, countDownInterval);
 			Log.d(TAG, "<AsyncTimer>");
 		}
-		
-	
 
 		@Override
 		public void onFinish() {
@@ -294,7 +280,7 @@ public abstract class MapUserLocation extends MapActivity implements
 			if (didFindLocation) {
 				Log.d(TAG, "didFindLocation");
 				stopLocating();
-				//timerTask.interrupt();
+				// timerTask.interrupt();
 			}
 		}
 	}
@@ -329,8 +315,8 @@ public abstract class MapUserLocation extends MapActivity implements
 			}
 			locationManager = null;
 		}
-		
-		if(countDownTimer!=null){
+
+		if (countDownTimer != null) {
 			countDownTimer.cancel();
 			countDownTimer = null;
 		}
@@ -373,7 +359,7 @@ public abstract class MapUserLocation extends MapActivity implements
 		return (new GeoPoint((int) (latitude * 1E6), (int) (longitude * 1E6)));
 	}
 
-	protected void setBestLocation(Location location1, Location location2) {
+	/*protected void setBestLocation(Location location1, Location location2) {
 		if (location1 != null && location2 != null) {
 			boolean location1Newer = location1.getTime() - location2.getTime() > FIVE_MINUTES;
 			boolean location2Newer = location2.getTime() - location1.getTime() > FIVE_MINUTES;
@@ -395,12 +381,13 @@ public abstract class MapUserLocation extends MapActivity implements
 			locationChanged(location2.getLatitude(), location2.getLongitude(),
 					true);
 		}
-	}
+	}*/
 
 	private class MapMarker extends ItemizedOverlay<OverlayItem> implements
 			UpdatableMarker {
 		private OverlayItem myOverlayItem;
-		//private long lastTouchTime = -1;
+
+		// private long lastTouchTime = -1;
 
 		public MapMarker(Drawable defaultMarker, GeoPoint point) {
 			super(boundCenterBottom(defaultMarker));
@@ -424,26 +411,20 @@ public abstract class MapUserLocation extends MapActivity implements
 
 		@Override
 		public boolean onTouchEvent(MotionEvent event, MapView mapView) {
-			/*final int action = event.getAction();
-			final int x = (int) event.getX();
-			final int y = (int) event.getY();
-			if (action == MotionEvent.ACTION_DOWN) {
-				long thisTime = System.currentTimeMillis();
-				if (thisTime - lastTouchTime < 250) {
-					lastTouchTime = -1;
-					GeoPoint geoPoint = mapView.getProjection().fromPixels(
-							(int) event.getX(), (int) event.getY());
-					double latitude = geoPoint.getLatitudeE6() / 1E6;
-					double longitude = geoPoint.getLongitudeE6() / 1E6;
-					Log.i(getClass().getSimpleName(), String.format(
-							"%d, %d >> %f, %f", x, y, latitude, longitude));
-					locationChanged(latitude, longitude, true);
-					stopLocating();
-					return true;
-				} else {
-					lastTouchTime = thisTime;
-				}
-			}*/
+			/*
+			 * final int action = event.getAction(); final int x = (int)
+			 * event.getX(); final int y = (int) event.getY(); if (action ==
+			 * MotionEvent.ACTION_DOWN) { long thisTime =
+			 * System.currentTimeMillis(); if (thisTime - lastTouchTime < 250) {
+			 * lastTouchTime = -1; GeoPoint geoPoint =
+			 * mapView.getProjection().fromPixels( (int) event.getX(), (int)
+			 * event.getY()); double latitude = geoPoint.getLatitudeE6() / 1E6;
+			 * double longitude = geoPoint.getLongitudeE6() / 1E6;
+			 * Log.i(getClass().getSimpleName(), String.format(
+			 * "%d, %d >> %f, %f", x, y, latitude, longitude));
+			 * locationChanged(latitude, longitude, true); stopLocating();
+			 * return true; } else { lastTouchTime = thisTime; } }
+			 */
 			return super.onTouchEvent(event, mapView);
 		}
 	}
@@ -456,13 +437,13 @@ public abstract class MapUserLocation extends MapActivity implements
 	public void onLocationChanged(Location location) {
 		if (location != null) {
 			locationChanged(location.getLatitude(), location.getLongitude(),
-					true);
+					true, false);
 			if (location.hasAccuracy()
 					&& location.getAccuracy() < ACCURACY_THRESHOLD) {
 				// accuracy is within ACCURACY_THRESHOLD, de-activate location
 				// detection
 				stopLocating();
-				didFindLocation =true;
+				didFindLocation = true;
 			}
 		}
 	}
@@ -489,9 +470,20 @@ public abstract class MapUserLocation extends MapActivity implements
 			nfe.printStackTrace();
 			gpsTimeout = 60;
 		}
+
+		try {
+			locationTolerance = Integer.parseInt(prefs.getString(
+					"location_tolerance_preference", "5"));
+
+		} catch (NumberFormatException nfe) {
+			Log.e(TAG, nfe.getMessage());
+			nfe.printStackTrace();
+			locationTolerance = 5;
+		}
+
 		setDeviceLocation();
 	}
-
+	
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -509,22 +501,17 @@ public abstract class MapUserLocation extends MapActivity implements
 	}
 
 	protected class MapOverlay extends Overlay {
+		@SuppressWarnings("unused")
 		private boolean isPinch = false;
 		private long lastTouchTime = -1;
 
 		@Override
 		public boolean onTap(GeoPoint p, MapView map) {
-			/*if (isPinch) {
-				return false;
-			} else {
-				Log.i(TAG, "TAP: "+p);
-				if (p != null) {
-					updateMarker(p, true);
-					return true; // We handled the tap
-				} else {
-					return false; // Null GeoPoint
-				}
-			}*/
+			/*
+			 * if (isPinch) { return false; } else { Log.i(TAG, "TAP: "+p); if
+			 * (p != null) { updateMarker(p, true); return true; // We handled
+			 * the tap } else { return false; // Null GeoPoint } }
+			 */
 			return false;
 		}
 
@@ -537,7 +524,7 @@ public abstract class MapUserLocation extends MapActivity implements
 			if (event.getAction() == MotionEvent.ACTION_MOVE && fingers == 2) {
 				isPinch = true; // Two fingers, it's a pinch
 			}
-			
+
 			final int action = event.getAction();
 			final int x = (int) event.getX();
 			final int y = (int) event.getY();
@@ -551,14 +538,14 @@ public abstract class MapUserLocation extends MapActivity implements
 					double longitude = geoPoint.getLongitudeE6() / 1E6;
 					Log.i(getClass().getSimpleName(), String.format(
 							"%d, %d >> %f, %f", x, y, latitude, longitude));
-					locationChanged(latitude, longitude, true);
+					locationChanged(latitude, longitude, true, false);
 					stopLocating();
 					return true;
 				} else {
 					lastTouchTime = thisTime;
 				}
 			}
-			
+
 			return super.onTouchEvent(event, mapView);
 		}
 

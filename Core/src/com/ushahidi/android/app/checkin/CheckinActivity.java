@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -367,7 +366,7 @@ public class CheckinActivity extends MapUserLocation {
      * @param latitude Latitude
      * @param longitude Longitude
      */
-    protected void locationChanged(double latitude, double longitude, boolean doReverseGeocode) {
+    protected void locationChanged(double latitude, double longitude, boolean doReverseGeocode, boolean valueFromNetworkProvider) {
         this.latitude = latitude;
         this.longitude = longitude;
         mCheckinLocation.setText(String.format("%f, %f", latitude, longitude));

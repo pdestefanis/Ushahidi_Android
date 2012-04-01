@@ -58,6 +58,8 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
     private CheckBoxPreference autoFetchCheckBoxPref;
     
     private EditTextPreference gpsTimeoutPref;
+    
+    private EditTextPreference locationTolerancePref;
 
     private CheckBoxPreference vibrateCheckBoxPref;
 
@@ -153,7 +155,8 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         saveItemsPref = new ListPreference(this);
         totalReportsPref = new ListPreference(this);
         gpsTimeoutPref = new EditTextPreference(this);
-
+        locationTolerancePref = new EditTextPreference(this);
+        
         new ListPreference(this);
 
         setPreferenceScreen(createPreferenceHierarchy());
@@ -251,6 +254,15 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         autoFetchCheckBoxPref.setTitle(R.string.chk_auto_fetch);
         autoFetchCheckBoxPref.setSummary(R.string.hint_auto_fetch);
         advancedScreenPref.addPreference(autoFetchCheckBoxPref);
+        
+        //location tolerance Preferences
+        locationTolerancePref.setDialogTitle(R.string.txt_location_tolerance_in_km);
+        locationTolerancePref.setKey("location_tolerance_preference");
+        locationTolerancePref.setTitle(R.string.txt_location_tolerance);
+        locationTolerancePref.setSummary(R.string.txt_location_tolerance_in_km);
+        locationTolerancePref.setDefaultValue("5");
+        locationTolerancePref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
+        advancedScreenPref.addPreference(locationTolerancePref);
         
         //gps timeout Preferences
         gpsTimeoutPref.setDialogTitle(R.string.txt_gps_timeout);
@@ -369,6 +381,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         editor.putString("TotalReports", totalReports);
         editor.putInt("CheckinEnabled", Preferences.isCheckinEnabled);        
         editor.putString("gps_timeout_preference", gpsTimeoutPref.getText());
+        editor.putString("location_tolerance_preference", locationTolerancePref.getText());
         editor.commit();
 
     }

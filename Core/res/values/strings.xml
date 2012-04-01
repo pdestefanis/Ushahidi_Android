@@ -101,6 +101,8 @@
 	<string name="no_reports">There are no reports to be shown</string>
 	<string name="txt_gps_timeout">GPS Timeout</string>
 	<string name="txt_gps_timeout_in_sec">GPS Timeout in seconds</string>
+	<string name="txt_location_tolerance">Location Tolerance</string>
+	<string name="txt_location_tolerance_in_km">Location Tolerance in KM</string>
 	<!-- Menu -->
 	<string name="incident_menu_map">View Map</string>
 	<string name="incident_menu_refresh">Refresh</string>
@@ -317,5 +319,7 @@
 	<string name="Photo_Change_Des">Please choose one of it.</string>
 	<string name="Photo_Change_Remove">Remove Image</string>
 	<string name="Photo_Change_Change">Change Image</string>
+	
+	<string name="dialog_msg_invalid_location">Cannot get a precise location. Please enable the GPS or select the location manually.</string>
     
 </resources>
