@@ -46,6 +46,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -111,13 +112,17 @@ public class IncidentAdd extends MapUserLocation{
 	private static final int REQUEST_CODE_CAMERA = 5;
 
 	private static final int VIEW_SEARCH = 2;
+	
+	private Location mDefaultLocation = null;
+	
+	private Location mTempCurrentLocation = null;
 
 	private static final double DEFAULT_LATITUDE = -89.2216;
 
 	private static final double DEFAULT_LONGITUDE = 13.69947;
 
 	private static final int DEGREE_TOLERANCE = 2;
-
+	
 	private ReverseGeocoderTask reverseGeocoderTask;
 
 	// date and time
@@ -172,6 +177,8 @@ public class IncidentAdd extends MapUserLocation{
 	private static final int TIME_DIALOG_ID = 4;
 
 	private static final int DATE_DIALOG_ID = 5;
+	
+	private static final int DIALOG_INVALID_LOCATION = 9;
 
 	private static final int PHOTO_CHANGE = 66;
 	private Vector<String> mVectorCategories = new Vector<String>();
@@ -289,6 +296,12 @@ public class IncidentAdd extends MapUserLocation{
 	 * Initialize UI components
 	 */
 	private void initComponents() {
+		
+		mDefaultLocation = new Location("");
+		mDefaultLocation.setLatitude(DEFAULT_LATITUDE);
+		mDefaultLocation.setLongitude(DEFAULT_LONGITUDE);
+		
+		mTempCurrentLocation = new Location("");
 
 		// @inoran
 		mPhoneNumber = (EditText) findViewById(R.id.phoneNumber);
@@ -996,6 +1009,20 @@ public class IncidentAdd extends MapUserLocation{
 								}
 							}).create();
 		}
+		
+		case DIALOG_INVALID_LOCATION:
+			
+			return new AlertDialog.Builder(this)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setMessage(R.string.dialog_msg_invalid_location)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();					
+				}
+			})
+			.create();
+		
 		}
 		return null;
 	}
@@ -1438,21 +1465,29 @@ public class IncidentAdd extends MapUserLocation{
 	/*
 	 * Implementation of MapUserLocation abstract methods
 	 */
-	protected void locationChanged(double latitude, double longitude, boolean doReverseGeocode) {
-		
-		mCurrentLatitude = String.valueOf(latitude);
-		mCurrentLongitude = String.valueOf(longitude);
-		
-		
-		updateMarker(latitude, longitude, true);
-
-		didFindLocation = true;
+	protected void locationChanged(double latitude, double longitude, boolean doReverseGeocode, boolean valueFromNetworkProvider) {
 		
 		if (isCoordNearDefault(true, latitude) || isCoordNearDefault(false, longitude)) {
 			getLastKnownLocation();
 			return;
-		}	
+		
+		}
+		
+		if(valueFromNetworkProvider && isCoordInvalid(latitude, longitude)){			
+			didFindLocation = false;
+			stopLocating();
+			showDialog(DIALOG_INVALID_LOCATION);
+			return;
+		}
+		
+		
+		mCurrentLatitude = String.valueOf(latitude);
+		mCurrentLongitude = String.valueOf(longitude);
+				
+		updateMarker(latitude, longitude, true);
 
+		didFindLocation = true;
+		
 		/*if (!mLatitude.hasFocus() && !mLongitude.hasFocus()) {
 			mLatitude.setText(String.valueOf(latitude));
 			mLongitude.setText(String.valueOf(longitude));
@@ -1474,6 +1509,13 @@ public class IncidentAdd extends MapUserLocation{
 		return ((Math.abs(defaultCoord) - DEGREE_TOLERANCE) < Math
 				.abs(coordinate))
 				&& (Math.abs(coordinate) < (Math.abs(defaultCoord) + 2));
+	}
+	
+	private boolean isCoordInvalid(double latitude, double longitude){		
+		mTempCurrentLocation.setLatitude(latitude);
+		mTempCurrentLocation.setLongitude(longitude);
+		
+		return mTempCurrentLocation.distanceTo(mDefaultLocation)>(locationTolerance*1000);		
 	}
 
 	/**
