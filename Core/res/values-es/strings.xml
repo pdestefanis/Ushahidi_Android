@@ -15,7 +15,7 @@
   <string name="add_categories">Elegir Categorías</string>
   <string name="alert_dialog_error_title">Atención</string>
   <string name="invalid_email_address">Dirección de email no válida</string>
-  <string name="invalid_ushahidi_instance">Esta URL no es una instancia de Ushahidi</string>
+  <string name="invalid_ushahidi_instance">Esta URL no es una instancia de válida</string>
   <string name="btn_save">Guardar</string>
   <string name="btn_find">Encontrarme</string>
   <string name="btn_reset">Deshacer Cambios</string>
@@ -62,7 +62,7 @@
   <string name="hint_select_ringtone">Cambia el sonido de la alarma</string>
   <string name="flash_led">LED parpadeante</string>
   <string name="hint_flash_led">Parpadea LED</string>
-  <string name="hint_domain">Escoja la instancia de Ushahidi con la que quiere trabajar</string>
+  <string name="hint_domain">Escoja la instancia con la que quiere trabajar</string>
   <string name="chk_auto_fetch">Sincronización automática</string>
   <string name="hint_auto_fetch">El sistema descargará nuevos reportes en forma automática</string>
   <string name="txt_auto_update_delay">Frecuencia de sincronización</string>

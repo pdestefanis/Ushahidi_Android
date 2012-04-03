@@ -9,7 +9,7 @@
 	have questions regarding the use of this file, please contact Ushahidi developers 
 	at team@ushahidi.com. -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-	<string name="app_name">Ushahidi</string>
+	<string name="app_name">Qualcomm Demo</string>
 	<string name="add_incident">Add Report</string>
 	<string name="view_incident">View Reports</string>
 	<string name="incident_details">Report Detail</string>
@@ -24,7 +24,7 @@
 	<string name="add_categories">Choose Categories</string>
 	<string name="alert_dialog_error_title">Oops</string>
 	<string name="invalid_email_address">An invalid email address was entered</string>
-	<string name="invalid_ushahidi_instance">Looks like the URL entered is not an Ushahidi deployment.</string>
+	<string name="invalid_ushahidi_instance">Looks like the URL entered is not a deployment.</string>
 	<string name="btn_save">Save</string>
 	<string name="btn_find">Find me</string>
 	<string name="btn_reset">Reset</string>
@@ -72,13 +72,12 @@
 	<string name="hint_select_ringtone">Change which ringtone to use</string>
 	<string name="flash_led">Flashing LED</string>
 	<string name="hint_flash_led">Cause phone\'s LED to flash</string>
-	<string name="hint_domain">Select the Ushahidi deployment that you wish to
-		interact with.</string>
+	<string name="hint_domain">Select the deployment that you wish to interact with.</string>
 	<string name="chk_auto_fetch">Auto sync</string>
-	<string name="hint_auto_fetch">Ushahidi will automatically download new reports.
+	<string name="hint_auto_fetch">The application will automatically download new reports.
 	</string>
 	<string name="txt_auto_update_delay">Auto sync frequency</string>
-	<string name="hint_auto_update_delay">Set how often Ushahidi syncronizes with the
+	<string name="hint_auto_update_delay">Set how often the application syncronizes with the
 		selected deployment.</string>
 	<string name="txt_path_SD">Path on SD:</string>
 	<string name="txt_cache">Cache files:</string>
@@ -121,7 +120,7 @@
 		all required fields.</string>
 	<string name="failed_to_add_report_online">Connection failure, cannot submit your report.
         Probably you are on a very slow connection or the server is down or very slow at the moment.</string>
-    <string name="failed_to_add_report_online_db_error">Check your Ushahidi deployment. The API might be down due to a database error.</string>    
+    <string name="failed_to_add_report_online_db_error">Check your deployment. The API might be down due to a database error.</string>    
 	<string name="empty_report_title">Enter a title for the report.</string>
 	<string name="empty_report_description">Enter a description for the report.</string>
 	<string name="empty_report_location">The location name field is required.</string>
@@ -202,7 +201,7 @@
 
 	<!-- Notification message strings from OfflineIncidentSendReceiver -->
 	<string name="notification_status_bar_message">Report Sent</string>
-	<string name="notification_expanded_title">Ushahidi Report</string>
+	<string name="notification_expanded_title">Report</string>
 	<string name="notification_expanded_message">Reports Sent Successfully</string>
 	<string name="change_photo">Change Photo</string>
 
@@ -259,8 +258,8 @@
 	<string name="fix_error">Please make sure a name and a valid URL are
 		entered.</string>
 	<string name="sending_report_in_progress">Sending report...</string>
-	<string name="ushahidi_setup_title">Ushahidi Setup</string>
-	<string name="ushahidi_setup_blub">Setup an ushahidi deployment.</string>
+	<string name="ushahidi_setup_title">Initial Setup</string>
+	<string name="ushahidi_setup_blub">Setup a deployment.</string>
 	<string name="all_categories">All</string>
 	<string name="recent_reports">Recent Reports</string>
 	<string name="on_phone">On Phone</string>
@@ -278,7 +277,7 @@
 	<string name="photo_size_pixels">pixels</string>
 	
 	<!-- Public deployment search / Add -->
-	<string name="deployment_search">Here you can search for public ushahidi deployments or manually add one.</string>
+	<string name="deployment_search">Here you can search for public deployments or manually add one.</string>
 	
 	<!-- Prompt user about saved draft -->
     <string name="message_saved_as_draft">Message saved as draft.</string>
