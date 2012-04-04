@@ -1681,6 +1681,7 @@ public class IncidentAdd extends MapUserLocation {
 				clearFields();
 				Util.showToast(appContext,
 						R.string.report_successfully_added_offline);
+				startActivity(new Intent(IncidentAdd.this, Dashboard.class));
 			} else if (result == 1 || result == 3) {
 				clearFields();
 				draft = false;
