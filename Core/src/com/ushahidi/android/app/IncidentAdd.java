@@ -223,9 +223,6 @@ public class IncidentAdd extends MapUserLocation {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.incident_add);
 
-		System.out.println("IncidentAdd.onCreate()");
-		System.out.println("Current Lat:1:" + mCurrentLatitude + ":Longi:"
-				+ mCurrentLongitude);
 		// load settings
 		Preferences.loadSettings(IncidentAdd.this);
 		initComponents();
@@ -1477,9 +1474,6 @@ public class IncidentAdd extends MapUserLocation {
 		/** Aman Setting Lat and Longi on location changed */
 		mCurrentLatitude = String.valueOf(latitude);
 		mCurrentLongitude = String.valueOf(longitude);
-		System.out.println("IncidentAdd.locationChanged()");
-		System.out.println("Current Lat:" + mCurrentLatitude + ":Longi:"
-				+ mCurrentLongitude);
 
 		updateMarker(latitude, longitude, true);
 
@@ -1681,6 +1675,7 @@ public class IncidentAdd extends MapUserLocation {
 				clearFields();
 				Util.showToast(appContext,
 						R.string.report_successfully_added_offline);
+				startActivity(new Intent(IncidentAdd.this, Dashboard.class));
 			} else if (result == 1 || result == 3) {
 				clearFields();
 				draft = false;
@@ -1713,7 +1708,6 @@ public class IncidentAdd extends MapUserLocation {
 				Util.showToast(appContext,
 						R.string.failed_to_add_report_online_db_error);
 			}
-
 		}
 	}
 }
