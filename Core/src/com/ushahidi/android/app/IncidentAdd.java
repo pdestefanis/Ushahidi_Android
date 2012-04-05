@@ -666,10 +666,12 @@ public class IncidentAdd extends MapUserLocation {
 					PhotoUtils.getPhotoUri("photo" + ImageCount + ".jpg", this)
 							.getPath());
 			editor.commit();
+			
 			Preferences.fileName.add(PhotoUtils.getPhotoUri(
 					"photo" + ImageCount + ".jpg", this).getPath());
 			NetworkServices.fileName.add(PhotoUtils.getPhotoUri(
 					"photo" + ImageCount + ".jpg", this).getPath());
+			
 			Log.i(CLASS_TAG, "ImageCount" + Preferences.fileName.size());
 			if (Preferences.fileName != null && Preferences.fileName.size() > 0) {
 				CaptureImageTemplate captureImageTemplate = new CaptureImageTemplate(
@@ -984,9 +986,6 @@ public class IncidentAdd extends MapUserLocation {
 
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// TODO Auto-generated method stub
-
-									// report via Internet with photo
 									addReports();
 								}
 							})
@@ -1288,8 +1287,11 @@ public class IncidentAdd extends MapUserLocation {
 		mParams.put("person_first", Preferences.firstname);
 		mParams.put("person_last", Preferences.lastname);
 		mParams.put("person_email", Preferences.email);
+		
+		mParams.put("total_images", Preferences.fileName.size()+""); // Aman
 		for (int j = 0; j < Preferences.fileName.size(); j++) {
 			mParams.put("filename" + j, Preferences.fileName.get(j));
+			Log.d(CLASS_TAG, ("filename" + j +"::"+ Preferences.fileName.get(j)));
 		}
 
 		try {
