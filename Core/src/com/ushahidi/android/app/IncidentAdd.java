@@ -223,6 +223,9 @@ public class IncidentAdd extends MapUserLocation {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.incident_add);
 
+		System.out.println("IncidentAdd.onCreate()");
+		System.out.println("Current Lat:1:" + mCurrentLatitude + ":Longi:"
+				+ mCurrentLongitude);
 		// load settings
 		Preferences.loadSettings(IncidentAdd.this);
 		initComponents();
@@ -663,10 +666,12 @@ public class IncidentAdd extends MapUserLocation {
 					PhotoUtils.getPhotoUri("photo" + ImageCount + ".jpg", this)
 							.getPath());
 			editor.commit();
+			
 			Preferences.fileName.add(PhotoUtils.getPhotoUri(
 					"photo" + ImageCount + ".jpg", this).getPath());
 			NetworkServices.fileName.add(PhotoUtils.getPhotoUri(
 					"photo" + ImageCount + ".jpg", this).getPath());
+			
 			Log.i(CLASS_TAG, "ImageCount" + Preferences.fileName.size());
 			if (Preferences.fileName != null && Preferences.fileName.size() > 0) {
 				CaptureImageTemplate captureImageTemplate = new CaptureImageTemplate(
@@ -981,9 +986,6 @@ public class IncidentAdd extends MapUserLocation {
 
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// TODO Auto-generated method stub
-
-									// report via Internet with photo
 									addReports();
 								}
 							})
@@ -1285,8 +1287,11 @@ public class IncidentAdd extends MapUserLocation {
 		mParams.put("person_first", Preferences.firstname);
 		mParams.put("person_last", Preferences.lastname);
 		mParams.put("person_email", Preferences.email);
+		
+		mParams.put("total_images", Preferences.fileName.size()+""); // Aman
 		for (int j = 0; j < Preferences.fileName.size(); j++) {
 			mParams.put("filename" + j, Preferences.fileName.get(j));
+			Log.d(CLASS_TAG, ("filename" + j +"::"+ Preferences.fileName.get(j)));
 		}
 
 		try {
@@ -1474,6 +1479,9 @@ public class IncidentAdd extends MapUserLocation {
 		/** Aman Setting Lat and Longi on location changed */
 		mCurrentLatitude = String.valueOf(latitude);
 		mCurrentLongitude = String.valueOf(longitude);
+		System.out.println("IncidentAdd.locationChanged()");
+		System.out.println("Current Lat:" + mCurrentLatitude + ":Longi:"
+				+ mCurrentLongitude);
 
 		updateMarker(latitude, longitude, true);
 
@@ -1708,6 +1716,7 @@ public class IncidentAdd extends MapUserLocation {
 				Util.showToast(appContext,
 						R.string.failed_to_add_report_online_db_error);
 			}
+
 		}
 	}
 }
