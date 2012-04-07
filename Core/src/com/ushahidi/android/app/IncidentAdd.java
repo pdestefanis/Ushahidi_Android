@@ -50,6 +50,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.telephony.SmsManager;
 import android.text.Editable;
@@ -214,6 +215,7 @@ public class IncidentAdd extends MapUserLocation {
 	private ProgressDialog sendSMSProgressDialog;
 
 	private int ImageCount = -1;
+	private int ImagesAddedCount = 0; // Aman Counter of images added in report
 	private int ImageIndex = 0;
 
 	private Gallery gal;
@@ -432,7 +434,34 @@ public class IncidentAdd extends MapUserLocation {
 				 * ImageManager.deleteImage(Preferences.fileName.get(i), ""); }
 				 * }
 				 */
-				showDialog(DIALOG_CHOOSE_IMAGE_METHOD);
+
+				/** Aman Edit */
+				SharedPreferences settings = PreferenceManager
+						.getDefaultSharedPreferences(getBaseContext());
+				int maxImage;
+
+				try {
+					maxImage = Integer.parseInt(settings.getString(
+							"report_image_count", "6"));
+					if (maxImage > 16)
+						maxImage = 16;
+					else if (maxImage < 0)
+						maxImage = 0;
+
+				} catch (Exception e) {
+					maxImage = 6;
+				}
+
+				if (ImagesAddedCount < maxImage)
+					showDialog(DIALOG_CHOOSE_IMAGE_METHOD);
+				else
+					Toast.makeText(
+							IncidentAdd.this,
+							"You have already added the maximum(" + maxImage
+									+ ") number of images", Toast.LENGTH_SHORT)
+							.show();
+
+				/** END */
 			}
 		});
 
@@ -527,6 +556,7 @@ public class IncidentAdd extends MapUserLocation {
 	private void clearFields() {
 		Log.d(CLASS_TAG, "clearFields(): clearing fields");
 		ImageCount = -1;
+		ImagesAddedCount = 0;
 		// IsLocationSet = true; // Set Location flag to set.
 		mBtnPicture = (Button) findViewById(R.id.btnPicture);
 		mBtnAddCategory = (Button) findViewById(R.id.add_category);
@@ -656,6 +686,7 @@ public class IncidentAdd extends MapUserLocation {
 				Log.d(CLASS_TAG, "data.getData(): " + data.getData());
 				Bitmap bitmap = PhotoUtils
 						.getGalleryPhoto(this, data.getData());
+
 				PhotoUtils.savePhoto(this, bitmap, ImageCount);
 				Log.i(CLASS_TAG,
 						String.format("REQUEST_CODE_IMAGE %dx%d",
@@ -666,12 +697,12 @@ public class IncidentAdd extends MapUserLocation {
 					PhotoUtils.getPhotoUri("photo" + ImageCount + ".jpg", this)
 							.getPath());
 			editor.commit();
-			
+
 			Preferences.fileName.add(PhotoUtils.getPhotoUri(
 					"photo" + ImageCount + ".jpg", this).getPath());
 			NetworkServices.fileName.add(PhotoUtils.getPhotoUri(
 					"photo" + ImageCount + ".jpg", this).getPath());
-			
+
 			Log.i(CLASS_TAG, "ImageCount" + Preferences.fileName.size());
 			if (Preferences.fileName != null && Preferences.fileName.size() > 0) {
 				CaptureImageTemplate captureImageTemplate = new CaptureImageTemplate(
@@ -804,6 +835,7 @@ public class IncidentAdd extends MapUserLocation {
 											Preferences.fileName);
 									gal = (Gallery) findViewById(R.id.capturePhotos);
 									gal.setAdapter(captureImageTemplate);
+									ImagesAddedCount--;
 								}
 							}
 							if (mSelectedPhoto != null) {
@@ -831,6 +863,7 @@ public class IncidentAdd extends MapUserLocation {
 					new Dialog.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							ImageCount++;
+							ImagesAddedCount++;
 							Intent intent = new Intent();
 							intent.setAction(Intent.ACTION_PICK);
 							intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -848,12 +881,20 @@ public class IncidentAdd extends MapUserLocation {
 					new Dialog.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							ImageCount++;
+							ImagesAddedCount++;
 							Intent intent = new Intent(
 									android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+							/**
+							 * Aman EXTRA_OUTPUT will results in a large full
+							 * size image remove this if user wants a small size
+							 * bitmap image
+							 */
 							intent.putExtra(
 									MediaStore.EXTRA_OUTPUT,
 									PhotoUtils.getPhotoUri("photo" + ImageCount
 											+ ".jpg", IncidentAdd.this));
+
 							startActivityForResult(intent, REQUEST_CODE_CAMERA);
 							dialog.dismiss();
 						}
@@ -1287,11 +1328,12 @@ public class IncidentAdd extends MapUserLocation {
 		mParams.put("person_first", Preferences.firstname);
 		mParams.put("person_last", Preferences.lastname);
 		mParams.put("person_email", Preferences.email);
-		
-		mParams.put("total_images", Preferences.fileName.size()+""); // Aman
+
+		mParams.put("total_images", Preferences.fileName.size() + ""); // Aman
 		for (int j = 0; j < Preferences.fileName.size(); j++) {
 			mParams.put("filename" + j, Preferences.fileName.get(j));
-			Log.d(CLASS_TAG, ("filename" + j +"::"+ Preferences.fileName.get(j)));
+			Log.d(CLASS_TAG,
+					("filename" + j + "::" + Preferences.fileName.get(j)));
 		}
 
 		try {
