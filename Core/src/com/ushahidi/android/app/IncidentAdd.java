@@ -186,6 +186,9 @@ public class IncidentAdd extends MapUserLocation {
 
 	private Vector<String> mCategoriesId = new Vector<String>();
 
+	//Aman will store the category index with row number in menu
+	private HashMap<String, Integer> mCategoriesIndex = new HashMap<String, Integer>();
+
 	private HashMap<String, String> mCategoriesTitle = new HashMap<String, String>();
 
 	private HashMap<String, String> mParams = new HashMap<String, String>();
@@ -225,9 +228,6 @@ public class IncidentAdd extends MapUserLocation {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.incident_add);
 
-		System.out.println("IncidentAdd.onCreate()");
-		System.out.println("Current Lat:1:" + mCurrentLatitude + ":Longi:"
-				+ mCurrentLongitude);
 		// load settings
 		Preferences.loadSettings(IncidentAdd.this);
 		initComponents();
@@ -467,6 +467,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		mBtnAddCategory.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+
 				showDialog(DIALOG_MULTIPLE_CATEGORY);
 				// mCounter++;
 			}
@@ -508,6 +509,7 @@ public class IncidentAdd extends MapUserLocation {
 		} else {
 			mCategoriesId.clear();
 			mCategoriesTitle.clear();
+			mCategoriesIndex.clear();
 			categoryAmount = 1;
 		}
 
@@ -516,7 +518,8 @@ public class IncidentAdd extends MapUserLocation {
 
 		int i = 0;
 
-		if (cursor.moveToFirst()) {
+		// Aman changed
+		if (cursor.moveToLast()) {
 			int titleIndex = cursor
 					.getColumnIndexOrThrow(Database.CATEGORY_TITLE);
 			int idIndex = cursor.getColumnIndexOrThrow(Database.CATEGORY_ID);
@@ -530,13 +533,14 @@ public class IncidentAdd extends MapUserLocation {
 				mCategoriesTitle.put(String.valueOf(cursor.getInt(idIndex)),
 						cursor.getString(titleIndex));
 				mCategoriesId.add(String.valueOf(cursor.getInt(idIndex)));
+				mCategoriesIndex.put(cursor.getInt(idIndex) + "", i);
 				Log.d(CLASS_TAG,
 						"Title: "
 								+ String.valueOf(cursor.getString(titleIndex)
 										+ " Index: "
 										+ String.valueOf(cursor.getInt(idIndex))));
 				i++;
-			} while (cursor.moveToNext());
+			} while (cursor.moveToPrevious()); // Aman Changed
 		}
 
 		// sets category to be on the phone from the beginning if there aren't
@@ -546,6 +550,7 @@ public class IncidentAdd extends MapUserLocation {
 			mCategoriesId.add(UNCATEGORIZED_CATEGORY_ID);
 			mCategoriesTitle.put(UNCATEGORIZED_CATEGORY_ID,
 					UNCATEGORIZED_CATEGORY_TITLE);
+			mCategoriesIndex.put(UNCATEGORIZED_CATEGORY_ID, 0);
 		}
 
 		cursor.close();
@@ -905,14 +910,15 @@ public class IncidentAdd extends MapUserLocation {
 		}
 
 		case DIALOG_MULTIPLE_CATEGORY: {
+
 			return new AlertDialog.Builder(this)
 					.setTitle(R.string.add_categories)
 					.setMultiChoiceItems(showCategories(), null,
 							new DialogInterface.OnMultiChoiceClickListener() {
 								public void onClick(DialogInterface dialog,
 										int whichButton, boolean isChecked) {
-									// see if categories have previously
 
+									// see if categories have previously
 									if (isChecked) {
 										if (!mVectorCategories
 												.contains(mCategoriesId
@@ -1035,7 +1041,6 @@ public class IncidentAdd extends MapUserLocation {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// TODO Auto-generated method stub
 									Util.showToast(
 											IncidentAdd.this,
 											R.string.report_opengeosms_without_picture);
@@ -1092,10 +1097,9 @@ public class IncidentAdd extends MapUserLocation {
 			// selected categories
 			if (mVectorCategories.size() > 0) {
 				for (String s : mVectorCategories) {
-					Log.d(TAG, "checked category id: " + s);
 					try {
 						// @inoran fix
-						list.setItemChecked(Integer.parseInt(s) - 1, true);
+						list.setItemChecked(mCategoriesIndex.get(s), true);
 					} catch (NumberFormatException e) {
 						Log.e(CLASS_TAG,
 								"numberFormatException " + s + " "
@@ -1521,9 +1525,6 @@ public class IncidentAdd extends MapUserLocation {
 		/** Aman Setting Lat and Longi on location changed */
 		mCurrentLatitude = String.valueOf(latitude);
 		mCurrentLongitude = String.valueOf(longitude);
-		System.out.println("IncidentAdd.locationChanged()");
-		System.out.println("Current Lat:" + mCurrentLatitude + ":Longi:"
-				+ mCurrentLongitude);
 
 		updateMarker(latitude, longitude, true);
 
@@ -1633,7 +1634,6 @@ public class IncidentAdd extends MapUserLocation {
 			if (!TextUtils.isEmpty(categories.toString())) {
 				mBtnAddCategory.setText(categories.toString());
 			} else {
-
 				mBtnAddCategory.setText(R.string.incident_add_category);
 			}
 		}
