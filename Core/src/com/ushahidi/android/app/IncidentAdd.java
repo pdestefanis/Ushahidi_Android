@@ -186,7 +186,7 @@ public class IncidentAdd extends MapUserLocation {
 
 	private Vector<String> mCategoriesId = new Vector<String>();
 
-	//Aman will store the category index with row number in menu
+	// Aman will store the category index with row number in menu
 	private HashMap<String, Integer> mCategoriesIndex = new HashMap<String, Integer>();
 
 	private HashMap<String, String> mCategoriesTitle = new HashMap<String, String>();
@@ -534,11 +534,6 @@ public class IncidentAdd extends MapUserLocation {
 						cursor.getString(titleIndex));
 				mCategoriesId.add(String.valueOf(cursor.getInt(idIndex)));
 				mCategoriesIndex.put(cursor.getInt(idIndex) + "", i);
-				Log.d(CLASS_TAG,
-						"Title: "
-								+ String.valueOf(cursor.getString(titleIndex)
-										+ " Index: "
-										+ String.valueOf(cursor.getInt(idIndex))));
 				i++;
 			} while (cursor.moveToPrevious()); // Aman Changed
 		}
