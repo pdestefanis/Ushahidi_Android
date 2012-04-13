@@ -186,7 +186,7 @@ public class IncidentAdd extends MapUserLocation {
 
 	private Vector<String> mCategoriesId = new Vector<String>();
 
-	//Aman will store the category index with row number in menu
+	// Aman will store the category index with row number in menu
 	private HashMap<String, Integer> mCategoriesIndex = new HashMap<String, Integer>();
 
 	private HashMap<String, String> mCategoriesTitle = new HashMap<String, String>();
@@ -385,17 +385,21 @@ public class IncidentAdd extends MapUserLocation {
 					mError = true;
 				}
 
-				/*
-				 * // validate lat long if
-				 * (TextUtils.isEmpty(mLatitude.getText().toString())) {
-				 * mErrorMessage += getString(R.string.empty_latitude) + "\n";
-				 * mError = true; }
-				 * 
-				 * // validate lat long if
-				 * (TextUtils.isEmpty(mLongitude.getText().toString())) {
-				 * mErrorMessage += getString(R.string.empty_longitude) + "\n";
-				 * mError = true; }
-				 * 
+				/** Aman Edit validating lat and long */
+				if ((TextUtils.isEmpty(mCurrentLatitude))
+						|| (TextUtils.isEmpty(mCurrentLongitude))) {
+					mErrorMessage += "Report cannot be submitted as the system is still trying to find a location, and none was selected manually"
+							+ "\n";
+					mError = true;
+				}
+
+				// validate lat long
+				// Log.d(CLASS_TAG, "current latitude:"+mCurrentLongitude);
+				// if {
+				// mErrorMessage += getString(R.string.empty_longitude) + "\n";
+				// mError = true;
+				// }
+				/**
 				 * try { Double.parseDouble(mLatitude.getText().toString()); }
 				 * catch (NumberFormatException ex) { mErrorMessage +=
 				 * getString(R.string.invalid_latitude) + "\n"; mError = true; }
@@ -1722,7 +1726,7 @@ public class IncidentAdd extends MapUserLocation {
 						R.string.report_successfully_added_offline);
 				startActivity(new Intent(IncidentAdd.this, Dashboard.class));
 			} else if (result == 1 || result == 3) {
-				clearFields();
+				// clearFields();
 				draft = false;
 				Util.showToast(appContext,
 						R.string.failed_to_add_report_offline);
@@ -1744,11 +1748,11 @@ public class IncidentAdd extends MapUserLocation {
 						R.string.report_successfully_added_online);
 				goToReports();
 			} else if (result == 13) {
-				clearFields();
+				// clearFields();
 				draft = false;
 				Util.showToast(appContext, R.string.failed_to_add_report_online);
 			} else {
-				clearFields();
+				// clearFields();
 				draft = false;
 				Util.showToast(appContext,
 						R.string.failed_to_add_report_online_db_error);
