@@ -103,6 +103,10 @@
 	<string name="txt_gps_timeout_in_sec">GPS Timeout in seconds</string>
 	<string name="txt_location_tolerance">Location Tolerance</string>
 	<string name="txt_location_tolerance_in_km">Location Tolerance in KM</string>
+	<!-- Aman -->
+	<string name="txt_maximum_images">Maximum Images</string>
+	<string name="txt_maximum_images_report">Maximum images in report(upto 16)</string>
+	
 	<!-- Menu -->
 	<string name="incident_menu_map">View Map</string>
 	<string name="incident_menu_refresh">Refresh</string>
@@ -121,8 +125,8 @@
 		of Internet. Remember to sync to the online
 		instance when there there
 		is Internet connection.</string>
-	<string name="failed_to_add_report_offline">Failed to send report.Check to see if you filled
-		all required fields.</string>
+	<!-- tring name="failed_to_add_report_offline">Failed to send report.Check to see if you filled
+		all required fields.</string-->
 	<string name="failed_to_add_report_online">Connection failure, cannot submit your report.
         Probably you are on a very slow connection or the server is down or very slow at the moment.</string>
     <string name="failed_to_add_report_online_db_error">Check your deployment. The API might be down due to a database error.</string>    
