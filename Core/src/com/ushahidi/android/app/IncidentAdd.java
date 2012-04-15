@@ -50,6 +50,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.telephony.SmsManager;
 import android.text.Editable;
@@ -185,6 +186,9 @@ public class IncidentAdd extends MapUserLocation {
 
 	private Vector<String> mCategoriesId = new Vector<String>();
 
+	// Aman will store the category index with row number in menu
+	private HashMap<String, Integer> mCategoriesIndex = new HashMap<String, Integer>();
+
 	private HashMap<String, String> mCategoriesTitle = new HashMap<String, String>();
 
 	private HashMap<String, String> mParams = new HashMap<String, String>();
@@ -214,6 +218,7 @@ public class IncidentAdd extends MapUserLocation {
 	private ProgressDialog sendSMSProgressDialog;
 
 	private int ImageCount = -1;
+	private int ImagesAddedCount = 0; // Aman Counter of images added in report
 	private int ImageIndex = 0;
 
 	private Gallery gal;
@@ -223,9 +228,6 @@ public class IncidentAdd extends MapUserLocation {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.incident_add);
 
-		System.out.println("IncidentAdd.onCreate()");
-		System.out.println("Current Lat:1:" + mCurrentLatitude + ":Longi:"
-				+ mCurrentLongitude);
 		// load settings
 		Preferences.loadSettings(IncidentAdd.this);
 		initComponents();
@@ -383,17 +385,21 @@ public class IncidentAdd extends MapUserLocation {
 					mError = true;
 				}
 
-				/*
-				 * // validate lat long if
-				 * (TextUtils.isEmpty(mLatitude.getText().toString())) {
-				 * mErrorMessage += getString(R.string.empty_latitude) + "\n";
-				 * mError = true; }
-				 * 
-				 * // validate lat long if
-				 * (TextUtils.isEmpty(mLongitude.getText().toString())) {
-				 * mErrorMessage += getString(R.string.empty_longitude) + "\n";
-				 * mError = true; }
-				 * 
+				/** Aman Edit validating lat and long */
+				if ((TextUtils.isEmpty(mCurrentLatitude))
+						|| (TextUtils.isEmpty(mCurrentLongitude))) {
+					mErrorMessage += "Report cannot be submitted as the system is still trying to find a location, and none was selected manually"
+							+ "\n";
+					mError = true;
+				}
+
+				// validate lat long
+				// Log.d(CLASS_TAG, "current latitude:"+mCurrentLongitude);
+				// if {
+				// mErrorMessage += getString(R.string.empty_longitude) + "\n";
+				// mError = true;
+				// }
+				/**
 				 * try { Double.parseDouble(mLatitude.getText().toString()); }
 				 * catch (NumberFormatException ex) { mErrorMessage +=
 				 * getString(R.string.invalid_latitude) + "\n"; mError = true; }
@@ -432,12 +438,40 @@ public class IncidentAdd extends MapUserLocation {
 				 * ImageManager.deleteImage(Preferences.fileName.get(i), ""); }
 				 * }
 				 */
-				showDialog(DIALOG_CHOOSE_IMAGE_METHOD);
+
+				/** Aman Edit */
+				SharedPreferences settings = PreferenceManager
+						.getDefaultSharedPreferences(getBaseContext());
+				int maxImage;
+
+				try {
+					maxImage = Integer.parseInt(settings.getString(
+							"report_image_count", "6"));
+					if (maxImage > 16)
+						maxImage = 16;
+					else if (maxImage < 0)
+						maxImage = 0;
+
+				} catch (Exception e) {
+					maxImage = 6;
+				}
+
+				if (ImagesAddedCount < maxImage)
+					showDialog(DIALOG_CHOOSE_IMAGE_METHOD);
+				else
+					Toast.makeText(
+							IncidentAdd.this,
+							"You have already added the maximum(" + maxImage
+									+ ") number of images", Toast.LENGTH_SHORT)
+							.show();
+
+				/** END */
 			}
 		});
 
 		mBtnAddCategory.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+
 				showDialog(DIALOG_MULTIPLE_CATEGORY);
 				// mCounter++;
 			}
@@ -479,6 +513,7 @@ public class IncidentAdd extends MapUserLocation {
 		} else {
 			mCategoriesId.clear();
 			mCategoriesTitle.clear();
+			mCategoriesIndex.clear();
 			categoryAmount = 1;
 		}
 
@@ -487,7 +522,8 @@ public class IncidentAdd extends MapUserLocation {
 
 		int i = 0;
 
-		if (cursor.moveToFirst()) {
+		// Aman changed
+		if (cursor.moveToLast()) {
 			int titleIndex = cursor
 					.getColumnIndexOrThrow(Database.CATEGORY_TITLE);
 			int idIndex = cursor.getColumnIndexOrThrow(Database.CATEGORY_ID);
@@ -501,13 +537,9 @@ public class IncidentAdd extends MapUserLocation {
 				mCategoriesTitle.put(String.valueOf(cursor.getInt(idIndex)),
 						cursor.getString(titleIndex));
 				mCategoriesId.add(String.valueOf(cursor.getInt(idIndex)));
-				Log.d(CLASS_TAG,
-						"Title: "
-								+ String.valueOf(cursor.getString(titleIndex)
-										+ " Index: "
-										+ String.valueOf(cursor.getInt(idIndex))));
+				mCategoriesIndex.put(cursor.getInt(idIndex) + "", i);
 				i++;
-			} while (cursor.moveToNext());
+			} while (cursor.moveToPrevious()); // Aman Changed
 		}
 
 		// sets category to be on the phone from the beginning if there aren't
@@ -517,6 +549,7 @@ public class IncidentAdd extends MapUserLocation {
 			mCategoriesId.add(UNCATEGORIZED_CATEGORY_ID);
 			mCategoriesTitle.put(UNCATEGORIZED_CATEGORY_ID,
 					UNCATEGORIZED_CATEGORY_TITLE);
+			mCategoriesIndex.put(UNCATEGORIZED_CATEGORY_ID, 0);
 		}
 
 		cursor.close();
@@ -527,6 +560,7 @@ public class IncidentAdd extends MapUserLocation {
 	private void clearFields() {
 		Log.d(CLASS_TAG, "clearFields(): clearing fields");
 		ImageCount = -1;
+		ImagesAddedCount = 0;
 		// IsLocationSet = true; // Set Location flag to set.
 		mBtnPicture = (Button) findViewById(R.id.btnPicture);
 		mBtnAddCategory = (Button) findViewById(R.id.add_category);
@@ -656,6 +690,7 @@ public class IncidentAdd extends MapUserLocation {
 				Log.d(CLASS_TAG, "data.getData(): " + data.getData());
 				Bitmap bitmap = PhotoUtils
 						.getGalleryPhoto(this, data.getData());
+
 				PhotoUtils.savePhoto(this, bitmap, ImageCount);
 				Log.i(CLASS_TAG,
 						String.format("REQUEST_CODE_IMAGE %dx%d",
@@ -666,12 +701,12 @@ public class IncidentAdd extends MapUserLocation {
 					PhotoUtils.getPhotoUri("photo" + ImageCount + ".jpg", this)
 							.getPath());
 			editor.commit();
-			
+
 			Preferences.fileName.add(PhotoUtils.getPhotoUri(
 					"photo" + ImageCount + ".jpg", this).getPath());
 			NetworkServices.fileName.add(PhotoUtils.getPhotoUri(
 					"photo" + ImageCount + ".jpg", this).getPath());
-			
+
 			Log.i(CLASS_TAG, "ImageCount" + Preferences.fileName.size());
 			if (Preferences.fileName != null && Preferences.fileName.size() > 0) {
 				CaptureImageTemplate captureImageTemplate = new CaptureImageTemplate(
@@ -804,6 +839,7 @@ public class IncidentAdd extends MapUserLocation {
 											Preferences.fileName);
 									gal = (Gallery) findViewById(R.id.capturePhotos);
 									gal.setAdapter(captureImageTemplate);
+									ImagesAddedCount--;
 								}
 							}
 							if (mSelectedPhoto != null) {
@@ -831,6 +867,7 @@ public class IncidentAdd extends MapUserLocation {
 					new Dialog.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							ImageCount++;
+							ImagesAddedCount++;
 							Intent intent = new Intent();
 							intent.setAction(Intent.ACTION_PICK);
 							intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -848,12 +885,20 @@ public class IncidentAdd extends MapUserLocation {
 					new Dialog.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							ImageCount++;
+							ImagesAddedCount++;
 							Intent intent = new Intent(
 									android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+							/**
+							 * Aman EXTRA_OUTPUT will results in a large full
+							 * size image remove this if user wants a small size
+							 * bitmap image
+							 */
 							intent.putExtra(
 									MediaStore.EXTRA_OUTPUT,
 									PhotoUtils.getPhotoUri("photo" + ImageCount
 											+ ".jpg", IncidentAdd.this));
+
 							startActivityForResult(intent, REQUEST_CODE_CAMERA);
 							dialog.dismiss();
 						}
@@ -864,14 +909,15 @@ public class IncidentAdd extends MapUserLocation {
 		}
 
 		case DIALOG_MULTIPLE_CATEGORY: {
+
 			return new AlertDialog.Builder(this)
 					.setTitle(R.string.add_categories)
 					.setMultiChoiceItems(showCategories(), null,
 							new DialogInterface.OnMultiChoiceClickListener() {
 								public void onClick(DialogInterface dialog,
 										int whichButton, boolean isChecked) {
-									// see if categories have previously
 
+									// see if categories have previously
 									if (isChecked) {
 										if (!mVectorCategories
 												.contains(mCategoriesId
@@ -994,7 +1040,6 @@ public class IncidentAdd extends MapUserLocation {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// TODO Auto-generated method stub
 									Util.showToast(
 											IncidentAdd.this,
 											R.string.report_opengeosms_without_picture);
@@ -1051,10 +1096,9 @@ public class IncidentAdd extends MapUserLocation {
 			// selected categories
 			if (mVectorCategories.size() > 0) {
 				for (String s : mVectorCategories) {
-					Log.d(TAG, "checked category id: " + s);
 					try {
 						// @inoran fix
-						list.setItemChecked(Integer.parseInt(s) - 1, true);
+						list.setItemChecked(mCategoriesIndex.get(s), true);
 					} catch (NumberFormatException e) {
 						Log.e(CLASS_TAG,
 								"numberFormatException " + s + " "
@@ -1287,11 +1331,12 @@ public class IncidentAdd extends MapUserLocation {
 		mParams.put("person_first", Preferences.firstname);
 		mParams.put("person_last", Preferences.lastname);
 		mParams.put("person_email", Preferences.email);
-		
-		mParams.put("total_images", Preferences.fileName.size()+""); // Aman
+
+		mParams.put("total_images", Preferences.fileName.size() + ""); // Aman
 		for (int j = 0; j < Preferences.fileName.size(); j++) {
 			mParams.put("filename" + j, Preferences.fileName.get(j));
-			Log.d(CLASS_TAG, ("filename" + j +"::"+ Preferences.fileName.get(j)));
+			Log.d(CLASS_TAG,
+					("filename" + j + "::" + Preferences.fileName.get(j)));
 		}
 
 		try {
@@ -1479,9 +1524,6 @@ public class IncidentAdd extends MapUserLocation {
 		/** Aman Setting Lat and Longi on location changed */
 		mCurrentLatitude = String.valueOf(latitude);
 		mCurrentLongitude = String.valueOf(longitude);
-		System.out.println("IncidentAdd.locationChanged()");
-		System.out.println("Current Lat:" + mCurrentLatitude + ":Longi:"
-				+ mCurrentLongitude);
 
 		updateMarker(latitude, longitude, true);
 
@@ -1591,7 +1633,6 @@ public class IncidentAdd extends MapUserLocation {
 			if (!TextUtils.isEmpty(categories.toString())) {
 				mBtnAddCategory.setText(categories.toString());
 			} else {
-
 				mBtnAddCategory.setText(R.string.incident_add_category);
 			}
 		}
@@ -1685,7 +1726,7 @@ public class IncidentAdd extends MapUserLocation {
 						R.string.report_successfully_added_offline);
 				startActivity(new Intent(IncidentAdd.this, Dashboard.class));
 			} else if (result == 1 || result == 3) {
-				clearFields();
+				// clearFields();
 				draft = false;
 				Util.showToast(appContext,
 						R.string.failed_to_add_report_offline);
@@ -1707,11 +1748,11 @@ public class IncidentAdd extends MapUserLocation {
 						R.string.report_successfully_added_online);
 				goToReports();
 			} else if (result == 13) {
-				clearFields();
+				// clearFields();
 				draft = false;
 				Util.showToast(appContext, R.string.failed_to_add_report_online);
 			} else {
-				clearFields();
+				// clearFields();
 				draft = false;
 				Util.showToast(appContext,
 						R.string.failed_to_add_report_online_db_error);
