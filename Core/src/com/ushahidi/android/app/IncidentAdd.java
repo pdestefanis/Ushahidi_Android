@@ -118,9 +118,9 @@ public class IncidentAdd extends MapUserLocation {
 
 	private Location mTempCurrentLocation = null;
 
-	private static final double DEFAULT_LATITUDE = -89.2216;
+	private static final double DEFAULT_LONGITUDE = -89.2216;
 
-	private static final double DEFAULT_LONGITUDE = 13.69947;
+	private static final double DEFAULT_LATITUDE = 13.69947;
 
 	private static final int DEGREE_TOLERANCE = 2;
 
