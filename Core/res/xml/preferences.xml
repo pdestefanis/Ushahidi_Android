@@ -15,7 +15,7 @@
  	
  
   If you have questions regarding the use of this file, please contact
-  Ushahidi developers at team@ushahidi.com. 
+  Ushahidi developers at team@ushahidi.com. 
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
@@ -29,6 +29,15 @@
         android:title="@string/txt_clear_cache" />
 
     <com.ushahidi.android.app.ui.SeekBarPreference
+        android:defaultValue="10"
+        android:dialogMessage=" Maximum number of reports"
+        android:dialogTitle="Number of Reports"
+        android:key="total_reports_preference"
+        android:max="250"
+        android:summary="Set maximum number of reports that can be set"
+        android:text=" reports"
+        android:title="Maximum Reports" />
+    <com.ushahidi.android.app.ui.SeekBarPreference
         android:defaultValue="200"
         android:dialogMessage=" Resized image width"
         android:dialogTitle="@string/photo_resize_title"
@@ -37,5 +46,14 @@
         android:summary="@string/photo_resize_summary"
         android:text=" pixels"
         android:title="@string/photo_resize_title" />
+    <com.ushahidi.android.app.ui.SeekBarPreference
+        android:defaultValue="1"
+        android:dialogMessage="@string/map_zoom_title"
+        android:dialogTitle="@string/map_zoom_title"
+        android:key="default_zoom_level_preference"
+        android:max="16"
+        android:summary="Set map zoom level for viewing reports"
+        android:text=" level"
+        android:title="@string/map_zoom_title" />
 
 </PreferenceScreen>

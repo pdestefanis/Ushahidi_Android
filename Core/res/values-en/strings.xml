@@ -277,6 +277,11 @@
 	<string name="photo_resize_summary">Resize image width</string>
 	<string name="photo_size_pixels">pixels</string>
 	
+	<!-- Default Map Zoom Prefrences -->
+	<string name="map_zoom_title">Map Zoom Settings</string>
+	<string name="map_zoom_summary">Set map zoom level for viewing reports</string>
+	<string name="map_zoom_level">Level</string>
+	
 	<!-- Public deployment search / Add -->
 	<string name="deployment_search">Here you can search for public ushahidi deployments or manually add one.</string>
 	

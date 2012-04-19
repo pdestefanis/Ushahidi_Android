@@ -35,6 +35,7 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
@@ -46,7 +47,8 @@ import com.ushahidi.android.app.util.ApiUtils;
 import com.ushahidi.android.app.util.Util;
 
 public class Settings extends PreferenceActivity implements
-		OnSharedPreferenceChangeListener, OnPreferenceChangeListener {
+		OnSharedPreferenceChangeListener, OnPreferenceChangeListener,
+		OnPreferenceClickListener {
 
 	private EditTextPreference firstNamePref;
 
@@ -82,7 +84,7 @@ public class Settings extends PreferenceActivity implements
 
 	private ListPreference saveItemsPref;
 
-	private ListPreference totalReportsPref;
+	private SeekBarPreference totalReportsPref;
 
 	private SeekBarPreference photoSizePref;
 
@@ -111,6 +113,8 @@ public class Settings extends PreferenceActivity implements
 	public static final String PHONE_NUMBER_PREFERENCE = "phone_number_preference";
 
 	public static final String CHECKIN_PREFERENCE = "checkin_preference";
+
+	public static final String TOTAL_REPORT_PREFERENCE = "total_reports_preference";
 
 	public static final String PHOTO_SIZE_PREFERENCE = "photo_size_preference";
 
@@ -147,9 +151,16 @@ public class Settings extends PreferenceActivity implements
 		ringtoneCheckBoxPref = new CheckBoxPreference(this);
 		flashLedCheckBoxPref = new CheckBoxPreference(this);
 
+		/** Aman */
 		photoSizePref = (SeekBarPreference) getPreferenceScreen()
 				.findPreference(PHOTO_SIZE_PREFERENCE);
+		photoSizePref.setOnPreferenceClickListener(this);
 		photoSizePref.setOnPreferenceChangeListener(this);
+
+		totalReportsPref = (SeekBarPreference) getPreferenceScreen()
+				.findPreference(PHOTO_SIZE_PREFERENCE);
+		totalReportsPref.setOnPreferenceClickListener(this);
+		totalReportsPref.setOnPreferenceChangeListener(this);
 
 		recentReports = getString(R.string.recent_reports);
 		onPhone = getString(R.string.on_phone);
@@ -160,7 +171,7 @@ public class Settings extends PreferenceActivity implements
 				.findPreference("clear_cache_preference");
 		autoUpdateTimePref = new ListPreference(this);
 		saveItemsPref = new ListPreference(this);
-		totalReportsPref = new ListPreference(this);
+		// totalReportsPref = new ListPreference(this);
 		gpsTimeoutPref = new EditTextPreference(this);
 		reportImagesCount = new EditTextPreference(this);
 		locationTolerancePref = new EditTextPreference(this);
@@ -169,6 +180,7 @@ public class Settings extends PreferenceActivity implements
 
 		defaultZoomLevelPref = (SeekBarPreference) getPreferenceScreen()
 				.findPreference(ZOOM_LEVEL_PREFERENCE);
+		defaultZoomLevelPref.setOnPreferenceClickListener(this);
 		defaultZoomLevelPref.setOnPreferenceChangeListener(this);
 
 		new ListPreference(this);
@@ -201,13 +213,15 @@ public class Settings extends PreferenceActivity implements
 		CharSequence[] totalReportsValues = { "20", "40", "60", "80", "100",
 				"250", "500", "1000" };
 
-		totalReportsPref.setEntries(totalReportsEntries);
-		totalReportsPref.setEntryValues(totalReportsValues);
-		totalReportsPref.setDefaultValue(totalReportsValues[0]);
-		totalReportsPref.setDialogTitle(R.string.total_reports);
-		totalReportsPref.setKey("total_reports_preference");
-		totalReportsPref.setTitle(R.string.total_reports);
-		totalReportsPref.setSummary(R.string.hint_total_reports);
+		// totalReportsPref.setEntries(totalReportsEntries);
+		// totalReportsPref.setEntryValues(totalReportsValues);
+		// totalReportsPref.setDefaultValue(totalReportsValues[0]);
+		// totalReportsPref.setDialogTitle(R.string.total_reports);
+		// totalReportsPref.setKey("total_reports_preference");
+		// totalReportsPref.setTitle(R.string.total_reports);
+		// totalReportsPref.setSummary(R.string.hint_total_reports);
+
+		/** Aman */
 		basicPrefCat.addPreference(totalReportsPref);
 
 		// Photo resize seekbar
@@ -286,7 +300,7 @@ public class Settings extends PreferenceActivity implements
 		autoFetchCheckBoxPref.setTitle(R.string.chk_auto_fetch);
 		autoFetchCheckBoxPref.setSummary(R.string.hint_auto_fetch);
 		advancedScreenPref.addPreference(autoFetchCheckBoxPref);
-		
+
 		// location of storage
 		// set list values
 		CharSequence[] saveItemsEntries = { onPhone, onSdCard };
@@ -359,7 +373,6 @@ public class Settings extends PreferenceActivity implements
 		notificationPrefCat.setTitle(R.string.bg_notification);
 		advancedScreenPref.addPreference(notificationPrefCat);
 
-		
 		// Auto update reports time interval
 		// set list values
 		CharSequence[] autoUpdateEntries = { "5 ".concat(minutes),
@@ -406,7 +419,7 @@ public class Settings extends PreferenceActivity implements
 
 		String autoUpdate = autoUpdateTimePref.getValue();
 		String saveItems = saveItemsPref.getValue();
-		String totalReports = totalReportsPref.getValue();
+		// String totalReports = totalReportsPref.getValue();
 		String newSavePath;
 		int autoUdateDelay = 0;
 
@@ -441,7 +454,7 @@ public class Settings extends PreferenceActivity implements
 		editor.putString("savePath", newSavePath);
 		editor.putInt("AutoUpdateDelay", autoUdateDelay);
 		editor.putBoolean("AutoFetch", autoFetchCheckBoxPref.isChecked());
-		editor.putString("TotalReports", totalReports);
+//		editor.putString("TotalReports", totalReports);
 		editor.putInt("CheckinEnabled", Preferences.isCheckinEnabled);
 		editor.putString("gps_timeout_preference", gpsTimeoutPref.getText());
 		editor.putString("report_image_count", reportImagesCount.getText());
@@ -662,17 +675,42 @@ public class Settings extends PreferenceActivity implements
 
 		if (preference.getKey().equalsIgnoreCase(PHOTO_SIZE_PREFERENCE)) {
 			Log.d(CLASS_TAG, "Preferences.photoWidth: " + newValue);
+			Log.d(CLASS_TAG, "oncchange Setting to Photo");
+			editor.putString("type", "photo");
 			Preferences.photoWidth = (Integer) newValue;
 			editor.putInt("PhotoWidth", Preferences.photoWidth);
 			editor.commit();
 		} else if (preference.getKey().equalsIgnoreCase(ZOOM_LEVEL_PREFERENCE)) {
 			Log.d(CLASS_TAG, "Preferences.Max Zoom: " + newValue);
+			Log.d(CLASS_TAG, "onchnage Setting to zoom");
+			editor.putString("type", "zoom");
 			Preferences.mapZoom = (Integer) newValue;
-			editor.putInt("mapZoom", Preferences.mapZoom);
+			editor.putInt("MapZoom", Preferences.mapZoom);
+			editor.commit();
+		} else if (preference.getKey().equalsIgnoreCase(TOTAL_REPORT_PREFERENCE)) {
+			Log.d(CLASS_TAG, "Preferences.Max Report: " + newValue);
+			Log.d(CLASS_TAG, "onchnage Setting to Report");
+			editor.putString("type", "report");
+			Preferences.totalReport = (Integer) newValue;
+			editor.putInt("TotalReports", Preferences.totalReport);
 			editor.commit();
 		}
 
 		return true;
+	}
+
+	public boolean onPreferenceClick(Preference preference) {
+		// if (preference.getKey().equalsIgnoreCase(PHOTO_SIZE_PREFERENCE)) {
+		// Log.d(CLASS_TAG, "onclick Setting to Photo");
+		// editor.putString("type", "photo");
+		// editor.commit();
+		// } else if
+		// (preference.getKey().equalsIgnoreCase(ZOOM_LEVEL_PREFERENCE)) {
+		// Log.d(CLASS_TAG, "onclick Setting to zoom");
+		// editor.putString("type", "zoom");
+		// editor.commit();
+		// }
+		return false;
 	}
 
 }
