@@ -59,20 +59,12 @@ public class SeekBarPreference extends DialogPreference implements
 
 	private SharedPreferences settings;
 
-	private SharedPreferences.Editor editor;
-
 	public SeekBarPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		settings = context.getSharedPreferences(Preferences.PREFS_NAME, 0);
-		editor = settings.edit();
 
-		Log.d(CLASS_TAG, "log:" + settings.getString("type", "photo"));
-		if (settings.getString("type", "photo").equals("zoom"))
-			mMin = 1;
-		else
-			mMin = 200;
-		Log.d(CLASS_TAG, "min:" + mMin);
+		getmMin();
 
 		mContext = context;
 
@@ -140,20 +132,13 @@ public class SeekBarPreference extends DialogPreference implements
 
 	public void onProgressChanged(SeekBar seek, int value, boolean fromTouch) {
 
-		// int diff = 10; //Aman for a jump
+		int increment = getIncrement(); // Aman for a jump
 
-		value = (value / 10) * 10;
+		value = (value / increment) * increment;
 
 		callChangeListener(new Integer(value));
 
-		Log.d(CLASS_TAG, "log2:" + settings.getString("type", "photo"));
-		if (settings.getString("type", "photo").equals("zoom"))
-			mMin = 1;
-		else
-			mMin = 200;
-
-		Log.d(CLASS_TAG, "min2:" + mMin);
-
+		getmMin();
 		String t = "";
 		if (value < mMin) {
 			t = String.valueOf(mMin);
@@ -195,4 +180,45 @@ public class SeekBarPreference extends DialogPreference implements
 	public int getProgress() {
 		return mValue;
 	}
+
+	public void getmMin() {
+
+		Log.d(CLASS_TAG, "log2:" + settings.getString("type", "photo"));
+		String type = settings.getString("type", "photo");
+		if (type.equals("zoom"))
+			mMin = 1;
+		else if (type.equals("report"))
+			mMin = 10;
+		else if (type.equals("location"))
+			mMin = 1;
+		else if (type.equals("gps"))
+			mMin = 15;
+		else if (type.equals("update"))
+			mMin = 10;
+		else if (type.equals("reportImage"))
+			mMin = 0;
+		else if (type.equals("totalReports"))
+			mMin = 10;
+		else
+			mMin = 20;
+
+		Log.d(CLASS_TAG, "min2:" + mMin);
+
+	}
+
+	private int getIncrement() {
+		String type = settings.getString("type", "photo");
+		int inc = 1;
+
+		if (type.equals("update"))
+			inc = 10;
+		else if (type.equals("totalReports"))
+			inc = 10;
+		else if (type.equals("photo"))
+			inc = 10;
+
+		Log.d(CLASS_TAG, "Inc" + inc);
+		return inc;
+	}
+
 }

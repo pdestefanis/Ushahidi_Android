@@ -55,6 +55,7 @@
 	<!-- Settings -->
 	<string name="menu_settings">Settings</string>
 	<string name="basic_settings">Basic settings</string>
+	<string name="photo_settings">Photo settings</string>
 	<string name="userid_settings">User ID settings</string>
 	<string name="advanced_settings">Advanced settings</string>
 	<string name="mapping_settings">Mapping</string>
@@ -106,8 +107,8 @@
 	<string name="txt_location_tolerance">Location Tolerance</string>
 	<string name="txt_location_tolerance_in_km">Location Tolerance in KM</string>
 	<!-- Aman -->
-	<string name="txt_maximum_images">Maximum Images</string>
-	<string name="txt_maximum_images_report">Maximum images in report(upto 16)</string>
+	<string name="txt_report_images_count">Maximum Images</string>
+	<string name="txt_report_images_count_message">Maximum images in report(upto 16)</string>
 	
 	<!-- Menu -->
 	<string name="incident_menu_map">View Map</string>
