@@ -1121,8 +1121,7 @@ public class Database {
 				createIncidents(incident, isUnread);
 			}
 
-			limitRows(INCIDENTS_TABLE,
-					Integer.parseInt(Preferences.totalReports), INCIDENT_ID);
+			limitRows(INCIDENTS_TABLE, Preferences.totalReports, INCIDENT_ID);
 			mDb.setTransactionSuccessful();
 		} finally {
 			mDb.endTransaction();

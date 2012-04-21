@@ -118,9 +118,9 @@ public class IncidentAdd extends MapUserLocation {
 
 	private Location mTempCurrentLocation = null;
 
-	private static final double DEFAULT_LATITUDE = -89.2216;
+	private static final double DEFAULT_LONGITUDE = -89.2216;
 
-	private static final double DEFAULT_LONGITUDE = 13.69947;
+	private static final double DEFAULT_LATITUDE = 13.69947;
 
 	private static final int DEGREE_TOLERANCE = 2;
 
@@ -440,13 +440,11 @@ public class IncidentAdd extends MapUserLocation {
 				 */
 
 				/** Aman Edit */
-				SharedPreferences settings = PreferenceManager
-						.getDefaultSharedPreferences(getBaseContext());
 				int maxImage;
 
 				try {
-					maxImage = Integer.parseInt(settings.getString(
-							"report_image_count", "6"));
+					maxImage = Preferences.reportImageCount;
+					Log.d(CLASS_TAG, "Max Image::"+maxImage);
 					if (maxImage > 16)
 						maxImage = 16;
 					else if (maxImage < 0)
