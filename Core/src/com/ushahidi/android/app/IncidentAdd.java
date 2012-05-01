@@ -297,14 +297,24 @@ public class IncidentAdd extends MapUserLocation {
 	}
 
 	/**
-	 * Initialize UI components
+	 * Initialize UI components=
 	 */
 	private void initComponents() {
 		mDefaultLocation = new Location("");
 
-		DEFAULT_LATITUDE = Double.parseDouble(Preferences.deploymentLatitude);
-		DEFAULT_LONGITUDE = Double.parseDouble(Preferences.deploymentLongitude);
-
+		try {
+			Log.d(CLASS_TAG, Preferences.deploymentLongitude
+					+ ":Long:IncidentAdd.initComponents():Lat"
+					+ Preferences.deploymentLatitude);
+			DEFAULT_LATITUDE = Double
+					.parseDouble(Preferences.deploymentLatitude);
+			DEFAULT_LONGITUDE = Double
+					.parseDouble(Preferences.deploymentLongitude);
+			Log.d(CLASS_TAG, DEFAULT_LATITUDE + ":Lat:default:Long"
+					+ DEFAULT_LONGITUDE);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		mDefaultLocation.setLatitude(DEFAULT_LATITUDE);
 		mDefaultLocation.setLongitude(DEFAULT_LONGITUDE);
 
@@ -570,6 +580,10 @@ public class IncidentAdd extends MapUserLocation {
 		mIncidentTitle.setText("");
 		mIncidentLocation.setText("");
 		mIncidentDesc.setText("");
+
+		mCurrentLatitude = "";
+		mCurrentLongitude = "";
+
 		// mLatitude.setText("");
 		// mLongitude.setText("");
 		if (mVectorCategories != null)
@@ -581,6 +595,7 @@ public class IncidentAdd extends MapUserLocation {
 			mSelectedPhoto.setMinimumHeight(0);
 			mSelectedPhoto.invalidate();
 		}
+
 		// mCounter = 0;
 		updateDisplay();
 
@@ -589,8 +604,8 @@ public class IncidentAdd extends MapUserLocation {
 		editor.putString("title", "");
 		editor.putString("description", "");
 		editor.putString("date", "");
-		editor.putString("latitude", mCurrentLatitude);
-		editor.putString("longitude", mCurrentLongitude);
+		editor.putString("latitude", "");
+		editor.putString("longitude", "");
 		editor.putString("categories", "");
 		if (Preferences.fileName != null) {
 			for (int i = 0; i < Preferences.fileName.size(); i++) {
@@ -619,6 +634,9 @@ public class IncidentAdd extends MapUserLocation {
 			gal = (Gallery) findViewById(R.id.capturePhotos);
 			gal.setAdapter(captureImageTemplate);
 		}
+
+		// To remove map marker
+		startActivity(new Intent(IncidentAdd.this, IncidentAdd.class));
 	}
 
 	// discard reports
@@ -1466,14 +1484,26 @@ public class IncidentAdd extends MapUserLocation {
 		 * TextView.BufferType.EDITABLE); }
 		 */
 
-		// Aman now also showing location on map.
-		locationChanged(
-				Double.valueOf(
-						prefs.getString("latitude", DEFAULT_LATITUDE + ""))
-						.doubleValue(),
-				Double.valueOf(
-						prefs.getString("longitude", DEFAULT_LONGITUDE + ""))
-						.doubleValue(), true, false);
+		// Aman now also showing location on map in case of resume not restart.
+		if (!(prefs.getString("latitude", "").equals(""))) {
+			Log.d(CLASS_TAG,
+					"if updating to correct lati and longi:"
+							+ prefs.getString("latitude", "") + ":");
+			locationChanged(
+					Double.valueOf(
+							prefs.getString("latitude", DEFAULT_LATITUDE + ""))
+							.doubleValue(),
+					Double.valueOf(
+							prefs.getString("longitude", DEFAULT_LONGITUDE + ""))
+							.doubleValue(), true, false);
+		} else {
+			Log.d(CLASS_TAG, "else updating to 0,0");
+			mapView.refreshDrawableState();
+			mapController = mapView.getController();
+			mapController.animateTo(getPoint(DEFAULT_LATITUDE,
+					DEFAULT_LONGITUDE));
+			mapController.setZoom(Preferences.mapZoom);
+		}
 
 		String categories = prefs.getString("categories", null);
 		// @inoran fix

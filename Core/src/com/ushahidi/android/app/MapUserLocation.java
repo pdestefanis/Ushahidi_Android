@@ -341,7 +341,7 @@ public abstract class MapUserLocation extends MapActivity implements
 
 			marker.setBounds(0, 0, marker.getIntrinsicWidth(),
 					marker.getIntrinsicHeight());
-			mapController.setZoom(14);
+			mapController.setZoom(Preferences.mapZoom);
 
 			updatableMarker = createUpdatableMarker(marker, point);
 			mapView.getOverlays().add((Overlay) updatableMarker);

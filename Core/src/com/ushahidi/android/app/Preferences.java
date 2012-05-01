@@ -62,7 +62,7 @@ public class Preferences {
 
     public static int locationTolerance = 5;
 
-    public static String deploymentLatitude = "13.69947";
+	public static String deploymentLatitude = "13.69947";
 
     public static String deploymentLongitude = "-89.2216";
 
@@ -95,8 +95,8 @@ public class Preferences {
         totalReports = settings.getInt("TotalReports_temp", 30);
         isCheckinEnabled = settings.getInt("CheckinEnabled", isCheckinEnabled);
         activeDeployment = settings.getInt("ActiveDeployment", 0);
-        deploymentLatitude = settings.getString("DeploymentLatitude", "0.0");
-        deploymentLongitude = settings.getString("DeploymentLongitude", "0.0");
+        deploymentLatitude = settings.getString("default_latitude_preference", "13.69947");
+        deploymentLongitude = settings.getString("default_longitude_preference", "-89.2216");
         photoWidth = settings.getInt("PhotoWidth", 200);
         mapZoom = settings.getInt("mapZoom", 11);
         reportImageCount = settings.getInt("report_image_count_temp", 6);
@@ -122,8 +122,8 @@ public class Preferences {
         editor.putString("Domain", domain);
         editor.putInt("CheckinEnabled", isCheckinEnabled);
         editor.putInt("ActiveDeployment", activeDeployment);
-        editor.putString("DeploymentLatitude", deploymentLatitude);
-        editor.putString("DeploymentLongitude", deploymentLongitude);
+        editor.putString("default_latitude_preference", deploymentLatitude);
+        editor.putString("default_longitude_preference", deploymentLongitude);
         editor.putInt("AppRunsFirstTime", appRunsFirstTime);
         editor.commit();
     }
