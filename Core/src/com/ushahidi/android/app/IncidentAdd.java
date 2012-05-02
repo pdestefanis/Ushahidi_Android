@@ -50,7 +50,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.telephony.SmsManager;
 import android.text.Editable;
@@ -118,11 +117,11 @@ public class IncidentAdd extends MapUserLocation {
 
 	private Location mTempCurrentLocation = null;
 
-	private static final double DEFAULT_LONGITUDE = -89.2216;
+	private static double DEFAULT_LONGITUDE = -89.2216;
 
-	private static final double DEFAULT_LATITUDE = 13.69947;
+	private static double DEFAULT_LATITUDE = 13.69947;
 
-	private static final int DEGREE_TOLERANCE = 2;
+	private static int DEGREE_TOLERANCE = 2;
 
 	private ReverseGeocoderTask reverseGeocoderTask;
 
@@ -298,11 +297,19 @@ public class IncidentAdd extends MapUserLocation {
 	}
 
 	/**
-	 * Initialize UI components
+	 * Initialize UI components=
 	 */
 	private void initComponents() {
-
 		mDefaultLocation = new Location("");
+
+		try {
+			DEFAULT_LATITUDE = Double
+					.parseDouble(Preferences.deploymentLatitude);
+			DEFAULT_LONGITUDE = Double
+					.parseDouble(Preferences.deploymentLongitude);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		mDefaultLocation.setLatitude(DEFAULT_LATITUDE);
 		mDefaultLocation.setLongitude(DEFAULT_LONGITUDE);
 
@@ -444,7 +451,7 @@ public class IncidentAdd extends MapUserLocation {
 
 				try {
 					maxImage = Preferences.reportImageCount;
-					Log.d(CLASS_TAG, "Max Image::"+maxImage);
+					Log.d(CLASS_TAG, "Max Image::" + maxImage);
 					if (maxImage > 16)
 						maxImage = 16;
 					else if (maxImage < 0)
@@ -568,6 +575,10 @@ public class IncidentAdd extends MapUserLocation {
 		mIncidentTitle.setText("");
 		mIncidentLocation.setText("");
 		mIncidentDesc.setText("");
+
+		mCurrentLatitude = "";
+		mCurrentLongitude = "";
+
 		// mLatitude.setText("");
 		// mLongitude.setText("");
 		if (mVectorCategories != null)
@@ -579,6 +590,7 @@ public class IncidentAdd extends MapUserLocation {
 			mSelectedPhoto.setMinimumHeight(0);
 			mSelectedPhoto.invalidate();
 		}
+
 		// mCounter = 0;
 		updateDisplay();
 
@@ -587,8 +599,8 @@ public class IncidentAdd extends MapUserLocation {
 		editor.putString("title", "");
 		editor.putString("description", "");
 		editor.putString("date", "");
-		editor.putString("latitude", mCurrentLatitude);
-		editor.putString("longitude", mCurrentLongitude);
+		editor.putString("latitude", "");
+		editor.putString("longitude", "");
 		editor.putString("categories", "");
 		if (Preferences.fileName != null) {
 			for (int i = 0; i < Preferences.fileName.size(); i++) {
@@ -609,6 +621,7 @@ public class IncidentAdd extends MapUserLocation {
 			}
 		}
 		if (Preferences.fileName != null) {
+			Log.d(CLASS_TAG, "Aman Cleared file name prefrences");
 			Preferences.fileName.clear();
 			CaptureImageTemplate captureImageTemplate = new CaptureImageTemplate(
 					getApplicationContext(), R.layout.main_list_template,
@@ -1410,9 +1423,9 @@ public class IncidentAdd extends MapUserLocation {
 		if (selectedCategories != null) {
 			editor.putString("categories", selectedCategories);
 		}
-		for (int i = 0; i < Preferences.fileName.size(); i++) {
-			editor.putString("photo" + i, Preferences.fileName.get(i));
-		}
+		// for (int i = 0; i < Preferences.fileName.size(); i++) {
+		// editor.putString("photo" + i, Preferences.fileName.get(i));
+		// }
 		editor.commit();
 		// Notify user that report has been saved as draft.
 		if (draft) {
@@ -1463,6 +1476,24 @@ public class IncidentAdd extends MapUserLocation {
 		 * TextView.BufferType.EDITABLE); }
 		 */
 
+		// Aman now also showing location on map in case of resume not restart.
+		if (!(prefs.getString("latitude", "").equals(""))) {
+			locationChanged(
+					Double.valueOf(
+							prefs.getString("latitude", DEFAULT_LATITUDE + ""))
+							.doubleValue(),
+					Double.valueOf(
+							prefs.getString("longitude", DEFAULT_LONGITUDE + ""))
+							.doubleValue(), true, false);
+		} else {
+			Log.d(CLASS_TAG, "else updating to 0,0");
+			mapView.refreshDrawableState();
+			mapController = mapView.getController();
+			mapController.animateTo(getPoint(DEFAULT_LATITUDE,
+					DEFAULT_LONGITUDE));
+			mapController.setZoom(Preferences.mapZoom);
+		}
+
 		String categories = prefs.getString("categories", null);
 		// @inoran fix
 		// if (categories != null) {
@@ -1479,24 +1510,51 @@ public class IncidentAdd extends MapUserLocation {
 			this.setSelectedCategories(mVectorCategories);
 		}
 
-		/*
-		 * String photo = prefs.getString("photo", null); if (photo != null) {
-		 * Preferences.fileName = photo; NetworkServices.fileName = photo;
-		 * Bitmap bitmap = BitmapFactory.decodeFile(photo); if (bitmap != null)
-		 * { Log.i(CLASS_TAG, String.format("Photo %dx%d", bitmap.getWidth(),
-		 * bitmap.getHeight())); mSelectedPhoto.setImageBitmap(bitmap);
-		 * mSelectedPhoto.setMinimumHeight(mSelectedPhoto.getWidth()
-		 * bitmap.getHeight() / bitmap.getWidth());
-		 * mBtnPicture.setText(R.string.change_photo); } else {
-		 * mSelectedPhoto.setImageBitmap(null);
-		 * mSelectedPhoto.setMinimumHeight(0);
-		 * mBtnPicture.setText(R.string.btn_add_photo);
-		 * 
-		 * // @inoran add to fix Preferences.fileName = null;
-		 * NetworkServices.fileName = null; } } else { Preferences.fileName =
-		 * null; NetworkServices.fileName = null; }
-		 */
+		// Aman Show images on resume also
+		ImagesAddedCount = Preferences.fileName.size();
+		ImageCount = Preferences.fileName.size() - 1;
+		Log.d(CLASS_TAG, ImageCount + "Total photos till::" + ImagesAddedCount);
+		if (Preferences.fileName.size() > 0) {
+			CaptureImageTemplate captureImageTemplate = new CaptureImageTemplate(
+					getApplicationContext(), R.layout.main_list_template,
+					Preferences.fileName);
+			gal = (Gallery) findViewById(R.id.capturePhotos);
+			gal.setAdapter(captureImageTemplate);
 
+			gal.setOnItemLongClickListener(new OnItemLongClickListener() {
+				public boolean onItemLongClick(AdapterView<?> parent,
+						View view, int position, long id) {
+					ImageIndex = position;
+					showDialog(PHOTO_CHANGE);
+					return false;
+				}
+			});
+			gal.setOnItemClickListener(new OnItemClickListener() {
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					Bitmap selectedImage = null;
+					if (PhotoUtils.imageExist(
+							Preferences.fileName.get(position),
+							IncidentAdd.this)) {
+						// mBtnPicture.setText(getString(R.string.change_photo));
+						try {
+							BitmapFactory.Options options = new BitmapFactory.Options();
+							options.inSampleSize = 8;
+							options.inTempStorage = new byte[16 * 1024];
+							selectedImage = BitmapFactory.decodeFile(
+									Preferences.fileName.get(position), options);
+							mSelectedPhoto.setMinimumHeight(300);
+							mSelectedPhoto.setMinimumWidth(300);
+							mSelectedPhoto.setImageBitmap(selectedImage);
+						} catch (Exception e) {
+							Log.d("Exception", "" + e.getMessage());
+							e.printStackTrace();
+						} finally {
+						}
+					}
+				}
+			});
+		}
 	}
 
 	/*
@@ -1505,9 +1563,12 @@ public class IncidentAdd extends MapUserLocation {
 	protected void locationChanged(double latitude, double longitude,
 			boolean doReverseGeocode, boolean valueFromNetworkProvider) {
 
-		if (isCoordNearDefault(true, latitude)
-				|| isCoordNearDefault(false, longitude)) {
+		// Aman Restricts from selecting a location near default
+		if ((MapUserLocation.isNetworkLocation)
+				&& (isCoordNearDefault(true, latitude) || isCoordNearDefault(
+						false, longitude))) {
 			getLastKnownLocation();
+
 			return;
 
 		}
@@ -1548,9 +1609,10 @@ public class IncidentAdd extends MapUserLocation {
 		else
 			defaultCoord = DEFAULT_LONGITUDE;
 
+		DEGREE_TOLERANCE = Preferences.locationTolerance;
 		return ((Math.abs(defaultCoord) - DEGREE_TOLERANCE) < Math
 				.abs(coordinate))
-				&& (Math.abs(coordinate) < (Math.abs(defaultCoord) + 2));
+				&& (Math.abs(coordinate) < (Math.abs(defaultCoord) + DEGREE_TOLERANCE));
 	}
 
 	private boolean isCoordInvalid(double latitude, double longitude) {
@@ -1697,11 +1759,14 @@ public class IncidentAdd extends MapUserLocation {
 				status = postToOnline();
 
 				if (status > 0) {
-					addToDb();
+					// Aman add to draft if report is not added to drafts prior
+					if (draft)
+						addToDb();
 					draft = false;
 				}
 			} else {
-				addToDb();
+				if (draft)
+					addToDb();
 				draft = false;
 				status = 14; // no internet connection
 			}

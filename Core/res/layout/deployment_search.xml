@@ -10,7 +10,8 @@
 		<TextView style="@style/ActionBarTitleText" />
 		<ImageView style="@style/ActionBarTitleSeparator" />
 		<ImageButton style="@style/ActionBarTitle" android:id="@+id/refresh_report_btn"
-			android:src="@drawable/button_refresh" android:onClick="onRefreshReports" />
+			android:src="@drawable/button_refresh" android:onClick="onRefreshReports"
+			android:visibility="gone" />
 
 		<ProgressBar style="@style/TitleBarProgressIndicator"
 			android:id="@+id/title_refresh_progress" android:visibility="gone" />
