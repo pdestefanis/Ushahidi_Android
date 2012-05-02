@@ -98,7 +98,7 @@ public abstract class MapUserLocation extends MapActivity implements
 				.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
 		if (!netAvailable && !gpsAvailable) {
-			//Aman show network message
+			// Aman show network message
 			showLocationDisabledDialog();
 			return;
 		}
@@ -347,9 +347,11 @@ public abstract class MapUserLocation extends MapActivity implements
 			mapView.getOverlays().add((Overlay) updatableMarker);
 		} else {
 			updatableMarker.update(point);
+			mapController.setZoom(Preferences.mapZoom);
 		}
 		if (center) {
 			mapController.animateTo(point);
+			mapController.setZoom(Preferences.mapZoom);
 		}
 	}
 
@@ -540,7 +542,8 @@ public abstract class MapUserLocation extends MapActivity implements
 					Log.i(getClass().getSimpleName(), String.format(
 							"%d, %d >> %f, %f", x, y, latitude, longitude));
 					locationChanged(latitude, longitude, true, false);
-					//TODO Aman use this while telling the user location cant be set automatically.
+					// TODO Aman use this while telling the user location cant
+					// be set automatically.
 					stopLocating();
 					return true;
 				} else {
