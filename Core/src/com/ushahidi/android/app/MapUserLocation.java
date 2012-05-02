@@ -347,11 +347,11 @@ public abstract class MapUserLocation extends MapActivity implements
 			mapView.getOverlays().add((Overlay) updatableMarker);
 		} else {
 			updatableMarker.update(point);
-			mapController.setZoom(Preferences.mapZoom);
+			// mapController.setZoom(Preferences.mapZoom);
 		}
 		if (center) {
 			mapController.animateTo(point);
-			mapController.setZoom(Preferences.mapZoom);
+			// mapController.setZoom(Preferences.mapZoom);
 		}
 	}
 

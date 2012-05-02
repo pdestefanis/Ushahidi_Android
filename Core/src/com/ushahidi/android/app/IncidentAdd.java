@@ -303,15 +303,10 @@ public class IncidentAdd extends MapUserLocation {
 		mDefaultLocation = new Location("");
 
 		try {
-			Log.d(CLASS_TAG, Preferences.deploymentLongitude
-					+ ":Long:IncidentAdd.initComponents():Lat"
-					+ Preferences.deploymentLatitude);
 			DEFAULT_LATITUDE = Double
 					.parseDouble(Preferences.deploymentLatitude);
 			DEFAULT_LONGITUDE = Double
 					.parseDouble(Preferences.deploymentLongitude);
-			Log.d(CLASS_TAG, DEFAULT_LATITUDE + ":Lat:default:Long"
-					+ DEFAULT_LONGITUDE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -634,9 +629,6 @@ public class IncidentAdd extends MapUserLocation {
 			gal = (Gallery) findViewById(R.id.capturePhotos);
 			gal.setAdapter(captureImageTemplate);
 		}
-
-		// To remove map marker
-		startActivity(new Intent(IncidentAdd.this, IncidentAdd.class));
 	}
 
 	// discard reports
@@ -1486,9 +1478,6 @@ public class IncidentAdd extends MapUserLocation {
 
 		// Aman now also showing location on map in case of resume not restart.
 		if (!(prefs.getString("latitude", "").equals(""))) {
-			Log.d(CLASS_TAG,
-					"if updating to correct lati and longi:"
-							+ prefs.getString("latitude", "") + ":");
 			locationChanged(
 					Double.valueOf(
 							prefs.getString("latitude", DEFAULT_LATITUDE + ""))
