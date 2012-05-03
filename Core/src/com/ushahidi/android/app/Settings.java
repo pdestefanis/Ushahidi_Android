@@ -465,6 +465,8 @@ public class Settings extends PreferenceActivity implements
 		editor.putString("Lastname", lastNamePref.getText());
 		editor.putString("Email", emailAddressPref.getText());
 		editor.putString("Phonenumber", phoneNumberPref.getText());
+		editor.putString("default_latitude_preference", defaultLatitudePref.getText());
+		editor.putString("default_longitude_preference", defaultLongitudePref.getText());
 		editor.putString("savePath", newSavePath);
 		// editor.putInt("AutoUpdateDelay", autoUdateDelay);
 		editor.putBoolean("AutoFetch", autoFetchCheckBoxPref.isChecked());

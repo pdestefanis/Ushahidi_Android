@@ -62,6 +62,8 @@ public abstract class MapUserLocation extends MapActivity implements
 
 	protected Location currrentLocation;
 
+	protected static boolean isNetworkLocation = false;
+
 	/*
 	 * Subclasses must implement a method which updates any relevant interface
 	 * elements when the location changes. e.g. TextViews displaying the
@@ -86,8 +88,9 @@ public abstract class MapUserLocation extends MapActivity implements
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-		/*Location lastNetLocation = null;
-		Location lastGpsLocation = null;*/
+		/*
+		 * Location lastNetLocation = null; Location lastGpsLocation = null;
+		 */
 
 		boolean netAvailable = locationManager
 				.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -95,49 +98,48 @@ public abstract class MapUserLocation extends MapActivity implements
 				.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
 		if (!netAvailable && !gpsAvailable) {
+			// Aman show network message
 			showLocationDisabledDialog();
 			return;
 		}
 
-		/*if (netAvailable) {
-			lastNetLocation = locationManager
-					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		}
-		if (gpsAvailable) {
-			lastGpsLocation = locationManager
-					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		}*/
-		//setBestLocation(lastNetLocation, lastGpsLocation);
+		/*
+		 * if (netAvailable) { lastNetLocation = locationManager
+		 * .getLastKnownLocation(LocationManager.NETWORK_PROVIDER); } if
+		 * (gpsAvailable) { lastGpsLocation = locationManager
+		 * .getLastKnownLocation(LocationManager.GPS_PROVIDER); }
+		 */
+		// setBestLocation(lastNetLocation, lastGpsLocation);
 		// If chosen location is more than a minute old, start querying
 		// network/GPS
 		if (currrentLocation == null
 				|| (new Date()).getTime() - currrentLocation.getTime() > ONE_MINUTE) {
-			
+
 			if (gpsAvailable) {
-				useGPSProvider();			
-			
-			}else if (netAvailable) {
-				useNetworkProvider();			
+				isNetworkLocation = false;
+				useGPSProvider();
+			} else if (netAvailable) {
+				isNetworkLocation = true;
+				useNetworkProvider();
 			}
-			
+
 		}
 
-		//useGPSProvider();
+		// useGPSProvider();
 	}
 
 	protected void useGPSProvider() {
 
-		/*Log.d(TAG, "useGPSProvider");
-
-		boolean gpsAvailable = locationManager
-				.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-		Log.d(TAG, "gpsAvailable: " + gpsAvailable);
-
-		if (!gpsAvailable) {
-			useNetworkProvider();
-			return;
-		}*/
+		/*
+		 * Log.d(TAG, "useGPSProvider");
+		 * 
+		 * boolean gpsAvailable = locationManager
+		 * .isProviderEnabled(LocationManager.GPS_PROVIDER);
+		 * 
+		 * Log.d(TAG, "gpsAvailable: " + gpsAvailable);
+		 * 
+		 * if (!gpsAvailable) { useNetworkProvider(); return; }
+		 */
 
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 				0, this);
@@ -154,14 +156,13 @@ public abstract class MapUserLocation extends MapActivity implements
 			return;
 		}
 
-		/*boolean netAvailable = locationManager
-				.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-		if (!netAvailable) {
-			Log.d(TAG, "!netAvailable");
-			showLocationDisabledDialog();
-			return;
-		}*/
+		/*
+		 * boolean netAvailable = locationManager
+		 * .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+		 * 
+		 * if (!netAvailable) { Log.d(TAG, "!netAvailable");
+		 * showLocationDisabledDialog(); return; }
+		 */
 
 		Log.d(TAG, "requestLocationUpdates(LocationManager.NETWORK_PROVIDER)");
 		locationManager.requestLocationUpdates(
@@ -170,24 +171,30 @@ public abstract class MapUserLocation extends MapActivity implements
 
 	protected void getLastKnownLocation() {
 		Log.d(TAG, "getLastKnownLocation");
-		Location lastGPSLocation = locationManager
-		.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		
-		if(lastGPSLocation!=null){
-			locationChanged(lastGPSLocation.getLatitude(), lastGPSLocation.getLongitude(),
-					true, false);
-			return;
+		// Aman App can crash here adding try catch
+		try {
+			Location lastGPSLocation = locationManager
+					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+			if (lastGPSLocation != null) {
+				locationChanged(lastGPSLocation.getLatitude(),
+						lastGPSLocation.getLongitude(), true, false);
+				return;
+			}
+
+			Location lastNetLocation = locationManager
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+			if (lastNetLocation != null) {
+				locationChanged(lastNetLocation.getLatitude(),
+						lastNetLocation.getLongitude(), true, true);
+			}
+
+			// setBestLocation(lastNetLocation, lastGPSLocation);
+
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-		
-		Location lastNetLocation = locationManager
-				.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		
-		if(lastNetLocation!=null){
-			locationChanged(lastNetLocation.getLatitude(), lastNetLocation.getLongitude(),
-					true, true);
-		}
-		
-		//setBestLocation(lastNetLocation, lastGPSLocation);
 	}
 
 	/*
@@ -334,15 +341,18 @@ public abstract class MapUserLocation extends MapActivity implements
 
 			marker.setBounds(0, 0, marker.getIntrinsicWidth(),
 					marker.getIntrinsicHeight());
-			mapController.setZoom(14);
+
+			// mapController.setZoom(Preferences.mapZoom);
 
 			updatableMarker = createUpdatableMarker(marker, point);
 			mapView.getOverlays().add((Overlay) updatableMarker);
 		} else {
 			updatableMarker.update(point);
+			// mapController.setZoom(Preferences.mapZoom);
 		}
 		if (center) {
 			mapController.animateTo(point);
+			// mapController.setZoom(Preferences.mapZoom);
 		}
 	}
 
@@ -359,29 +369,22 @@ public abstract class MapUserLocation extends MapActivity implements
 		return (new GeoPoint((int) (latitude * 1E6), (int) (longitude * 1E6)));
 	}
 
-	/*protected void setBestLocation(Location location1, Location location2) {
-		if (location1 != null && location2 != null) {
-			boolean location1Newer = location1.getTime() - location2.getTime() > FIVE_MINUTES;
-			boolean location2Newer = location2.getTime() - location1.getTime() > FIVE_MINUTES;
-			boolean location1MoreAccurate = location1.getAccuracy() < location2
-					.getAccuracy();
-			boolean location2MoreAccurate = location2.getAccuracy() < location1
-					.getAccuracy();
-			if (location1Newer || location1MoreAccurate) {
-				locationChanged(location1.getLatitude(),
-						location1.getLongitude(), true);
-			} else if (location2Newer || location2MoreAccurate) {
-				locationChanged(location2.getLatitude(),
-						location2.getLongitude(), true);
-			}
-		} else if (location1 != null) {
-			locationChanged(location1.getLatitude(), location1.getLongitude(),
-					true);
-		} else if (location2 != null) {
-			locationChanged(location2.getLatitude(), location2.getLongitude(),
-					true);
-		}
-	}*/
+	/*
+	 * protected void setBestLocation(Location location1, Location location2) {
+	 * if (location1 != null && location2 != null) { boolean location1Newer =
+	 * location1.getTime() - location2.getTime() > FIVE_MINUTES; boolean
+	 * location2Newer = location2.getTime() - location1.getTime() >
+	 * FIVE_MINUTES; boolean location1MoreAccurate = location1.getAccuracy() <
+	 * location2 .getAccuracy(); boolean location2MoreAccurate =
+	 * location2.getAccuracy() < location1 .getAccuracy(); if (location1Newer ||
+	 * location1MoreAccurate) { locationChanged(location1.getLatitude(),
+	 * location1.getLongitude(), true); } else if (location2Newer ||
+	 * location2MoreAccurate) { locationChanged(location2.getLatitude(),
+	 * location2.getLongitude(), true); } } else if (location1 != null) {
+	 * locationChanged(location1.getLatitude(), location1.getLongitude(), true);
+	 * } else if (location2 != null) { locationChanged(location2.getLatitude(),
+	 * location2.getLongitude(), true); } }
+	 */
 
 	private class MapMarker extends ItemizedOverlay<OverlayItem> implements
 			UpdatableMarker {
@@ -483,7 +486,7 @@ public abstract class MapUserLocation extends MapActivity implements
 
 		setDeviceLocation();
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -531,6 +534,7 @@ public abstract class MapUserLocation extends MapActivity implements
 			if (action == MotionEvent.ACTION_DOWN) {
 				long thisTime = System.currentTimeMillis();
 				if (thisTime - lastTouchTime < 250) {
+					isNetworkLocation = false;
 					lastTouchTime = -1;
 					GeoPoint geoPoint = mapView.getProjection().fromPixels(
 							(int) event.getX(), (int) event.getY());
@@ -539,6 +543,8 @@ public abstract class MapUserLocation extends MapActivity implements
 					Log.i(getClass().getSimpleName(), String.format(
 							"%d, %d >> %f, %f", x, y, latitude, longitude));
 					locationChanged(latitude, longitude, true, false);
+					// TODO Aman use this while telling the user location cant
+					// be set automatically.
 					stopLocating();
 					return true;
 				} else {

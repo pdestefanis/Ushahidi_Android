@@ -8,7 +8,7 @@
 	following information to ensure the GNU Lesser General Public License version 
 	3 requirements will be met: http://www.gnu.org/licenses/lgpl.html. If you 
 	have questions regarding the use of this file, please contact Ushahidi developers 
-	at team@ushahidi.com.
+	at team@ushahidi.com.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
@@ -127,7 +127,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/incident_datetime"
                     android:textColor="@color/title_color"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -211,7 +212,7 @@
                         android:layout_weight="1"
                         android:hint="@string/incident_longitude"
                         android:inputType="numberDecimal|numberSigned" />
-                </LinearLayout>
+                </LinearLayout>
                 -->
             </LinearLayout>
             <!-- Location layout ends. -->
@@ -231,7 +232,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/incident_category"
                     android:textColor="@color/title_color"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/add_category"
@@ -287,7 +289,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/incident_photos"
                     android:textColor="@color/title_color"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btnPicture"
@@ -296,17 +299,18 @@
                     android:text="@string/btn_add_photo"
                     android:textStyle="bold" />
 
-			    <Gallery
-			        xmlns:android="http://schemas.android.com/apk/res/android"
-			        android:id="@+id/capturePhotos"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content" />
+                <Gallery
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/capturePhotos"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+
                 <ImageView
                     android:id="@+id/sel_photo_prev"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:scaleType="fitCenter"
-                    android:layout_marginTop="5dip" />
+                    android:layout_marginTop="5dip"
+                    android:scaleType="fitCenter" />
             </LinearLayout>
             <!-- Photo layout ends. -->
 
