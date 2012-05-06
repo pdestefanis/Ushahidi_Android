@@ -409,7 +409,14 @@ public class MainHttpClient {
 
 		try {
 
+			// This next line is a hack to force all image downloads to be done over HTTP
+			// if the default protocol for the site is HTTPS. Not doing so, when using 
+			// self-signed certificates generates an error in Android.
+			// To properly fix, a custom SSL connection, using a custom keystore, needs
+			// to be used.
+			
 			address = address.replaceAll("https", "http");
+			
 			in = new BufferedInputStream(new URL(address).openStream(),
 					IO_BUFFER_SIZE);
 
