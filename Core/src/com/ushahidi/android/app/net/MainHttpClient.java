@@ -143,8 +143,7 @@ public class MainHttpClient {
 				.getSocketFactory(), 80));
 		// https scheme
 		try {
-			schemeRegistry.register(new Scheme("https",
-					new TrustedSocketFactory(Preferences.domain, false), 443));
+			schemeRegistry.register(new Scheme("https",	new TrustedSocketFactory(Preferences.domain, false), 443));
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -409,6 +408,8 @@ public class MainHttpClient {
 		OutputStream out = null;
 
 		try {
+
+			address = address.replaceAll("https", "http");
 			in = new BufferedInputStream(new URL(address).openStream(),
 					IO_BUFFER_SIZE);
 
@@ -423,8 +424,7 @@ public class MainHttpClient {
 
 			return dataStream.toByteArray();
 		} catch (IOException e) {
-			// android.util.Log.e("IO", "Could not load buddy icon: " + this,
-			// e);
+			android.util.Log.e("IO", "Could not load image", e);
 
 		} finally {
 			closeStream(in);
