@@ -23,15 +23,16 @@
         android:layout_alignParentLeft="true"
         android:adjustViewBounds="true"
         android:paddingRight="5dip" />
-
+
     <TextView
         android:id="@+id/report_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/report_location"
         android:layout_toRightOf="@+id/report_thumbnail"
         android:ellipsize="end"
         android:paddingLeft="3dip"
-        android:singleLine="true"
+        android:singleLine="false"
         android:textColor="@color/date_color"
         android:textStyle="bold" />
     
@@ -44,7 +45,7 @@
         android:layout_alignTop="@id/report_title"
         android:ellipsize="end"
         android:paddingLeft="3dip"
-        android:singleLine="true"
+        android:singleLine="false"
         android:textColor="@color/date_color"
         android:textStyle="bold"/>
 
@@ -56,7 +57,7 @@
         android:layout_toLeftOf="@+id/report_arrow"
         android:layout_toRightOf="@+id/report_thumbnail"
         android:paddingLeft="3dip"
-        android:textColor="@color/gray_color" />
+        android:textColor="@color/gray_color" android:singleLine="false"/>
 
     <TextView
         android:id="@+id/report_date"

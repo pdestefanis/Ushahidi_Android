@@ -27,12 +27,14 @@
         <TextView style="@style/ActionBarTitleText" />
 
         <ImageView style="@style/ActionBarTitleSeparator" />
-
+    <!--
         <ImageButton
             android:id="@+id/search_report_btn"
             style="@style/ActionBarTitle"
             android:onClick="onShareClick"
             android:src="@drawable/button_share" />
+    -->
+    
     </LinearLayout>
 
     <ImageView style="@style/ActionBarSeparator" />
@@ -83,13 +85,13 @@
                     android:id="@+id/title"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
+                    android:paddingBottom="10px"
+                    android:paddingLeft="5px"
+                    android:paddingRight="5px"
+                    android:paddingTop="10px"
                     android:singleLine="false"
                     android:textColor="@color/black_color"
-                    android:textStyle="bold" />
+                    android:textStyle="normal" />
             </LinearLayout>
             <!-- Title ends -->
 
@@ -107,10 +109,10 @@
                     android:id="@+id/report_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
+                    android:paddingBottom="10px"
+                    android:paddingLeft="5px"
+                    android:paddingRight="5px"
+                    android:paddingTop="10px"
                     android:singleLine="false"
                     android:text="@string/report_category"
                     android:textColor="@color/title_color"
@@ -130,13 +132,13 @@
                     android:id="@+id/category"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
+                    android:paddingBottom="10px"
+                    android:paddingLeft="5px"
+                    android:paddingRight="5px"
+                    android:paddingTop="10px"
                     android:singleLine="false"
                     android:textColor="@color/black_color"
-                    android:textStyle="bold" />
+                    android:textStyle="normal" />
             </LinearLayout>
             <!-- Category ends -->
 
@@ -154,10 +156,10 @@
                     android:id="@+id/report_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
+                    android:paddingBottom="10px"
+                    android:paddingLeft="5px"
+                    android:paddingRight="5px"
+                    android:paddingTop="10px"
                     android:singleLine="false"
                     android:text="@string/report_date"
                     android:textColor="@color/title_color"
@@ -177,12 +179,12 @@
                     android:id="@+id/date"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
+                    android:paddingBottom="10px"
+                    android:paddingLeft="5px"
+                    android:paddingRight="5px"
+                    android:paddingTop="10px"
                     android:singleLine="false"
-                    android:textStyle="bold" />
+                    android:textStyle="normal" />
             </LinearLayout>
             <!-- Date ends -->
 
@@ -200,10 +202,10 @@
                     android:id="@+id/report_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
+                    android:paddingBottom="10px"
+                    android:paddingLeft="5px"
+                    android:paddingRight="5px"
+                    android:paddingTop="10px"
                     android:singleLine="false"
                     android:text="@string/report_desc"
                     android:textColor="@color/title_color"
@@ -239,7 +241,7 @@
                         android:fadingEdge="none"
                         android:singleLine="false"
                         android:textColor="@color/black_color"
-                        android:textStyle="bold" />
+                        android:textStyle="normal" />
                 </ScrollView>
             </LinearLayout>
             <!-- Description ends -->
@@ -258,10 +260,10 @@
                     android:id="@+id/report_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
+                    android:paddingBottom="10px"
+                    android:paddingLeft="5px"
+                    android:paddingRight="5px"
+                    android:paddingTop="10px"
                     android:singleLine="false"
                     android:text="@string/report_location"
                     android:textColor="@color/title_color"
@@ -281,12 +283,12 @@
                     android:id="@+id/location"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
+                    android:paddingBottom="10px"
+                    android:paddingLeft="5px"
+                    android:paddingRight="5px"
+                    android:paddingTop="10px"
                     android:singleLine="false"
-                    android:textStyle="bold" />
+                    android:textStyle="normal" />
             </LinearLayout>
             <!-- Location ends -->
 
@@ -304,10 +306,10 @@
                     android:id="@+id/report_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
+                    android:paddingBottom="10px"
+                    android:paddingLeft="5px"
+                    android:paddingRight="5px"
+                    android:paddingTop="10px"
                     android:singleLine="false"
                     android:text="@string/report_verified"
                     android:textColor="@color/title_color"
@@ -327,13 +329,13 @@
                     android:id="@+id/status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="15px"
-                    android:paddingLeft="10px"
-                    android:paddingRight="10px"
-                    android:paddingTop="15px"
+                    android:paddingBottom="10px"
+                    android:paddingLeft="5px"
+                    android:paddingRight="5px"
+                    android:paddingTop="10px"
                     android:singleLine="false"
                     android:textColor="@color/black_color"
-                    android:textStyle="bold" />
+                    android:textStyle="normal" />
             </LinearLayout>
 
             <!-- Status ends -->
