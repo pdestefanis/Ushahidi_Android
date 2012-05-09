@@ -308,7 +308,7 @@ public class Settings extends PreferenceActivity implements
 			password.setText("");
 		}
 
-		if ((password.getText().toString()).equals("si2sv2012")) {
+		if ((password.getText().toString()).equals(Preferences.prePassword)) {
 
 			// Advanced Preferences
 			PreferenceCategory advancedPrefCat = new PreferenceCategory(this);
@@ -458,7 +458,7 @@ public class Settings extends PreferenceActivity implements
 		// int autoUdateDelay = 0;
 		try {
 			// try to protect from first time saving.
-			if ((password.getText().toString()).equals("si2sv2012")) {
+			if ((password.getText().toString()).equals(Preferences.prePassword)) {
 				if (saveItems.equalsIgnoreCase("phone")) {
 					newSavePath = this.getDir("",
 							MODE_WORLD_READABLE | MODE_WORLD_WRITEABLE)

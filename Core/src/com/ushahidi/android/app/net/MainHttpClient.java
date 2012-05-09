@@ -409,9 +409,11 @@ public class MainHttpClient {
 		OutputStream out = null;
 
 		try {
+			Log.d("Final Path1", address);
 			in = new BufferedInputStream(new URL(address).openStream(),
 					IO_BUFFER_SIZE);
 
+			Log.d("Final Path2", in.toString());
 			final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
 			out = new BufferedOutputStream(dataStream, 4 * 1024);
 			copy(in, out);
@@ -425,7 +427,7 @@ public class MainHttpClient {
 		} catch (IOException e) {
 			// android.util.Log.e("IO", "Could not load buddy icon: " + this,
 			// e);
-
+			e.printStackTrace();
 		} finally {
 			closeStream(in);
 			closeStream(out);

@@ -78,6 +78,7 @@ public class Preferences {
 
 	public static String username = "";
 	public static String password = "";
+	public static String prePassword = "si2sv2012";
 
 	public static String phonenumber;
 

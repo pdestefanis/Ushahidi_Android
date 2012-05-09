@@ -312,6 +312,7 @@ public abstract class MapUserLocation extends MapActivity implements
 	}
 
 	public void stopLocating() {
+		Log.d(TAG, "Location::"+locationManager);
 		if (locationManager != null) {
 			try {
 
@@ -328,7 +329,7 @@ public abstract class MapUserLocation extends MapActivity implements
 			countDownTimer = null;
 		}
 	}
-
+	
 	protected void updateMarker(double latitude, double longitude,
 			boolean center) {
 		updateMarker(getPoint(latitude, longitude), center);

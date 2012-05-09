@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ushahidi.android.app.checkin.CheckinActivity;
 import com.ushahidi.android.app.util.ApiUtils;
@@ -307,9 +308,14 @@ public class Dashboard extends Activity {
 
         searchBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+            	//Aman Adding password validation
+            	if ((Preferences.password).equals(Preferences.prePassword)){
                 Intent intent = new Intent(Dashboard.this, DeploymentSearch.class);
                 startActivityForResult(intent, REQUEST_CODE_DEPLOYMENT_SEARCH);
-                setResult(RESULT_OK);
+                setResult(RESULT_OK);}
+            	else{
+            		Toast.makeText(Dashboard.this, "Enter Valid Password in Settings", Toast.LENGTH_SHORT);
+            	}
             }
         });
 
