@@ -275,11 +275,6 @@
 	<string name="map_zoom_summary">Ampliación (Zoom)</string>
 	<string name="map_zoom_level">Nivel</string>
 	
-	<!-- Default Map Zoom Prefrences -->
-	<string name="map_zoom_title">Map Zoom Settings</string>
-	<string name="map_zoom_summary">Set map zoom level for viewing reports</string>
-	<string name="map_zoom_level">Level</string>
-	
 	<!-- Public deployment search / Add -->
 	<string name="deployment_search">Buscar instancias, o agregar una manualmente</string>
 	
@@ -317,4 +312,7 @@
 	<string name="Photo_Change_Remove">Quitar Foto</string>
 	<string name="Photo_Change_Change">Cambiar Foto</string>
 	<string name="dialog_msg_invalid_location">No puedo encontrar una ubicación. Encienda el GPS, o elija una ubicación en forma manual</string>
+	<string name="report_arrow">Report arrow</string>
+	<string name="report_thumbnail">Report thumbnail</string>
+	<string name="action_bar">Action bar</string>
 </resources>

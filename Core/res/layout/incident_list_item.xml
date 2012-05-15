@@ -22,7 +22,7 @@
         android:layout_height="50dip"
         android:layout_alignParentLeft="true"
         android:adjustViewBounds="true"
-        android:paddingRight="5dip" />
+        android:paddingRight="5dip" android:contentDescription="@string/report_thumbnail"/>
 
     <TextView
         android:id="@+id/report_title"
@@ -85,8 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
-        android:layout_weight="1"
         android:gravity="center_vertical|center_horizontal"
-        android:padding="5dip" />
+        android:padding="5dip" android:contentDescription="@string/report_arrow"/>
 
 </RelativeLayout>

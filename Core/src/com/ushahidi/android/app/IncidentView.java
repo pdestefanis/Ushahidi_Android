@@ -136,7 +136,7 @@ public class IncidentView extends MapActivity implements AdapterView.OnItemSelec
         location.setTextColor(Color.BLACK);
         location.setText(extras.getString("location"));
 
-        body = (TextView)findViewById(R.id.webview);
+        body = (TextView)findViewById(R.id.description);
         body.setTextColor(Color.BLACK);
         body.setText(extras.getString("desc"));
 
