@@ -1471,14 +1471,15 @@ public class IncidentAdd extends MapUserLocation {
 	protected void locationChanged(double latitude, double longitude,
 			boolean doReverseGeocode, boolean valueFromNetworkProvider) {
 
-		// Aman Restricts from selecting a location near default
-		if ((MapUserLocation.isNetworkLocation)
-				&& (isCoordNearDefault(true, latitude) || isCoordNearDefault(false, longitude))) {
-			getLastKnownLocation();
-
-			return;
-
-		}
+		// // Aman Restricts from selecting a location near default
+		// if ((MapUserLocation.isNetworkLocation)
+		// && (isCoordNearDefault(true, latitude) || isCoordNearDefault(false,
+		// longitude))) {
+		// getLastKnownLocation();
+		//
+		// return;
+		//
+		// }
 
 		if (valueFromNetworkProvider && isCoordInvalid(latitude, longitude)) {
 			didFindLocation = false;
@@ -1526,7 +1527,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		return mTempCurrentLocation.distanceTo(mDefaultLocation) > (locationTolerance * 1000);
 	}
-
+	
 	/**
 	 * Asynchronous Reverse Geocoder Task
 	 */
@@ -1538,6 +1539,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		@Override
 		protected void onPostExecute(String result) {
+			
 			Log.i(getClass().getSimpleName(), String.format("onPostExecute %s", result));
 			if (TextUtils.isEmpty(mIncidentLocation.getText().toString()))
 				mIncidentLocation.setText(result);

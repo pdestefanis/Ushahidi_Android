@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2010 Ushahidi Inc All rights reserved Contact: team@ushahidi.com 
+<!--
+     Copyright (c) 2010 Ushahidi Inc All rights reserved Contact: team@ushahidi.com 
 	Website: http://www.ushahidi.com GNU Lesser General Public License Usage 
 	This file may be used under the terms of the GNU Lesser General Public License 
 	version 3 as published by the Free Software Foundation and appearing in the 
@@ -7,71 +8,165 @@
 	following information to ensure the GNU Lesser General Public License version 
 	3 requirements will be met: http://www.gnu.org/licenses/lgpl.html. If you 
 	have questions regarding the use of this file, please contact Ushahidi developers 
-	at team@ushahidi.com. -->
+	at team@ushahidi.com.
+-->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/db1_root" android:orientation="vertical"
-	android:layout_width="fill_parent" android:layout_height="fill_parent">
-	<LinearLayout style="@style/ActionBarTitleContainer">
-		<ImageButton style="@style/ActionBarTitle" android:contentDescription="@string/menu_home" />
+    android:id="@+id/db1_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout style="@style/ActionBarTitleContainer" >
+
+        <ImageButton
+            style="@style/ActionBarTitle"
+            android:contentDescription="@string/menu_home" />
+
         <TextView style="@style/ActionBarTitleText" />
-		<ImageView style="@style/ActionBarTitleSeparator" />
-		<ImageButton style="@style/ActionBarTitle" android:id="@+id/refresh_report_btn"
-			android:src="@drawable/button_refresh" android:onClick="onRefreshReports" />
-        <ProgressBar style="@style/TitleBarProgressIndicator"
-            android:id="@+id/title_refresh_progress" android:visibility="gone" />
+
         <ImageView style="@style/ActionBarTitleSeparator" />
-		<ImageButton style="@style/ActionBarTitle" android:id="@+id/add_btn"
-			android:src="@drawable/button_add" android:onClick="onAddReport" />
-	</LinearLayout>
-	<ImageView style="@style/ActionBarSeparator" />
-	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_weight="1" android:background="@drawable/dashboard_background">
-		<!-- First Grid -->
-		<LinearLayout android:orientation="horizontal"
-			android:layout_weight="10" android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<Button android:id="@+id/checkin_list_btn" style="@style/DashboardButton"
-				android:text="@string/checkin_list" android:drawableTop="@drawable/dashboard_checkin" />
 
-			<!-- List button -->
-			<Button android:id="@+id/incident_list" style="@style/DashboardButton"
-				android:text="@string/incident_list" android:drawableTop="@drawable/dashboard_list" />
+        <ImageButton
+            android:id="@+id/refresh_report_btn"
+            style="@style/ActionBarTitle"
+            android:onClick="onRefreshReports"
+            android:src="@drawable/button_refresh" />
 
-			<Button android:id="@+id/incident_add" style="@style/DashboardButton"
-				android:visibility="gone" android:text="@string/incident_menu_add"
-				android:drawableTop="@drawable/dashboard_add" />
+        <ProgressBar
+            android:id="@+id/title_refresh_progress"
+            style="@style/TitleBarProgressIndicator"
+            android:visibility="gone" />
 
-			<!-- Checkin button -->
-			<Button android:id="@+id/checkin_add_btn" style="@style/DashboardButton"
-				android:visibility="gone" android:text="@string/checkin_btn"
-				android:drawableTop="@drawable/dashboard_add_checkin" />
-		</LinearLayout>
+        <ImageView style="@style/ActionBarTitleSeparator" />
 
-		<!-- Middle Grid -->
-		<LinearLayout android:orientation="horizontal"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:id="@+id/middle_grid" >
-			<Button android:id="@+id/incident_map" style="@style/DashboardButton"
-				android:text="@string/incident_menu_map" android:drawableTop="@drawable/dashboard_map" />
-			<Button android:id="@+id/deployment_search" style="@style/DashboardButton"
-				android:onClick="onClickFeature" android:text="@string/search_label"
-				android:drawableTop="@drawable/dashboard_search" />
-		</LinearLayout>
+        <ImageButton
+            android:id="@+id/add_btn"
+            style="@style/ActionBarTitle"
+            android:onClick="onAddReport"
+            android:src="@drawable/button_add" />
+    </LinearLayout>
 
-		<!-- Last Grid -->
-		<LinearLayout android:orientation="horizontal"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_weight="15">
-			<Button android:id="@+id/deployment_about" style="@style/DashboardButton"
-				android:onClick="onClickFeature" android:text="@string/menu_about"
+    <ImageView style="@style/ActionBarSeparator" />
 
-				android:drawableTop="@drawable/dashboard_about" />
-			<Button android:id="@+id/deployment_settings" style="@style/DashboardButton"
-				android:onClick="onClickFeature" android:text="@string/menu_settings"
-				android:drawableTop="@drawable/dashboard_settings" />
-		</LinearLayout>
-	</LinearLayout>
-</LinearLayout>  
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/dashboard_background"
+        android:orientation="vertical" >
+
+        <!-- First Grid -->
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/checkin_list_btn"
+                style="@style/DashboardButton"
+                android:drawableTop="@drawable/dashboard_checkin"
+                android:text="@string/checkin_list" />
+
+            <!-- List button -->
+
+            <Button
+                android:id="@+id/incident_list"
+                style="@style/DashboardButton"
+                android:drawableTop="@drawable/dashboard_list"
+                android:text="@string/incident_list" />
+
+            <Button
+                android:id="@+id/incident_add"
+                style="@style/DashboardButton"
+                android:drawableTop="@drawable/dashboard_add"
+                android:text="@string/incident_menu_add"
+                android:visibility="gone" />
+
+            <!-- Checkin button -->
+
+            <Button
+                android:id="@+id/checkin_add_btn"
+                style="@style/DashboardButton"
+                android:drawableTop="@drawable/dashboard_add_checkin"
+                android:text="@string/checkin_btn"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Middle Grid -->
+
+        <LinearLayout
+            android:id="@+id/middle_grid"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/incident_map"
+                style="@style/DashboardButton"
+                android:drawableTop="@drawable/dashboard_map"
+                android:text="@string/incident_menu_map" />
+
+            <Button
+                android:id="@+id/deployment_search"
+                style="@style/DashboardButton"
+                android:drawableTop="@drawable/dashboard_search"
+                android:onClick="onClickFeature"
+                android:text="@string/search_label" />
+        </LinearLayout>
+
+        <!-- Last Grid -->
+
+        <LinearLayout
+            android:id="@+id/llPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:visibility="gone" >
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:hint="Password" />
+
+            <Button
+                android:id="@+id/btnPassword"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Ok" />
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Cancel" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="15"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/deployment_about"
+                style="@style/DashboardButton"
+                android:drawableTop="@drawable/dashboard_about"
+                android:onClick="onClickFeature"
+                android:text="@string/menu_about" />
+
+            <Button
+                android:id="@+id/deployment_settings"
+                style="@style/DashboardButton"
+                android:drawableTop="@drawable/dashboard_settings"
+                android:onClick="onClickFeature"
+                android:text="@string/menu_settings" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

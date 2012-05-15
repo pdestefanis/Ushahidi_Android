@@ -144,6 +144,7 @@ public class MainHttpClient {
 		// https scheme
 		try {
 			schemeRegistry.register(new Scheme("https",	new TrustedSocketFactory(Preferences.domain, false), 443));
+					new TrustedSocketFactory(Preferences.domain, false), 443));
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
