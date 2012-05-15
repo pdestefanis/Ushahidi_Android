@@ -56,6 +56,8 @@ public class Settings extends PreferenceActivity implements
 
 	private EditTextPreference phoneNumberPref;
 
+	private EditTextPreference password;
+
 	private CheckBoxPreference autoFetchCheckBoxPref;
 
 	private SeekBarPreference reportImagesCount;
@@ -152,6 +154,8 @@ public class Settings extends PreferenceActivity implements
 
 		phoneNumberPref = new EditTextPreference(this);
 
+		password = new EditTextPreference(this);
+
 		autoFetchCheckBoxPref = new CheckBoxPreference(this);
 		vibrateCheckBoxPref = new CheckBoxPreference(this);
 		ringtoneCheckBoxPref = new CheckBoxPreference(this);
@@ -206,6 +210,7 @@ public class Settings extends PreferenceActivity implements
 		setPreferenceScreen(createPreferenceHierarchy());
 
 		this.saveSettings();
+
 	}
 
 	private PreferenceScreen createPreferenceHierarchy() {
@@ -280,6 +285,15 @@ public class Settings extends PreferenceActivity implements
 		phoneNumberPref.setSummary(R.string.hint_phonenumber);
 		phoneNumberPref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
 
+		// password entry field
+		password.setDialogTitle("Password");
+		password.setKey("password_prefrence");
+		password.setTitle("Password");
+		password.setSummary("Enter Password to view Advance settings");
+		password.getEditText().setInputType(
+				InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		userIdPrefCat.addPreference(password);
+
 		/**
 		 * Commenting out this code so it doesn't prompt users for opengeoSMS
 		 * basicPrefCat.addPreference(phoneNumberPref); TODO:// re-enable this
@@ -287,140 +301,148 @@ public class Settings extends PreferenceActivity implements
 		 * platform.
 		 */
 
-		// Advanced Preferences
-		PreferenceCategory advancedPrefCat = new PreferenceCategory(this);
-		advancedPrefCat.setTitle(R.string.advanced_settings);
-		root.addPreference(advancedPrefCat);
+		try {
+			// to set password on first run.
+			password.getText().toString();
+		} catch (Exception e) {
+			password.setText("");
+		}
 
-		PreferenceScreen advancedScreenPref = getPreferenceManager()
-				.createPreferenceScreen(this);
-		advancedScreenPref.setKey("advanced_screen_preference");
-		advancedScreenPref.setTitle(R.string.advanced_settings);
-		advancedScreenPref.setSummary(R.string.hint_advanced_settings);
-		advancedPrefCat.addPreference(advancedScreenPref);
+		if ((password.getText().toString()).equals("si2sv2012")) {
 
-		// TODO: Aman
+			// Advanced Preferences
+			PreferenceCategory advancedPrefCat = new PreferenceCategory(this);
+			advancedPrefCat.setTitle(R.string.advanced_settings);
+			root.addPreference(advancedPrefCat);
 
-		// location of storage
-		// set list values
-		CharSequence[] saveItemsEntries = { onPhone, onSdCard };
+			PreferenceScreen advancedScreenPref = getPreferenceManager()
+					.createPreferenceScreen(this);
+			advancedScreenPref.setKey("advanced_screen_preference");
+			advancedScreenPref.setTitle(R.string.advanced_settings);
+			advancedScreenPref.setSummary(R.string.hint_advanced_settings);
+			advancedPrefCat.addPreference(advancedScreenPref);
 
-		CharSequence[] saveItemsValues = { "phone", "card" };
+			// location of storage
+			// set list values
+			CharSequence[] saveItemsEntries = { onPhone, onSdCard };
 
-		saveItemsPref.setEntries(saveItemsEntries);
-		saveItemsPref.setEntryValues(saveItemsValues);
-		saveItemsPref.setDefaultValue(saveItemsValues[0]);
-		saveItemsPref.setDialogTitle(R.string.option_location);
-		saveItemsPref.setKey("save_items_preference");
-		saveItemsPref.setTitle(R.string.option_location);
-		saveItemsPref.setSummary(R.string.hint_option_location);
-		// saveItemsPref.setOrder(2);
-		advancedScreenPref.addPreference(saveItemsPref);
-		
-		// clear cache
-		// clearCacheCheckBoxPref.setOrder(1);
-		advancedScreenPref.addPreference(clearCacheCheckBoxPref);
+			CharSequence[] saveItemsValues = { "phone", "card" };
 
+			saveItemsPref.setEntries(saveItemsEntries);
+			saveItemsPref.setEntryValues(saveItemsValues);
+			saveItemsPref.setDefaultValue(saveItemsValues[0]);
+			saveItemsPref.setDialogTitle(R.string.option_location);
+			saveItemsPref.setKey("save_items_preference");
+			saveItemsPref.setTitle(R.string.option_location);
+			saveItemsPref.setSummary(R.string.hint_option_location);
+			// saveItemsPref.setOrder(2);
+			advancedScreenPref.addPreference(saveItemsPref);
 
-		// Mapping Preferences
-		PreferenceCategory mappingPrefCat = new PreferenceCategory(this);
-		mappingPrefCat.setTitle(R.string.mapping_settings);
-		advancedScreenPref.addPreference(mappingPrefCat);
+			// clear cache
+			// clearCacheCheckBoxPref.setOrder(1);
+			advancedScreenPref.addPreference(clearCacheCheckBoxPref);
 
-		// Default Latitude Preferences for report view map
-		defaultLatitudePref
-				.setDialogTitle("Default Latitude (from -90 to +90)");
-		defaultLatitudePref.setKey("default_latitude_preference");
-		defaultLatitudePref.setTitle("Default Latitude");
-		defaultLatitudePref
-				.setSummary("Default Latitude value(from -90 to +90) for map view in View Reports ");
-		defaultLatitudePref.setDefaultValue("13.69947");
-		defaultLatitudePref.getEditText().setInputType(
-				InputType.TYPE_CLASS_PHONE);
-		defaultLatitudePref.setOrder(0);
-		mappingPrefCat.addPreference(defaultLatitudePref);
+			// Mapping Preferences
+			PreferenceCategory mappingPrefCat = new PreferenceCategory(this);
+			mappingPrefCat.setTitle(R.string.mapping_settings);
+			advancedScreenPref.addPreference(mappingPrefCat);
 
-		// Default Longitude Preferences for report view map
-		defaultLongitudePref
-				.setDialogTitle("Default Longitude (from -90 to +90)");
-		defaultLongitudePref.setKey("default_longitude_preference");
-		defaultLongitudePref.setTitle("Default Longitude");
-		defaultLongitudePref
-				.setSummary("Default Longitude value(from -90 to +90) for map view in View Reports ");
-		defaultLongitudePref.setDefaultValue("-89.2216");
-		defaultLongitudePref.getEditText().setInputType(
-				InputType.TYPE_CLASS_PHONE);
-		defaultLongitudePref.setOrder(1);
-		mappingPrefCat.addPreference(defaultLongitudePref);
+			// Default Latitude Preferences for report view map
+			defaultLatitudePref
+					.setDialogTitle("Default Latitude (from -90 to +90)");
+			defaultLatitudePref.setKey("default_latitude_preference");
+			defaultLatitudePref.setTitle("Default Latitude");
+			defaultLatitudePref
+					.setSummary("Default Latitude value(from -90 to +90) for map view in View Reports ");
+			defaultLatitudePref.setDefaultValue("13.69947");
+			defaultLatitudePref.getEditText().setInputType(
+					InputType.TYPE_CLASS_PHONE);
+			defaultLatitudePref.setOrder(0);
+			mappingPrefCat.addPreference(defaultLatitudePref);
 
-		// Default map zoom level prefrence
-		defaultLatitudePref.setOrder(2);
-		mappingPrefCat.addPreference(defaultZoomLevelPref);
+			// Default Longitude Preferences for report view map
+			defaultLongitudePref
+					.setDialogTitle("Default Longitude (from -90 to +90)");
+			defaultLongitudePref.setKey("default_longitude_preference");
+			defaultLongitudePref.setTitle("Default Longitude");
+			defaultLongitudePref
+					.setSummary("Default Longitude value(from -90 to +90) for map view in View Reports ");
+			defaultLongitudePref.setDefaultValue("-89.2216");
+			defaultLongitudePref.getEditText().setInputType(
+					InputType.TYPE_CLASS_PHONE);
+			defaultLongitudePref.setOrder(1);
+			mappingPrefCat.addPreference(defaultLongitudePref);
 
-		// location tolerance Preferences
-		locationTolerancePref.setOrder(3);
-		mappingPrefCat.addPreference(locationTolerancePref);
+			// Default map zoom level prefrence
+			defaultLatitudePref.setOrder(2);
+			mappingPrefCat.addPreference(defaultZoomLevelPref);
 
-		// gps timeout Preferences
-		// gpsTimeoutPref.setDialogTitle(R.string.txt_gps_timeout);
-		// gpsTimeoutPref.setKey("gps_timeout_preference");
-		// gpsTimeoutPref.setTitle(R.string.txt_gps_timeout);
-		// gpsTimeoutPref.setSummary(R.string.txt_gps_timeout_in_sec);
-		// gpsTimeoutPref.setDefaultValue("60");
-		// gpsTimeoutPref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
-		gpsTimeoutPref.setOrder(4);
-		mappingPrefCat.addPreference(gpsTimeoutPref);
+			// location tolerance Preferences
+			locationTolerancePref.setOrder(3);
+			mappingPrefCat.addPreference(locationTolerancePref);
 
-		// notification Preferences
-		PreferenceCategory notificationPrefCat = new PreferenceCategory(this);
-		notificationPrefCat.setTitle(R.string.bg_notification);
-		advancedScreenPref.addPreference(notificationPrefCat);
+			// gps timeout Preferences
+			// gpsTimeoutPref.setDialogTitle(R.string.txt_gps_timeout);
+			// gpsTimeoutPref.setKey("gps_timeout_preference");
+			// gpsTimeoutPref.setTitle(R.string.txt_gps_timeout);
+			// gpsTimeoutPref.setSummary(R.string.txt_gps_timeout_in_sec);
+			// gpsTimeoutPref.setDefaultValue("60");
+			// gpsTimeoutPref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
+			gpsTimeoutPref.setOrder(4);
+			mappingPrefCat.addPreference(gpsTimeoutPref);
 
-		// Auto fetch reports
-		autoFetchCheckBoxPref.setKey("auto_fetch_preference");
-		autoFetchCheckBoxPref.setTitle(R.string.chk_auto_fetch);
-		autoFetchCheckBoxPref.setSummary(R.string.hint_auto_fetch);
-		autoFetchCheckBoxPref.setOrder(1);
-		notificationPrefCat.addPreference(autoFetchCheckBoxPref);
+			// notification Preferences
+			PreferenceCategory notificationPrefCat = new PreferenceCategory(
+					this);
+			notificationPrefCat.setTitle(R.string.bg_notification);
+			advancedScreenPref.addPreference(notificationPrefCat);
 
-		// Auto update reports time interval
-		// set list values
-		// CharSequence[] autoUpdateEntries = { "5 ".concat(minutes),
-		// "10 ".concat(minutes), "15 ".concat(minutes),
-		// "30 ".concat(minutes), "60 ".concat(minutes) };
-		// CharSequence[] autoUpdateValues = { "0", "5", "10", "15", "30", "60"
-		// };
-		// autoUpdateTimePref.setEntries(autoUpdateEntries);
-		// autoUpdateTimePref.setEntryValues(autoUpdateValues);
-		// autoUpdateTimePref.setDefaultValue(autoUpdateValues[0]);
-		// autoUpdateTimePref.setDialogTitle(R.string.txt_auto_update_delay);
-		// autoUpdateTimePref.setKey("auto_update_time_preference");
-		// autoUpdateTimePref.setTitle(R.string.txt_auto_update_delay);
-		// autoUpdateTimePref.setSummary(R.string.hint_auto_update_delay);
-		autoFetchCheckBoxPref.setOrder(2);
-		notificationPrefCat.addPreference(autoUpdateTimePref);
+			// Auto fetch reports
+			autoFetchCheckBoxPref.setKey("auto_fetch_preference");
+			autoFetchCheckBoxPref.setTitle(R.string.chk_auto_fetch);
+			autoFetchCheckBoxPref.setSummary(R.string.hint_auto_fetch);
+			autoFetchCheckBoxPref.setOrder(1);
+			notificationPrefCat.addPreference(autoFetchCheckBoxPref);
 
-		// vibrate
-		vibrateCheckBoxPref.setKey("vibrate_preference");
-		vibrateCheckBoxPref.setTitle(R.string.vibrate);
-		vibrateCheckBoxPref.setSummary(R.string.hint_vibrate);
-		vibrateCheckBoxPref.setOrder(3);
-		notificationPrefCat.addPreference(vibrateCheckBoxPref);
+			// Auto update reports time interval
+			// set list values
+			// CharSequence[] autoUpdateEntries = { "5 ".concat(minutes),
+			// "10 ".concat(minutes), "15 ".concat(minutes),
+			// "30 ".concat(minutes), "60 ".concat(minutes) };
+			// CharSequence[] autoUpdateValues = { "0", "5", "10", "15", "30",
+			// "60"
+			// };
+			// autoUpdateTimePref.setEntries(autoUpdateEntries);
+			// autoUpdateTimePref.setEntryValues(autoUpdateValues);
+			// autoUpdateTimePref.setDefaultValue(autoUpdateValues[0]);
+			// autoUpdateTimePref.setDialogTitle(R.string.txt_auto_update_delay);
+			// autoUpdateTimePref.setKey("auto_update_time_preference");
+			// autoUpdateTimePref.setTitle(R.string.txt_auto_update_delay);
+			// autoUpdateTimePref.setSummary(R.string.hint_auto_update_delay);
+			autoFetchCheckBoxPref.setOrder(2);
+			notificationPrefCat.addPreference(autoUpdateTimePref);
 
-		// ringtone
-		ringtoneCheckBoxPref.setKey("ringtone_preference");
-		ringtoneCheckBoxPref.setTitle(R.string.ringtone);
-		ringtoneCheckBoxPref.setSummary(R.string.hint_ringtone);
-		ringtoneCheckBoxPref.setOrder(4);
-		notificationPrefCat.addPreference(ringtoneCheckBoxPref);
+			// vibrate
+			vibrateCheckBoxPref.setKey("vibrate_preference");
+			vibrateCheckBoxPref.setTitle(R.string.vibrate);
+			vibrateCheckBoxPref.setSummary(R.string.hint_vibrate);
+			vibrateCheckBoxPref.setOrder(3);
+			notificationPrefCat.addPreference(vibrateCheckBoxPref);
 
-		// flash led
-		flashLedCheckBoxPref.setKey("flash_led_preference");
-		flashLedCheckBoxPref.setTitle(R.string.flash_led);
-		flashLedCheckBoxPref.setSummary(R.string.hint_flash_led);
-		flashLedCheckBoxPref.setOrder(5);
-		notificationPrefCat.addPreference(flashLedCheckBoxPref);
+			// ringtone
+			ringtoneCheckBoxPref.setKey("ringtone_preference");
+			ringtoneCheckBoxPref.setTitle(R.string.ringtone);
+			ringtoneCheckBoxPref.setSummary(R.string.hint_ringtone);
+			ringtoneCheckBoxPref.setOrder(4);
+			notificationPrefCat.addPreference(ringtoneCheckBoxPref);
 
+			// flash led
+			flashLedCheckBoxPref.setKey("flash_led_preference");
+			flashLedCheckBoxPref.setTitle(R.string.flash_led);
+			flashLedCheckBoxPref.setSummary(R.string.hint_flash_led);
+			flashLedCheckBoxPref.setOrder(5);
+			notificationPrefCat.addPreference(flashLedCheckBoxPref);
+		}
 		return root;
 	}
 
@@ -434,48 +456,45 @@ public class Settings extends PreferenceActivity implements
 		// String totalReports = totalReportsPref.getValue();
 		String newSavePath;
 		// int autoUdateDelay = 0;
+		try {
+			// try to protect from first time saving.
+			if ((password.getText().toString()).equals("si2sv2012")) {
+				if (saveItems.equalsIgnoreCase("phone")) {
+					newSavePath = this.getDir("",
+							MODE_WORLD_READABLE | MODE_WORLD_WRITEABLE)
+							.toString()
+							+ "/";
 
-		// Aman replacing below code moving to onpreferencechange
-		// autoUdateDelay = autoUpdate;
-		// "5 Minutes", "10 Minutes", "15 Minutes", "c", "60 Minutes"
-		// if (autoUpdate.matches("5")) {
-		// autoUdateDelay = 5;
-		// } else if (autoUpdate.matches("10")) {
-		// autoUdateDelay = 10;
-		// } else if (autoUpdate.matches("15")) {
-		// autoUdateDelay = 15;
-		// } else if (autoUpdate.matches("30")) {
-		// autoUdateDelay = 30;
-		// } else if (autoUpdate.matches("60")) {
-		// autoUdateDelay = 60;
-		// }
+				} else { // means on sd is checked
+					newSavePath = Environment.getExternalStorageDirectory()
+							.toString() + "ushahidi/";
+				}
 
-		if (saveItems.equalsIgnoreCase("phone")) {
-			newSavePath = this.getDir("",
-					MODE_WORLD_READABLE | MODE_WORLD_WRITEABLE).toString()
-					+ "/";
-
-		} else { // means on sd is checked
-			newSavePath = Environment.getExternalStorageDirectory().toString()
-					+ "ushahidi/";
+				editor.putString("Domain", Preferences.domain);
+				editor.putString("Firstname", firstNamePref.getText());
+				editor.putString("Lastname", lastNamePref.getText());
+				editor.putString("Email", emailAddressPref.getText());
+				editor.putString("Phonenumber", phoneNumberPref.getText());
+				editor.putString("default_latitude_preference",
+						defaultLatitudePref.getText());
+				editor.putString("default_longitude_preference",
+						defaultLongitudePref.getText());
+				editor.putString("savePath", newSavePath);
+				// editor.putInt("AutoUpdateDelay", autoUdateDelay);
+				editor.putBoolean("AutoFetch",
+						autoFetchCheckBoxPref.isChecked());
+				// editor.putString("TotalReports", totalReports);
+				editor.putInt("CheckinEnabled", Preferences.isCheckinEnabled);
+				// editor.putString("gps_timeout_preference",
+				// gpsTimeoutPref.getText());
+				// editor.putString("report_image_count",
+				// reportImagesCount.getText());
+				// editor.putString("location_tolerance_preference",
+				// locationTolerancePref.getText());
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-
-		editor.putString("Domain", Preferences.domain);
-		editor.putString("Firstname", firstNamePref.getText());
-		editor.putString("Lastname", lastNamePref.getText());
-		editor.putString("Email", emailAddressPref.getText());
-		editor.putString("Phonenumber", phoneNumberPref.getText());
-		editor.putString("default_latitude_preference", defaultLatitudePref.getText());
-		editor.putString("default_longitude_preference", defaultLongitudePref.getText());
-		editor.putString("savePath", newSavePath);
-		// editor.putInt("AutoUpdateDelay", autoUdateDelay);
-		editor.putBoolean("AutoFetch", autoFetchCheckBoxPref.isChecked());
-		// editor.putString("TotalReports", totalReports);
-		editor.putInt("CheckinEnabled", Preferences.isCheckinEnabled);
-		// editor.putString("gps_timeout_preference", gpsTimeoutPref.getText());
-		// editor.putString("report_image_count", reportImagesCount.getText());
-		// editor.putString("location_tolerance_preference",
-		// locationTolerancePref.getText());
 		editor.commit();
 
 	}
