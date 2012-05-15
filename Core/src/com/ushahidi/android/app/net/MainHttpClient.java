@@ -143,7 +143,7 @@ public class MainHttpClient {
 				.getSocketFactory(), 80));
 		// https scheme
 		try {
-			schemeRegistry.register(new Scheme("https",	new TrustedSocketFactory(Preferences.domain, false), 443));
+			schemeRegistry.register(new Scheme("https",
 					new TrustedSocketFactory(Preferences.domain, false), 443));
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
