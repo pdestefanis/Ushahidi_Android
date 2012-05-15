@@ -461,9 +461,9 @@
 	<string name="notification_expanded_message">
 		Relatórios enviados com sucesso
   </string>
-	<string name="change_photo">
+	<!-- <string name="change_photo">
 		Mudar Foto
-  </string>
+  </string> -->
 	<string name="search_label">
 		Procurar
   </string>

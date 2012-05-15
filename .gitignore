@@ -1,11 +1,9 @@
 bin/
 out/
-CoreV3/
 gen/
 *.swp
 .settings
 .DS_Store
-Ushahidi/libs/
-*/local.properties
-*/secure.properties
 */ushahidi-key.keystore
+.classpath
+/*.properties

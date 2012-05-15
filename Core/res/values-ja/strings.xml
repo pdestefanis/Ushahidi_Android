@@ -191,7 +191,7 @@
 	<string name="notification_status_bar_message">レポートを送信</string>
 	<string name="notification_expanded_title">Ushahidiレポート</string>
 	<string name="notification_expanded_message">レポートが正常に送信さ</string>
-	<string name="change_photo">変更写真</string>
+	<!-- <string name="change_photo">変更写真</string> -->
 
 	<!-- Deployment search -->
 	<string name="search_label">探す</string>

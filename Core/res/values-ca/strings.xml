@@ -499,9 +499,9 @@
 	<string name="notification_expanded_message">
 		Informes enviats amb èxit
   </string>
-	<string name="change_photo">
+	<!-- <string name="change_photo">
 		Canvi de fotografia
-  </string>
+  </string> -->
 	<string name="search_label">
 		Cerca
   </string>

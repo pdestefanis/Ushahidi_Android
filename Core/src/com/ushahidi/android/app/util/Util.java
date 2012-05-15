@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Random;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -108,7 +108,7 @@ public class Util {
      * @param Vector<String> text
      * @return csv
      */
-    public static String implode(Vector<String> text) {
+    public static String implode(Collection<String> text) {
         String implode = "";
         int i = 0;
         for (String value : text) {

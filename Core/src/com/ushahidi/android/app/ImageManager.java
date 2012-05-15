@@ -27,15 +27,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import com.ushahidi.android.app.net.MainHttpClient;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import android.graphics.drawable.BitmapDrawable;
+import com.ushahidi.android.app.net.MainHttpClient;
 
 public class ImageManager {
 

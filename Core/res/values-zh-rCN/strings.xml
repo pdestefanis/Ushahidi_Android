@@ -447,9 +447,9 @@
   <string name="notification_expanded_message">
     报告成功发送
   </string>
-  <string name="change_photo">
+  <!-- <string name="change_photo">
     改变照片
-  </string>
+  </string> -->
   <string name="search_label">
     搜索
   </string>

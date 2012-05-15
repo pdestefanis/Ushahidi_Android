@@ -10,8 +10,8 @@
 	at team@ushahidi.com. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.ushahidi.android.app"
-          android:versionCode="20120429"
-          android:versionName="pre-release">
+          android:versionCode="20120507"
+          android:versionName="First Release" android:installLocation="internalOnly">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />

@@ -31,7 +31,7 @@ msgstr ""
 
 
 #Key: app_name
-msgid "Ushahidi"
+msgid "Qualcomm Demo"
 msgstr ""
 
 #Key: add_incident
@@ -91,7 +91,7 @@ msgid "An invalid email address was entered"
 msgstr ""
 
 #Key: invalid_ushahidi_instance
-msgid "Looks like the URL entered is not an Ushahidi deployment."
+msgid "Looks like the URL entered is not a deployment."
 msgstr ""
 
 #Key: btn_save
@@ -267,7 +267,7 @@ msgid "Cause phone's LED to flash"
 msgstr ""
 
 #Key: hint_domain
-msgid "Select the Ushahidi deployment that you wish to interact with."
+msgid "Select the deployment that you wish to interact with."
 msgstr ""
 
 #Key: chk_auto_fetch
@@ -283,7 +283,7 @@ msgid "Auto sync frequency"
 msgstr ""
 
 #Key: hint_auto_update_delay
-msgid "Set how often Ushahidi syncronizes with the selected deployment."
+msgid "Set how often the application syncronizes with the selected deployment."
 msgstr ""
 
 #Key: txt_path_SD
@@ -767,7 +767,7 @@ msgid "Ushahidi Setup"
 msgstr ""
 
 #Key: ushahidi_setup_blub
-msgid "Setup an ushahidi deployment."
+msgid "Setup a  deployment."
 msgstr ""
 
 #Key: all_categories

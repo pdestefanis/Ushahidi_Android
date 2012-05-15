@@ -22,14 +22,14 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.ushahidi.android.app.About;
+import com.ushahidi.android.app.Dashboard;
 import com.ushahidi.android.app.IncidentAdd;
 import com.ushahidi.android.app.IncidentTab;
+import com.ushahidi.android.app.MainApplication;
+import com.ushahidi.android.app.MapUserLocation;
+import com.ushahidi.android.app.Preferences;
 import com.ushahidi.android.app.R;
 import com.ushahidi.android.app.Settings;
-import com.ushahidi.android.app.MapUserLocation;
-import com.ushahidi.android.app.Dashboard;
-import com.ushahidi.android.app.MainApplication;
-import com.ushahidi.android.app.Preferences;
 import com.ushahidi.android.app.data.Database;
 import com.ushahidi.android.app.util.ApiUtils;
 import com.ushahidi.android.app.util.Util;
@@ -225,7 +225,7 @@ public class CheckinMap extends MapUserLocation {
      * @param latitude Latitude
      * @param longitude Longitude
      */
-    protected void locationChanged(double latitude, double longitude) {
+    protected void locationChanged(double latitude, double longitude, boolean doReverseGeocode, boolean valueFromNetworkProvider) {
         Log.i(getClass().getSimpleName(), String.format("locationChanged: %f, %f", latitude, longitude));
     }
 

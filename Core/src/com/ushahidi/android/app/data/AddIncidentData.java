@@ -20,6 +20,7 @@
 
 package com.ushahidi.android.app.data;
 
+import java.util.ArrayList;
 public class AddIncidentData {
     private String addIncidentTitle;
 
@@ -41,7 +42,7 @@ public class AddIncidentData {
 
     private String addIncidentLocLongitude;
 
-    private String addIncidentPhoto;
+    private  ArrayList<String> addIncidentPhoto;
 
     private String addIncidentVideo;
 
@@ -64,7 +65,7 @@ public class AddIncidentData {
         addIncidentLocName = "";
         addIncidentLocLatitude = "";
         addIncidentLocLongitude = "";
-        addIncidentPhoto = "";
+        addIncidentPhoto = new ArrayList<String>();
         addIncidentVideo = "";
         addIncidentNews = "";
         personFirst = "";
@@ -153,11 +154,11 @@ public class AddIncidentData {
         this.addIncidentLocLongitude = longitude;
     }
 
-    public String getIncidentPhoto() {
+    public ArrayList<String> getIncidentPhoto() {
         return this.addIncidentPhoto;
     }
 
-    public void setIncidentPhoto(String photo) {
+    public void setIncidentPhoto(ArrayList<String> photo) {
         this.addIncidentPhoto = photo;
     }
 

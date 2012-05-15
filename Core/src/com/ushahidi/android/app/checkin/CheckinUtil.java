@@ -1,12 +1,12 @@
 
 package com.ushahidi.android.app.checkin;
 
-import com.ushahidi.android.app.MainApplication;
-import com.ushahidi.android.app.data.Database;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.telephony.TelephonyManager;
+
+import com.ushahidi.android.app.MainApplication;
+import com.ushahidi.android.app.data.Database;
 
 /**
  * Created by IntelliJ IDEA. User: Ahmed Date: 2/21/11 Time: 7:08 PM To change

@@ -185,7 +185,7 @@
 	<string name="notification_status_bar_message">Envoyer Rapport</string>
 	<string name="notification_expanded_title">Rapport Ushahidi</string>
 	<string name="notification_expanded_message">Rapports envoyés avec succès</string>
-	<string name="change_photo">Changer d\'image</string>
+	<!-- <string name="change_photo">Changer d\'image</string> -->
 
 	<!-- Deployment search -->
 	<string name="search_label">Rechercher</string>

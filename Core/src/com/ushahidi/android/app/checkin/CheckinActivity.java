@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -133,6 +132,7 @@ public class CheckinActivity extends MapUserLocation {
     private double latitude;
 
     private double longitude;
+    private int ImageCount = 0;	
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,10 +224,15 @@ public class CheckinActivity extends MapUserLocation {
             }
         });
         photoButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                if (!TextUtils.isEmpty(NetworkServices.fileName)) {
-                    ImageManager.deleteImage(NetworkServices.fileName, "");
+            public void onClick(View view) 
+            {
+            	for (int i = 0; i < NetworkServices.fileName.size(); i++) 
+            	{
+            		if (!TextUtils.isEmpty(NetworkServices.fileName.get(i))) 
+            		{
+                        ImageManager.deleteImage(NetworkServices.fileName.get(i), "");
                 }
+				}
                 showDialog(DIALOG_CHOOSE_IMAGE_METHOD);
             }
         });
@@ -238,6 +243,10 @@ public class CheckinActivity extends MapUserLocation {
                 onSearchDeployments();
             }
         });
+    }
+    protected void locationLatLonChanged(double latitude, double longitude)
+    {
+    	Log.i(getClass().getSimpleName(), String.format("locationChanged: %f, %f", latitude, longitude));
     }
 
     @Override
@@ -257,7 +266,10 @@ public class CheckinActivity extends MapUserLocation {
         editor.putString("firstname", firstName.getText().toString());
         editor.putString("lastname", lastName.getText().toString());
         editor.putString("email", emailAddress.getText().toString());
-        editor.putString("photo", Preferences.fileName);
+        for (int i = 0; i < Preferences.fileName.size(); i++) 
+        {
+        	editor.putString("photo" + i, Preferences.fileName.get(i));
+		}
         editor.commit();
         super.onPause();
     }
@@ -281,9 +293,9 @@ public class CheckinActivity extends MapUserLocation {
         if (email != null) {
             emailAddress.setText(email, TextView.BufferType.EDITABLE);
         }
-        String photo = prefs.getString("photo", null);
+        /*String photo = prefs.getString("photo", null);
         if (photo != null) {
-            Preferences.fileName = photo;
+            Preferences.fileName.add(photo);
             NetworkServices.fileName = photo;
             Bitmap bitmap = BitmapFactory.decodeFile(photo);
             if (bitmap != null) {
@@ -301,7 +313,7 @@ public class CheckinActivity extends MapUserLocation {
         } else {
             Preferences.fileName = null;
             NetworkServices.fileName = null;
-        }
+        }*/
         super.onResume();
     }
 
@@ -312,13 +324,17 @@ public class CheckinActivity extends MapUserLocation {
 
     }
 
-    private void clearFields() {
+    private void clearFields() 
+    {
         Log.d(CLASS_TAG, "clearFields(): clearing fields");
         // delete unset photo
-        File file = new File(Preferences.fileName);
+        for (int i = 0; i < Preferences.fileName.size(); i++) 
+        {
+        	File file = new File(Preferences.fileName.get(i));
         if (file.exists() && file.delete()) {
             Log.i(CLASS_TAG, "File deleted " + file);
         }
+		}
 
         photoButton.setText(getString(R.string.btn_add_photo));
         checkinMessageText.setText("");
@@ -350,7 +366,7 @@ public class CheckinActivity extends MapUserLocation {
      * @param latitude Latitude
      * @param longitude Longitude
      */
-    protected void locationChanged(double latitude, double longitude) {
+    protected void locationChanged(double latitude, double longitude, boolean doReverseGeocode, boolean valueFromNetworkProvider) {
         this.latitude = latitude;
         this.longitude = longitude;
         mCheckinLocation.setText(String.format("%f, %f", latitude, longitude));
@@ -441,21 +457,21 @@ public class CheckinActivity extends MapUserLocation {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_CAMERA) {
-                Uri uri = PhotoUtils.getPhotoUri("photo.jpg", this);
+                Uri uri = PhotoUtils.getPhotoUri("photo" + ImageCount +  ".jpg", this);
                 Bitmap bitmap = PhotoUtils.getCameraPhoto(this, uri);
-                PhotoUtils.savePhoto(this, bitmap);
+                PhotoUtils.savePhoto(this, bitmap, ImageCount);
                 Log.i(CLASS_TAG,
                         String.format("REQUEST_CODE_CAMERA %dx%d", bitmap.getWidth(),
                                 bitmap.getHeight()));
             } else if (requestCode == REQUEST_CODE_IMAGE) {
                 Bitmap bitmap = PhotoUtils.getGalleryPhoto(this, data.getData());
-                PhotoUtils.savePhoto(this, bitmap);
+                PhotoUtils.savePhoto(this, bitmap, ImageCount);
                 Log.i(CLASS_TAG,
                         String.format("REQUEST_CODE_IMAGE %dx%d", bitmap.getWidth(),
                                 bitmap.getHeight()));
             }
             SharedPreferences.Editor editor = getPreferences(0).edit();
-            editor.putString("photo", PhotoUtils.getPhotoUri("photo.jpg", this).getPath());
+            editor.putString("photo", PhotoUtils.getPhotoUri("photo" + ImageCount + ".jpg", this).getPath());
             editor.commit();
         }
     }
@@ -584,10 +600,12 @@ public class CheckinActivity extends MapUserLocation {
                     clearFields();
 
                     // after a successful upload, delete the file
-                    File file = new File(Preferences.fileName);
+                    for (int i = 0; i < Preferences.fileName.size(); i++) {
+                    	File file = new File(Preferences.fileName.get(i));
                     if (file.exists() & file.delete()) {
                         Log.i(getClass().getSimpleName(), String.format("File deleted %s", file));
                     }
+					}
                     com.ushahidi.android.app.util.Util.showToast(CheckinActivity.this,
                             R.string.checkin_success_toast);
 
@@ -633,5 +651,5 @@ public class CheckinActivity extends MapUserLocation {
             }
         };
         t.start();
-    }
+    }	
 }

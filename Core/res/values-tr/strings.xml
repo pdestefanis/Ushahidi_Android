@@ -447,9 +447,9 @@
   <string name="notification_expanded_message">
     Raporlar Başarılı Bir Şekilde Gönderildi
   </string>
-  <string name="change_photo">
+  <!-- <string name="change_photo">
     Fotoğraf Değiştir
-  </string>
+  </string> -->
   <string name="search_label">
     Ara
   </string>

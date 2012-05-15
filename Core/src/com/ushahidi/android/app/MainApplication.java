@@ -22,11 +22,11 @@ package com.ushahidi.android.app;
 
 import java.util.HashSet;
 
-import com.ushahidi.android.app.data.Database;
-import com.ushahidi.android.app.net.MainHttpClient;
-
 import android.app.Application;
 import android.database.Cursor;
+
+import com.ushahidi.android.app.data.Database;
+import com.ushahidi.android.app.net.MainHttpClient;
 
 public class MainApplication extends Application {
 

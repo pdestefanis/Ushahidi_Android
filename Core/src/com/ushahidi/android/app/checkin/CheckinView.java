@@ -43,8 +43,8 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.ushahidi.android.app.Dashboard;
 import com.ushahidi.android.app.ImageManager;
-import com.ushahidi.android.app.R;
 import com.ushahidi.android.app.Preferences;
+import com.ushahidi.android.app.R;
 import com.ushahidi.android.app.ui.ImagePreviewer;
 
 public class CheckinView extends MapActivity {
