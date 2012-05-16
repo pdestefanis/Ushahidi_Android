@@ -322,6 +322,10 @@ public class MainHttpClient {
 						new StringBody(params.get("person_last"), Charset.forName("UTF-8")));
 				entity.addPart("person_email",
 						new StringBody(params.get("person_email"), Charset.forName("UTF-8")));
+				entity.addPart("device_id",
+						new StringBody(params.get("device_id"), Charset.forName("UTF-8")));
+				entity.addPart("gsm_id",
+						new StringBody(params.get("gsm_id"), Charset.forName("UTF-8")));
 
 				/** Aman */
 				try {
