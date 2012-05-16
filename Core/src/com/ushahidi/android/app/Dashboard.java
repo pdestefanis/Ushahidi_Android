@@ -157,6 +157,9 @@ public class Dashboard extends Activity {
 
 	private boolean refreshState = false;
 
+	// Aman flag for next page
+	private int nextLink = 1;
+
 	// Checkin specific variables and functions
 
 	@Override
@@ -298,9 +301,9 @@ public class Dashboard extends Activity {
 
 		settingsBtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(Dashboard.this, Settings.class);
-				startActivityForResult(intent, VIEW_SETTINGS);
-				setResult(RESULT_OK);
+				//Aman setting flag for settingsBtn
+				nextLink = 6;
+				llPassword.setVisibility(View.VISIBLE);
 			}
 		});
 
@@ -326,6 +329,7 @@ public class Dashboard extends Activity {
 			public void onClick(View v) {
 
 				// Aman Adding password validation
+				nextLink = 4;
 				llPassword.setVisibility(View.VISIBLE);
 
 			}
@@ -336,9 +340,18 @@ public class Dashboard extends Activity {
 			public void onClick(View v) {
 				if (etPassword.getText().toString().equals(Preferences.prePassword)) {
 					etPassword.setText("");
-					Intent intent = new Intent(Dashboard.this, DeploymentSearch.class);
-					startActivityForResult(intent, REQUEST_CODE_DEPLOYMENT_SEARCH);
-					setResult(RESULT_OK);
+					if (nextLink == 4) {
+						Intent intent = new Intent(Dashboard.this, DeploymentSearch.class);
+						startActivityForResult(intent, REQUEST_CODE_DEPLOYMENT_SEARCH);
+						setResult(RESULT_OK);
+					} else if (nextLink == 6) {
+						Intent intent = new Intent(Dashboard.this, Settings.class);
+						startActivityForResult(intent, VIEW_SETTINGS);
+						setResult(RESULT_OK);
+					} else {
+						nextLink = 1;
+						llPassword.setVisibility(View.GONE);
+					}
 				} else {
 					Toast.makeText(Dashboard.this, "Invalid Password", Toast.LENGTH_SHORT).show();
 				}
