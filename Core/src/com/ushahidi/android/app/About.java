@@ -38,11 +38,9 @@ public class About extends Dashboard {
 
     private static final int HOME = Menu.FIRST + 1;
 
-    private static final int SETTINGS = Menu.FIRST + 2;
+    //private static final int SETTINGS = Menu.FIRST + 2;
 
     private static final int GOTOHOME = 0;
-
-    private static final int REQUEST_CODE_SETTINGS = 1;
 
 
     @Override
@@ -97,9 +95,6 @@ public class About extends Dashboard {
         MenuItem i;
         i = menu.add(Menu.NONE, HOME, Menu.NONE, R.string.menu_home);
         i.setIcon(R.drawable.menu_home);
-
-        i = menu.add(Menu.NONE, SETTINGS, Menu.NONE, R.string.menu_settings);
-        i.setIcon(R.drawable.menu_about);
     }
 
     @Override
@@ -123,13 +118,6 @@ public class About extends Dashboard {
                 intent = new Intent(About.this, Dashboard.class);
                 startActivityForResult(intent, GOTOHOME);
                 return true;
-
-            case SETTINGS:
-                intent = new Intent(About.this, Settings.class);
-
-                // Make it a subactivity so we know when it returns
-                startActivityForResult(intent, REQUEST_CODE_SETTINGS);
-                return (true);
         }
         return false;
     }

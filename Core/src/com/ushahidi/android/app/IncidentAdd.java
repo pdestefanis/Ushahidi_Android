@@ -97,13 +97,13 @@ public class IncidentAdd extends MapUserLocation {
 
 	private static final int INCIDENT_CLEAR = Menu.FIRST + 1;
 
-	private static final int SETTINGS = Menu.FIRST + 2;
+	//private static final int SETTINGS = Menu.FIRST + 2;
 
 	private static final int ABOUT = Menu.FIRST + 3;
 
 	private static final int LIST_INCIDENTS = 2;
 
-	private static final int REQUEST_CODE_SETTINGS = 2;
+	private static final int  REQUEST_CODE_SETTINGS = 2;
 
 	private static final int REQUEST_CODE_ABOUT = 3;
 
@@ -267,9 +267,6 @@ public class IncidentAdd extends MapUserLocation {
 		i = menu.add(Menu.NONE, INCIDENT_CLEAR, Menu.NONE, R.string.clear_all);
 		i.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 
-		i = menu.add(Menu.NONE, SETTINGS, Menu.NONE, R.string.menu_settings);
-		i.setIcon(R.drawable.menu_settings);
-
 		i = menu.add(Menu.NONE, ABOUT, Menu.NONE, R.string.menu_about);
 		i.setIcon(R.drawable.menu_about);
 	}
@@ -285,11 +282,6 @@ public class IncidentAdd extends MapUserLocation {
 			startActivityForResult(new Intent(IncidentAdd.this, About.class),
 					REQUEST_CODE_ABOUT);
 			setResult(RESULT_OK);
-			return true;
-
-		case SETTINGS:
-			startActivityForResult(new Intent(IncidentAdd.this, Settings.class),
-					REQUEST_CODE_SETTINGS);
 			return true;
 		}
 		return false;
@@ -1527,7 +1519,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		return mTempCurrentLocation.distanceTo(mDefaultLocation) > (locationTolerance * 1000);
 	}
-	
+
 	/**
 	 * Asynchronous Reverse Geocoder Task
 	 */
@@ -1539,7 +1531,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		@Override
 		protected void onPostExecute(String result) {
-			
+
 			Log.i(getClass().getSimpleName(), String.format("onPostExecute %s", result));
 			if (TextUtils.isEmpty(mIncidentLocation.getText().toString()))
 				mIncidentLocation.setText(result);

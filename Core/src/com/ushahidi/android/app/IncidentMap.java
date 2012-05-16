@@ -62,7 +62,7 @@ public class IncidentMap extends MapActivity {
 
 	private static final int INCIDENT_REFRESH = Menu.FIRST + 4;
 
-	private static final int SETTINGS = Menu.FIRST + 5;
+	//private static final int SETTINGS = Menu.FIRST + 5;
 
 	private static final int ABOUT = Menu.FIRST + 6;
 
@@ -71,8 +71,6 @@ public class IncidentMap extends MapActivity {
 	private static final int ADD_INCIDENTS = 1;
 
 	private static final int LIST_INCIDENTS = 2;
-
-	private static final int REQUEST_CODE_SETTINGS = 1;
 
 	private static final int REQUEST_CODE_ABOUT = 2;
 
@@ -410,9 +408,6 @@ public class IncidentMap extends MapActivity {
 				R.string.incident_menu_refresh);
 		i.setIcon(R.drawable.menu_refresh);
 
-		i = menu.add(Menu.NONE, SETTINGS, Menu.NONE, R.string.menu_settings);
-		i.setIcon(R.drawable.menu_settings);
-
 		i = menu.add(Menu.NONE, ABOUT, Menu.NONE, R.string.menu_about);
 		i.setIcon(R.drawable.menu_about);
 
@@ -483,12 +478,6 @@ public class IncidentMap extends MapActivity {
 			setResult(RESULT_OK);
 			return true;
 
-		case SETTINGS:
-			intent = new Intent(IncidentMap.this, Settings.class);
-
-			// Make it a subactivity so we know when it returns
-			startActivityForResult(intent, REQUEST_CODE_SETTINGS);
-			return (true);
 		}
 		return false;
 	}

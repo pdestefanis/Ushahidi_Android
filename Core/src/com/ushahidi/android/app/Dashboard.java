@@ -101,7 +101,7 @@ public class Dashboard extends Activity {
 
 	private static final int INCIDENT_MAP = Menu.FIRST + 3;
 
-	private static final int SETTINGS = Menu.FIRST + 4;
+	// private static final int SETTINGS = Menu.FIRST + 4;
 
 	private static final int ABOUT = Menu.FIRST + 5;
 
@@ -261,6 +261,7 @@ public class Dashboard extends Activity {
 	public void onResume() {
 		promptForDeployment();
 		initializeUI();
+		llPassword.setVisibility(View.GONE);
 		super.onResume();
 	}
 
@@ -301,7 +302,7 @@ public class Dashboard extends Activity {
 
 		settingsBtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				//Aman setting flag for settingsBtn
+				// Aman setting flag for settingsBtn
 				nextLink = 6;
 				llPassword.setVisibility(View.VISIBLE);
 			}
@@ -348,10 +349,10 @@ public class Dashboard extends Activity {
 						Intent intent = new Intent(Dashboard.this, Settings.class);
 						startActivityForResult(intent, VIEW_SETTINGS);
 						setResult(RESULT_OK);
-					} else {
-						nextLink = 1;
-						llPassword.setVisibility(View.GONE);
-					}
+					} 
+					nextLink = 1;
+					llPassword.setVisibility(View.GONE);
+					
 				} else {
 					Toast.makeText(Dashboard.this, "Invalid Password", Toast.LENGTH_SHORT).show();
 				}
@@ -519,9 +520,6 @@ public class Dashboard extends Activity {
 		i = menu.add(Menu.NONE, SYNC, Menu.NONE, R.string.menu_sync);
 		i.setIcon(R.drawable.menu_refresh);
 
-		i = menu.add(Menu.NONE, SETTINGS, Menu.NONE, R.string.menu_settings);
-		i.setIcon(R.drawable.menu_settings);
-
 		i = menu.add(Menu.NONE, ABOUT, Menu.NONE, R.string.menu_about);
 		i.setIcon(R.drawable.menu_about);
 
@@ -561,14 +559,6 @@ public class Dashboard extends Activity {
 		case ABOUT:
 			launchIntent = new Intent(Dashboard.this, About.class);
 			startActivityForResult(launchIntent, REQUEST_CODE_ABOUT);
-			setResult(RESULT_OK);
-			return true;
-
-		case SETTINGS:
-			launchIntent = new Intent().setClass(Dashboard.this, Settings.class);
-
-			// Make it a subactivity so we know when it returns
-			startActivityForResult(launchIntent, REQUEST_CODE_SETTINGS);
 			setResult(RESULT_OK);
 			return true;
 
