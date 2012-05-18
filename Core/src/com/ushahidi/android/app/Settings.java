@@ -56,7 +56,7 @@ public class Settings extends PreferenceActivity implements
 
 	private EditTextPreference phoneNumberPref;
 
-	private EditTextPreference password;
+//	private EditTextPreference password;
 
 	private CheckBoxPreference autoFetchCheckBoxPref;
 
@@ -154,8 +154,8 @@ public class Settings extends PreferenceActivity implements
 
 		phoneNumberPref = new EditTextPreference(this);
 
-		password = new EditTextPreference(this);
-		password.setOnPreferenceChangeListener(this);
+//		password = new EditTextPreference(this);
+//		password.setOnPreferenceChangeListener(this);
 
 		autoFetchCheckBoxPref = new CheckBoxPreference(this);
 		vibrateCheckBoxPref = new CheckBoxPreference(this);
@@ -283,13 +283,13 @@ public class Settings extends PreferenceActivity implements
 		phoneNumberPref.setSummary(R.string.hint_phonenumber);
 		phoneNumberPref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
 
-		// password entry field
-		password.setDialogTitle("Password");
-		password.setKey("password_prefrence");
-		password.setTitle("Password");
-		password.setSummary("Enter Password to view Advance settings");
-		password.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-		userIdPrefCat.addPreference(password);
+		// Aman password entry field
+//		password.setDialogTitle("Password");
+//		password.setKey("password_prefrence");
+//		password.setTitle("Password");
+//		password.setSummary("Enter Password to view Advance settings");
+//		password.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+//		userIdPrefCat.addPreference(password);
 
 		/**
 		 * Commenting out this code so it doesn't prompt users for opengeoSMS
@@ -297,16 +297,16 @@ public class Settings extends PreferenceActivity implements
 		 * I'm happy with opengeoSMS integration with the Ushahidi platform.
 		 */
 
-		try {
-			// to set password on first run.
-			password.getText().toString();
-		} catch (Exception e) {
-			password.setText("");
-		}
+//		try {
+//			// to set password on first run.
+//			password.getText().toString();
+//		} catch (Exception e) {
+//			password.setText("");
+//		}
 
-		if ((password.getText().toString()).equals(Preferences.prePassword)) {
-
-			password.setText("");
+//		if ((password.getText().toString()).equals(Preferences.prePassword)) {
+//
+//			password.setText("");
 
 			// Advanced Preferences
 			PreferenceCategory advancedPrefCat = new PreferenceCategory(this);
@@ -435,7 +435,7 @@ public class Settings extends PreferenceActivity implements
 			flashLedCheckBoxPref.setSummary(R.string.hint_flash_led);
 			flashLedCheckBoxPref.setOrder(5);
 			notificationPrefCat.addPreference(flashLedCheckBoxPref);
-		}
+//		Aman Password if bloack }
 		return root;
 	}
 
@@ -451,7 +451,7 @@ public class Settings extends PreferenceActivity implements
 		// int autoUdateDelay = 0;
 		try {
 			// try to protect from first time saving.
-			if ((password.getText().toString()).equals(Preferences.prePassword)) {
+//			if ((password.getText().toString()).equals(Preferences.prePassword)) {
 				if (saveItems.equalsIgnoreCase("phone")) {
 					newSavePath = this.getDir("", MODE_WORLD_READABLE | MODE_WORLD_WRITEABLE)
 							.toString() + "/";
@@ -479,7 +479,7 @@ public class Settings extends PreferenceActivity implements
 				// reportImagesCount.getText());
 				// editor.putString("location_tolerance_preference",
 				// locationTolerancePref.getText());
-			}
+//			Aman Password }
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
