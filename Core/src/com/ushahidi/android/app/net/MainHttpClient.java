@@ -107,7 +107,7 @@ public class MainHttpClient {
 
 	private static MultipartEntity entity;
 
-	private static final String CLASS_TAG = MainHttpClient.class.getSimpleName();
+	private static final String CLASS_TAG = MainHttpClient.class
 			.getSimpleName();
 
 	private int timeoutConnection = 60000;
@@ -120,6 +120,7 @@ public class MainHttpClient {
 
 		httpParameters = new BasicHttpParams();
 		httpParameters.setParameter(ConnManagerPNames.MAX_TOTAL_CONNECTIONS, 1);
+		httpParameters.setParameter(
 				ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE,
 				new ConnPerRouteBean(1));
 
@@ -142,7 +143,7 @@ public class MainHttpClient {
 				.getSocketFactory(), 80));
 		// https scheme
 		try {
-			schemeRegistry.register(new Scheme("https",
+			schemeRegistry.register(new Scheme("https",	
 					new TrustedSocketFactory(Preferences.domain, false), 443));
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
@@ -200,6 +201,7 @@ public class MainHttpClient {
 			if (data != null) {
 				try {
 					// NEED THIS NOW TO FIX ERROR 417
+					httpost.getParams().setBooleanParameter(
 							"http.protocol.expect-continue", false);
 
 					httpost.setEntity(new UrlEncodedFormEntity(data, HTTP.UTF_8));
@@ -246,6 +248,7 @@ public class MainHttpClient {
 	public static String SendMultiPartData(String URL, MultipartEntity postData)
 			throws IOException {
 		Log.d(CLASS_TAG, "URL::" + URL);
+		Log.d(CLASS_TAG,
 				"PostFileUpload(): upload file to server. send multipart");
 
 		// Dipo Fix
@@ -256,6 +259,7 @@ public class MainHttpClient {
 			if (postData != null) {
 				Log.i(CLASS_TAG, "PostFileUpload(): ");
 				// NEED THIS NOW TO FIX ERROR 417
+				httpost.getParams().setBooleanParameter(
 						"http.protocol.expect-continue", false);
 				httpost.setEntity(postData);
 				// Header
@@ -294,6 +298,7 @@ public class MainHttpClient {
 
 		Log.d(CLASS_TAG, "URL::" + URL);
 
+		Log.d(CLASS_TAG,
 				"PostFileUpload(): upload file to server. post file upload");
 
 		entity = new MultipartEntity();
@@ -305,24 +310,35 @@ public class MainHttpClient {
 			if (params != null) {
 
 				entity.addPart("task", new StringBody(params.get("task")));
+				entity.addPart(
+						"incident_title",
 						new StringBody(params.get("incident_title"), Charset
 								.forName("UTF-8")));
 				entity.addPart("incident_description",
+						new StringBody(params.get("incident_description"),
 								Charset.forName("UTF-8")));
 				entity.addPart("incident_date",
 						new StringBody(params.get("incident_date")));
+				entity.addPart("incident_hour",
 						new StringBody(params.get("incident_hour")));
+				entity.addPart("incident_minute",
 						new StringBody(params.get("incident_minute")));
 				entity.addPart("incident_ampm",
 						new StringBody(params.get("incident_ampm")));
 				entity.addPart("incident_category",
 						new StringBody(params.get("incident_category")));
+				entity.addPart("latitude",
 						new StringBody(params.get("latitude")));
+				entity.addPart("longitude",
 						new StringBody(params.get("longitude")));
+				entity.addPart(
+						"location_name",
 						new StringBody(params.get("location_name"), Charset
 								.forName("UTF-8")));
 				entity.addPart(
+						"person_first",
 						new StringBody(params.get("person_first"), Charset
+								.forName("UTF-8")));
 				entity.addPart(
 						"person_last",
 						new StringBody(params.get("person_last"), Charset
@@ -341,7 +357,9 @@ public class MainHttpClient {
 							if (!TextUtils.isEmpty(params.get("filename" + j))) {
 								File file = new File(params.get("filename" + j));
 								if (file.exists()) {
+									entity.addPart(
 											"incident_photo[" + j + "]",
+											new FileBody(new File(params
 													.get("filename" + j))));
 								}
 							}
@@ -353,6 +371,7 @@ public class MainHttpClient {
 				}
 
 				// NEED THIS NOW TO FIX ERROR 417
+				httpost.getParams().setBooleanParameter(
 						"http.protocol.expect-continue", false);
 				httpost.setEntity(entity);
 
