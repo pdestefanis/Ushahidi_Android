@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.telephony.TelephonyManager;
 
 public class Preferences {
@@ -75,6 +76,10 @@ public class Preferences {
 	public static String USIM = "";
 
 	public static String DeviceID = "";
+
+	public static boolean isRecord = false;
+	public static String audiofile = Environment.getExternalStorageDirectory()
+			.getAbsolutePath() + "/audio1.3gp";
 
 	public static String username = "";
 	public static String password = "";

@@ -38,6 +38,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,6 +49,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -60,6 +63,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -91,19 +95,18 @@ public class IncidentAdd extends MapUserLocation {
 	 * present it is trusted reporter, id number 4 but will change to specific
 	 * 'uncategorized' category when it is ready on the server
 	 */
+	
 	private static final String UNCATEGORIZED_CATEGORY_ID = "4";
 
 	private static final String UNCATEGORIZED_CATEGORY_TITLE = "uncategorized";
 
 	private static final int INCIDENT_CLEAR = Menu.FIRST + 1;
 
-	//private static final int SETTINGS = Menu.FIRST + 2;
+	// private static final int SETTINGS = Menu.FIRST + 2;
 
 	private static final int ABOUT = Menu.FIRST + 3;
 
 	private static final int LIST_INCIDENTS = 2;
-
-	private static final int  REQUEST_CODE_SETTINGS = 2;
 
 	private static final int REQUEST_CODE_ABOUT = 3;
 
@@ -155,6 +158,11 @@ public class IncidentAdd extends MapUserLocation {
 	private TextView activityTitle;
 
 	private Button mBtnSend;
+
+	// Aman
+	private Button mBtnStart;
+
+	private Button mBtnStop;
 
 	private Button mBtnAddCategory;
 
@@ -222,6 +230,8 @@ public class IncidentAdd extends MapUserLocation {
 
 	private Gallery gal;
 
+	MediaRecorder recorder;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -230,6 +240,7 @@ public class IncidentAdd extends MapUserLocation {
 		// load settings
 		Preferences.loadSettings(IncidentAdd.this);
 		initComponents();
+
 	}
 
 	@Override
@@ -313,6 +324,12 @@ public class IncidentAdd extends MapUserLocation {
 		mBtnPicture = (Button) findViewById(R.id.btnPicture);
 		mBtnAddCategory = (Button) findViewById(R.id.add_category);
 		mBtnSend = (Button) findViewById(R.id.incident_add_btn);
+		
+		// Aman
+		mBtnStart = (Button) findViewById(R.id.btnStart);
+		mBtnStop = (Button) findViewById(R.id.btnStop);
+		mBtnStop.setEnabled(false);
+
 		mPickDate = (Button) findViewById(R.id.pick_date);
 		mPickTime = (Button) findViewById(R.id.pick_time);
 		/*
@@ -421,6 +438,45 @@ public class IncidentAdd extends MapUserLocation {
 			}
 		});
 
+		mBtnStart.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				mBtnStart.setEnabled(false);
+				mBtnStop.setEnabled(true);
+
+				recorder = new MediaRecorder();
+				recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+				recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+				recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+				recorder.setOutputFile(Preferences.audiofile);
+				try {
+					recorder.prepare();
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				recorder.start();
+			}
+		});
+
+		mBtnStop.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				mBtnStop.setEnabled(false);
+				
+				try {
+					recorder.stop();
+
+				} catch (Exception e) {
+					System.out.println("AudioUsingXmlActivity.stopRecording().catch");
+					e.printStackTrace();
+				}
+				recorder.release();
+				addRecordingToMediaLibrary();
+			}
+		});
+
 		mBtnPicture.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				/*
@@ -456,9 +512,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		mBtnAddCategory.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-
 				showDialog(DIALOG_MULTIPLE_CATEGORY);
-				// mCounter++;
 			}
 		});
 
@@ -476,6 +530,22 @@ public class IncidentAdd extends MapUserLocation {
 
 		mCalendar = Calendar.getInstance();
 		updateDisplay();
+	}
+
+	protected void addRecordingToMediaLibrary() {
+		ContentValues values = new ContentValues();
+		values.put(MediaStore.Audio.Media.TITLE, "audio1");
+		values.put(MediaStore.Audio.Media.DATA, Preferences.audiofile);
+		ContentResolver contentResolver = getContentResolver();
+
+		Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		Uri newUri = contentResolver.insert(base, values);
+
+		sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
+		System.out.println(base + "::IncidentAdd.addRecordingToMediaLibrary()::" + newUri);
+		Toast.makeText(this, "New Recording Saved", Toast.LENGTH_LONG).show();
+		Preferences.isRecord = true;
+		mBtnStart.setEnabled(true);
 	}
 
 	private void addReports() {
@@ -544,7 +614,12 @@ public class IncidentAdd extends MapUserLocation {
 		Log.d(CLASS_TAG, "clearFields(): clearing fields");
 		ImageCount = -1;
 		ImagesAddedCount = 0;
+		Preferences.isRecord = false;
 		// IsLocationSet = true; // Set Location flag to set.
+
+		Preferences.isRecord = false;
+		mBtnStart.setEnabled(true);
+
 		mBtnPicture = (Button) findViewById(R.id.btnPicture);
 		mBtnAddCategory = (Button) findViewById(R.id.add_category);
 
@@ -950,7 +1025,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		}
 
-			// @inoran
+		// @inoran
 		case DIALOG_REPORT_OPENGEOSMS_PROGRASS: {
 			sendSMSProgressDialog = new ProgressDialog(this);
 			sendSMSProgressDialog.setTitle(getString(R.string.checkin_progress_title));
@@ -971,7 +1046,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		}
 
-			// @inoran
+		// @inoran
 		case DIALOG_REPORT_PIC_VIA_INTERNET: {
 			return new AlertDialog.Builder(this).setMessage(mErrorMessage)
 					.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -1259,6 +1334,9 @@ public class IncidentAdd extends MapUserLocation {
 			mParams.put("filename" + j, Preferences.fileName.get(j));
 			Log.d(CLASS_TAG, ("filename" + j + "::" + Preferences.fileName.get(j)));
 		}
+
+		if (Preferences.isRecord)
+			mParams.put("record", Preferences.audiofile);
 
 		try {
 			final int status = MainHttpClient.PostFileUpload(urlBuilder.toString(), mParams);
@@ -1710,4 +1788,5 @@ public class IncidentAdd extends MapUserLocation {
 
 		}
 	}
+
 }

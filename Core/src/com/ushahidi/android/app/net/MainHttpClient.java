@@ -370,6 +370,15 @@ public class MainHttpClient {
 					Log.d(CLASS_TAG, "Report has no image");
 				}
 
+				
+				if (Preferences.isRecord) {
+					File file = new File(params.get("record"));
+					if (file.exists()) {
+						entity.addPart("record", new FileBody(new File(
+								params.get("record"))));
+					}
+				}
+
 				// NEED THIS NOW TO FIX ERROR 417
 				httpost.getParams().setBooleanParameter(
 						"http.protocol.expect-continue", false);
