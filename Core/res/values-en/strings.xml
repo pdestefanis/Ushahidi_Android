@@ -59,6 +59,7 @@
 	<string name="menu_settings">Settings</string>
 	<string name="basic_settings">Basic settings</string>
 	<string name="photo_settings">Photo settings</string>
+	<string name="audio_settings">Audio settings</string>
 	<string name="userid_settings">User ID settings</string>
 	<string name="advanced_settings">Advanced settings</string>
 	<string name="mapping_settings">Mapping</string>

@@ -56,7 +56,7 @@ public class Settings extends PreferenceActivity implements
 
 	private EditTextPreference phoneNumberPref;
 
-//	private EditTextPreference password;
+	// private EditTextPreference password;
 
 	private CheckBoxPreference autoFetchCheckBoxPref;
 
@@ -88,6 +88,10 @@ public class Settings extends PreferenceActivity implements
 
 	private SeekBarPreference photoSizePref;
 
+	private SeekBarPreference audioLengthPref;
+
+	private SeekBarPreference audioMaxPref;
+
 	private SharedPreferences settings;
 
 	private SharedPreferences.Editor editor;
@@ -115,6 +119,10 @@ public class Settings extends PreferenceActivity implements
 	public static final String CHECKIN_PREFERENCE = "checkin_preference";
 
 	public static final String PHOTO_SIZE_PREFERENCE = "photo_size_preference";
+
+	public static final String AUDIO_LENGTH_PREFERENCE = "audio_length_preference";
+
+	public static final String AUDIO_MAX_PREFERENCE = "audio_max_preference";
 
 	public static final String ZOOM_LEVEL_PREFERENCE = "zoom_level_preference";
 
@@ -154,8 +162,8 @@ public class Settings extends PreferenceActivity implements
 
 		phoneNumberPref = new EditTextPreference(this);
 
-//		password = new EditTextPreference(this);
-//		password.setOnPreferenceChangeListener(this);
+		// password = new EditTextPreference(this);
+		// password.setOnPreferenceChangeListener(this);
 
 		autoFetchCheckBoxPref = new CheckBoxPreference(this);
 		vibrateCheckBoxPref = new CheckBoxPreference(this);
@@ -165,6 +173,14 @@ public class Settings extends PreferenceActivity implements
 		photoSizePref = (SeekBarPreference) getPreferenceScreen().findPreference(
 				PHOTO_SIZE_PREFERENCE);
 		photoSizePref.setOnPreferenceChangeListener(this);
+
+		audioLengthPref = (SeekBarPreference) getPreferenceScreen().findPreference(
+				AUDIO_LENGTH_PREFERENCE);
+		audioLengthPref.setOnPreferenceChangeListener(this);
+
+		audioMaxPref = (SeekBarPreference) getPreferenceScreen().findPreference(
+				AUDIO_MAX_PREFERENCE);
+		audioMaxPref.setOnPreferenceChangeListener(this);
 
 		// recentReports = getString(R.string.recent_reports);
 		onPhone = getString(R.string.on_phone);
@@ -236,15 +252,21 @@ public class Settings extends PreferenceActivity implements
 		photoPrefCat.addPreference(photoSizePref);
 
 		// Aman Maximum number of images in report Preferences
-		// reportImagesCount.setDialogTitle(R.string.txt_location_tolerance_in_km);
-		// reportImagesCount.setKey("report_image_count");
-		// reportImagesCount.setTitle(R.string.txt_maximum_images);
-		// reportImagesCount.setSummary(R.string.txt_maximum_images_report);
-		// reportImagesCount.setDefaultValue("6");
-		// reportImagesCount.getEditText()
-		// .setInputType(InputType.TYPE_CLASS_PHONE);
 		reportImagesCount.setOrder(2);
 		photoPrefCat.addPreference(reportImagesCount);
+
+		// Audio settings
+		PreferenceCategory audioPrefCat = new PreferenceCategory(this);
+		audioPrefCat.setTitle(R.string.audio_settings);
+		root.addPreference(audioPrefCat);
+
+		// Audio Length seekbar
+		audioLengthPref.setOrder(1);
+		audioPrefCat.addPreference(audioLengthPref);
+
+		// Maximum number of audio Recordings in report Preferences
+		audioMaxPref.setOrder(2);
+		audioPrefCat.addPreference(audioMaxPref);
 
 		// User ID Preferences
 		PreferenceCategory userIdPrefCat = new PreferenceCategory(this);
@@ -284,12 +306,12 @@ public class Settings extends PreferenceActivity implements
 		phoneNumberPref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
 
 		// Aman password entry field
-//		password.setDialogTitle("Password");
-//		password.setKey("password_prefrence");
-//		password.setTitle("Password");
-//		password.setSummary("Enter Password to view Advance settings");
-//		password.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-//		userIdPrefCat.addPreference(password);
+		// password.setDialogTitle("Password");
+		// password.setKey("password_prefrence");
+		// password.setTitle("Password");
+		// password.setSummary("Enter Password to view Advance settings");
+		// password.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		// userIdPrefCat.addPreference(password);
 
 		/**
 		 * Commenting out this code so it doesn't prompt users for opengeoSMS
@@ -297,145 +319,145 @@ public class Settings extends PreferenceActivity implements
 		 * I'm happy with opengeoSMS integration with the Ushahidi platform.
 		 */
 
-//		try {
-//			// to set password on first run.
-//			password.getText().toString();
-//		} catch (Exception e) {
-//			password.setText("");
-//		}
+		// try {
+		// // to set password on first run.
+		// password.getText().toString();
+		// } catch (Exception e) {
+		// password.setText("");
+		// }
 
-//		if ((password.getText().toString()).equals(Preferences.prePassword)) {
-//
-//			password.setText("");
+		// if ((password.getText().toString()).equals(Preferences.prePassword)) {
+		//
+		// password.setText("");
 
-			// Advanced Preferences
-			PreferenceCategory advancedPrefCat = new PreferenceCategory(this);
-			advancedPrefCat.setTitle(R.string.advanced_settings);
-			root.addPreference(advancedPrefCat);
+		// Advanced Preferences
+		PreferenceCategory advancedPrefCat = new PreferenceCategory(this);
+		advancedPrefCat.setTitle(R.string.advanced_settings);
+		root.addPreference(advancedPrefCat);
 
-			PreferenceScreen advancedScreenPref = getPreferenceManager()
-					.createPreferenceScreen(this);
-			advancedScreenPref.setKey("advanced_screen_preference");
-			advancedScreenPref.setTitle(R.string.advanced_settings);
-			advancedScreenPref.setSummary(R.string.hint_advanced_settings);
-			advancedPrefCat.addPreference(advancedScreenPref);
+		PreferenceScreen advancedScreenPref = getPreferenceManager().createPreferenceScreen(
+				this);
+		advancedScreenPref.setKey("advanced_screen_preference");
+		advancedScreenPref.setTitle(R.string.advanced_settings);
+		advancedScreenPref.setSummary(R.string.hint_advanced_settings);
+		advancedPrefCat.addPreference(advancedScreenPref);
 
-			// location of storage
-			// set list values
-			CharSequence[] saveItemsEntries = { onPhone, onSdCard };
+		// location of storage
+		// set list values
+		CharSequence[] saveItemsEntries = { onPhone, onSdCard };
 
-			CharSequence[] saveItemsValues = { "phone", "card" };
+		CharSequence[] saveItemsValues = { "phone", "card" };
 
-			saveItemsPref.setEntries(saveItemsEntries);
-			saveItemsPref.setEntryValues(saveItemsValues);
-			saveItemsPref.setDefaultValue(saveItemsValues[0]);
-			saveItemsPref.setDialogTitle(R.string.option_location);
-			saveItemsPref.setKey("save_items_preference");
-			saveItemsPref.setTitle(R.string.option_location);
-			saveItemsPref.setSummary(R.string.hint_option_location);
-			// saveItemsPref.setOrder(2);
-			advancedScreenPref.addPreference(saveItemsPref);
+		saveItemsPref.setEntries(saveItemsEntries);
+		saveItemsPref.setEntryValues(saveItemsValues);
+		saveItemsPref.setDefaultValue(saveItemsValues[0]);
+		saveItemsPref.setDialogTitle(R.string.option_location);
+		saveItemsPref.setKey("save_items_preference");
+		saveItemsPref.setTitle(R.string.option_location);
+		saveItemsPref.setSummary(R.string.hint_option_location);
+		// saveItemsPref.setOrder(2);
+		advancedScreenPref.addPreference(saveItemsPref);
 
-			// clear cache
-			// clearCacheCheckBoxPref.setOrder(1);
-			advancedScreenPref.addPreference(clearCacheCheckBoxPref);
+		// clear cache
+		// clearCacheCheckBoxPref.setOrder(1);
+		advancedScreenPref.addPreference(clearCacheCheckBoxPref);
 
-			// Mapping Preferences
-			PreferenceCategory mappingPrefCat = new PreferenceCategory(this);
-			mappingPrefCat.setTitle(R.string.mapping_settings);
-			advancedScreenPref.addPreference(mappingPrefCat);
+		// Mapping Preferences
+		PreferenceCategory mappingPrefCat = new PreferenceCategory(this);
+		mappingPrefCat.setTitle(R.string.mapping_settings);
+		advancedScreenPref.addPreference(mappingPrefCat);
 
-			// Default Latitude Preferences for report view map
-			defaultLatitudePref.setDialogTitle("Default Latitude (from -90 to +90)");
-			defaultLatitudePref.setKey("default_latitude_preference");
-			defaultLatitudePref.setTitle("Default Latitude");
-			defaultLatitudePref
-					.setSummary("Default Latitude value(from -90 to +90) for map view in View Reports ");
-			defaultLatitudePref.setDefaultValue("13.69947");
-			defaultLatitudePref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
-			defaultLatitudePref.setOrder(0);
-			mappingPrefCat.addPreference(defaultLatitudePref);
+		// Default Latitude Preferences for report view map
+		defaultLatitudePref.setDialogTitle("Default Latitude (from -90 to +90)");
+		defaultLatitudePref.setKey("default_latitude_preference");
+		defaultLatitudePref.setTitle("Default Latitude");
+		defaultLatitudePref
+				.setSummary("Default Latitude value(from -90 to +90) for map view in View Reports ");
+		defaultLatitudePref.setDefaultValue("13.69947");
+		defaultLatitudePref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
+		defaultLatitudePref.setOrder(0);
+		mappingPrefCat.addPreference(defaultLatitudePref);
 
-			// Default Longitude Preferences for report view map
-			defaultLongitudePref.setDialogTitle("Default Longitude (from -90 to +90)");
-			defaultLongitudePref.setKey("default_longitude_preference");
-			defaultLongitudePref.setTitle("Default Longitude");
-			defaultLongitudePref
-					.setSummary("Default Longitude value(from -90 to +90) for map view in View Reports ");
-			defaultLongitudePref.setDefaultValue("-89.2216");
-			defaultLongitudePref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
-			defaultLongitudePref.setOrder(1);
-			mappingPrefCat.addPreference(defaultLongitudePref);
+		// Default Longitude Preferences for report view map
+		defaultLongitudePref.setDialogTitle("Default Longitude (from -90 to +90)");
+		defaultLongitudePref.setKey("default_longitude_preference");
+		defaultLongitudePref.setTitle("Default Longitude");
+		defaultLongitudePref
+				.setSummary("Default Longitude value(from -90 to +90) for map view in View Reports ");
+		defaultLongitudePref.setDefaultValue("-89.2216");
+		defaultLongitudePref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
+		defaultLongitudePref.setOrder(1);
+		mappingPrefCat.addPreference(defaultLongitudePref);
 
-			// Default map zoom level prefrence
-			defaultLatitudePref.setOrder(2);
-			mappingPrefCat.addPreference(defaultZoomLevelPref);
+		// Default map zoom level prefrence
+		defaultLatitudePref.setOrder(2);
+		mappingPrefCat.addPreference(defaultZoomLevelPref);
 
-			// location tolerance Preferences
-			locationTolerancePref.setOrder(3);
-			mappingPrefCat.addPreference(locationTolerancePref);
+		// location tolerance Preferences
+		locationTolerancePref.setOrder(3);
+		mappingPrefCat.addPreference(locationTolerancePref);
 
-			// gps timeout Preferences
-			// gpsTimeoutPref.setDialogTitle(R.string.txt_gps_timeout);
-			// gpsTimeoutPref.setKey("gps_timeout_preference");
-			// gpsTimeoutPref.setTitle(R.string.txt_gps_timeout);
-			// gpsTimeoutPref.setSummary(R.string.txt_gps_timeout_in_sec);
-			// gpsTimeoutPref.setDefaultValue("60");
-			// gpsTimeoutPref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
-			gpsTimeoutPref.setOrder(4);
-			mappingPrefCat.addPreference(gpsTimeoutPref);
+		// gps timeout Preferences
+		// gpsTimeoutPref.setDialogTitle(R.string.txt_gps_timeout);
+		// gpsTimeoutPref.setKey("gps_timeout_preference");
+		// gpsTimeoutPref.setTitle(R.string.txt_gps_timeout);
+		// gpsTimeoutPref.setSummary(R.string.txt_gps_timeout_in_sec);
+		// gpsTimeoutPref.setDefaultValue("60");
+		// gpsTimeoutPref.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
+		gpsTimeoutPref.setOrder(4);
+		mappingPrefCat.addPreference(gpsTimeoutPref);
 
-			// notification Preferences
-			PreferenceCategory notificationPrefCat = new PreferenceCategory(this);
-			notificationPrefCat.setTitle(R.string.bg_notification);
-			advancedScreenPref.addPreference(notificationPrefCat);
+		// notification Preferences
+		PreferenceCategory notificationPrefCat = new PreferenceCategory(this);
+		notificationPrefCat.setTitle(R.string.bg_notification);
+		advancedScreenPref.addPreference(notificationPrefCat);
 
-			// Auto fetch reports
-			autoFetchCheckBoxPref.setKey("auto_fetch_preference");
-			autoFetchCheckBoxPref.setTitle(R.string.chk_auto_fetch);
-			autoFetchCheckBoxPref.setSummary(R.string.hint_auto_fetch);
-			autoFetchCheckBoxPref.setOrder(1);
-			notificationPrefCat.addPreference(autoFetchCheckBoxPref);
+		// Auto fetch reports
+		autoFetchCheckBoxPref.setKey("auto_fetch_preference");
+		autoFetchCheckBoxPref.setTitle(R.string.chk_auto_fetch);
+		autoFetchCheckBoxPref.setSummary(R.string.hint_auto_fetch);
+		autoFetchCheckBoxPref.setOrder(1);
+		notificationPrefCat.addPreference(autoFetchCheckBoxPref);
 
-			// Auto update reports time interval
-			// set list values
-			// CharSequence[] autoUpdateEntries = { "5 ".concat(minutes),
-			// "10 ".concat(minutes), "15 ".concat(minutes),
-			// "30 ".concat(minutes), "60 ".concat(minutes) };
-			// CharSequence[] autoUpdateValues = { "0", "5", "10", "15", "30",
-			// "60"
-			// };
-			// autoUpdateTimePref.setEntries(autoUpdateEntries);
-			// autoUpdateTimePref.setEntryValues(autoUpdateValues);
-			// autoUpdateTimePref.setDefaultValue(autoUpdateValues[0]);
-			// autoUpdateTimePref.setDialogTitle(R.string.txt_auto_update_delay);
-			// autoUpdateTimePref.setKey("auto_update_time_preference");
-			// autoUpdateTimePref.setTitle(R.string.txt_auto_update_delay);
-			// autoUpdateTimePref.setSummary(R.string.hint_auto_update_delay);
-			autoFetchCheckBoxPref.setOrder(2);
-			notificationPrefCat.addPreference(autoUpdateTimePref);
+		// Auto update reports time interval
+		// set list values
+		// CharSequence[] autoUpdateEntries = { "5 ".concat(minutes),
+		// "10 ".concat(minutes), "15 ".concat(minutes),
+		// "30 ".concat(minutes), "60 ".concat(minutes) };
+		// CharSequence[] autoUpdateValues = { "0", "5", "10", "15", "30",
+		// "60"
+		// };
+		// autoUpdateTimePref.setEntries(autoUpdateEntries);
+		// autoUpdateTimePref.setEntryValues(autoUpdateValues);
+		// autoUpdateTimePref.setDefaultValue(autoUpdateValues[0]);
+		// autoUpdateTimePref.setDialogTitle(R.string.txt_auto_update_delay);
+		// autoUpdateTimePref.setKey("auto_update_time_preference");
+		// autoUpdateTimePref.setTitle(R.string.txt_auto_update_delay);
+		// autoUpdateTimePref.setSummary(R.string.hint_auto_update_delay);
+		autoFetchCheckBoxPref.setOrder(2);
+		notificationPrefCat.addPreference(autoUpdateTimePref);
 
-			// vibrate
-			vibrateCheckBoxPref.setKey("vibrate_preference");
-			vibrateCheckBoxPref.setTitle(R.string.vibrate);
-			vibrateCheckBoxPref.setSummary(R.string.hint_vibrate);
-			vibrateCheckBoxPref.setOrder(3);
-			notificationPrefCat.addPreference(vibrateCheckBoxPref);
+		// vibrate
+		vibrateCheckBoxPref.setKey("vibrate_preference");
+		vibrateCheckBoxPref.setTitle(R.string.vibrate);
+		vibrateCheckBoxPref.setSummary(R.string.hint_vibrate);
+		vibrateCheckBoxPref.setOrder(3);
+		notificationPrefCat.addPreference(vibrateCheckBoxPref);
 
-			// ringtone
-			ringtoneCheckBoxPref.setKey("ringtone_preference");
-			ringtoneCheckBoxPref.setTitle(R.string.ringtone);
-			ringtoneCheckBoxPref.setSummary(R.string.hint_ringtone);
-			ringtoneCheckBoxPref.setOrder(4);
-			notificationPrefCat.addPreference(ringtoneCheckBoxPref);
+		// ringtone
+		ringtoneCheckBoxPref.setKey("ringtone_preference");
+		ringtoneCheckBoxPref.setTitle(R.string.ringtone);
+		ringtoneCheckBoxPref.setSummary(R.string.hint_ringtone);
+		ringtoneCheckBoxPref.setOrder(4);
+		notificationPrefCat.addPreference(ringtoneCheckBoxPref);
 
-			// flash led
-			flashLedCheckBoxPref.setKey("flash_led_preference");
-			flashLedCheckBoxPref.setTitle(R.string.flash_led);
-			flashLedCheckBoxPref.setSummary(R.string.hint_flash_led);
-			flashLedCheckBoxPref.setOrder(5);
-			notificationPrefCat.addPreference(flashLedCheckBoxPref);
-//		Aman Password if bloack }
+		// flash led
+		flashLedCheckBoxPref.setKey("flash_led_preference");
+		flashLedCheckBoxPref.setTitle(R.string.flash_led);
+		flashLedCheckBoxPref.setSummary(R.string.hint_flash_led);
+		flashLedCheckBoxPref.setOrder(5);
+		notificationPrefCat.addPreference(flashLedCheckBoxPref);
+		// Aman Password if bloack }
 		return root;
 	}
 
@@ -451,35 +473,34 @@ public class Settings extends PreferenceActivity implements
 		// int autoUdateDelay = 0;
 		try {
 			// try to protect from first time saving.
-//			if ((password.getText().toString()).equals(Preferences.prePassword)) {
-				if (saveItems.equalsIgnoreCase("phone")) {
-					newSavePath = this.getDir("", MODE_WORLD_READABLE | MODE_WORLD_WRITEABLE)
-							.toString() + "/";
+			// if ((password.getText().toString()).equals(Preferences.prePassword)) {
+			if (saveItems.equalsIgnoreCase("phone")) {
+				newSavePath = this.getDir("", MODE_WORLD_READABLE | MODE_WORLD_WRITEABLE)
+						.toString() + "/";
 
-				} else { // means on sd is checked
-					newSavePath = Environment.getExternalStorageDirectory().toString()
-							+ "ushahidi/";
-				}
+			} else { // means on sd is checked
+				newSavePath = Environment.getExternalStorageDirectory().toString() + "ushahidi/";
+			}
 
-				editor.putString("Domain", Preferences.domain);
-				editor.putString("Firstname", firstNamePref.getText());
-				editor.putString("Lastname", lastNamePref.getText());
-				editor.putString("Email", emailAddressPref.getText());
-				editor.putString("Phonenumber", phoneNumberPref.getText());
-				editor.putString("default_latitude_preference", defaultLatitudePref.getText());
-				editor.putString("default_longitude_preference", defaultLongitudePref.getText());
-				editor.putString("savePath", newSavePath);
-				// editor.putInt("AutoUpdateDelay", autoUdateDelay);
-				editor.putBoolean("AutoFetch", autoFetchCheckBoxPref.isChecked());
-				// editor.putString("TotalReports", totalReports);
-				editor.putInt("CheckinEnabled", Preferences.isCheckinEnabled);
-				// editor.putString("gps_timeout_preference",
-				// gpsTimeoutPref.getText());
-				// editor.putString("report_image_count",
-				// reportImagesCount.getText());
-				// editor.putString("location_tolerance_preference",
-				// locationTolerancePref.getText());
-//			Aman Password }
+			editor.putString("Domain", Preferences.domain);
+			editor.putString("Firstname", firstNamePref.getText());
+			editor.putString("Lastname", lastNamePref.getText());
+			editor.putString("Email", emailAddressPref.getText());
+			editor.putString("Phonenumber", phoneNumberPref.getText());
+			editor.putString("default_latitude_preference", defaultLatitudePref.getText());
+			editor.putString("default_longitude_preference", defaultLongitudePref.getText());
+			editor.putString("savePath", newSavePath);
+			// editor.putInt("AutoUpdateDelay", autoUdateDelay);
+			editor.putBoolean("AutoFetch", autoFetchCheckBoxPref.isChecked());
+			// editor.putString("TotalReports", totalReports);
+			editor.putInt("CheckinEnabled", Preferences.isCheckinEnabled);
+			// editor.putString("gps_timeout_preference",
+			// gpsTimeoutPref.getText());
+			// editor.putString("report_image_count",
+			// reportImagesCount.getText());
+			// editor.putString("location_tolerance_preference",
+			// locationTolerancePref.getText());
+			// Aman Password }
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -693,6 +714,16 @@ public class Settings extends PreferenceActivity implements
 			Preferences.photoWidth = (Integer) newValue;
 			editor.putInt("PhotoWidth", Preferences.photoWidth);
 			editor.putString("type", "photo");
+			editor.commit();
+		} else if (preference.getKey().equalsIgnoreCase(AUDIO_LENGTH_PREFERENCE)) {
+			Preferences.audioLength = (Integer) newValue;
+			editor.putInt(AUDIO_LENGTH_PREFERENCE, Preferences.audioLength);
+			editor.putString("type", "audio_len");
+			editor.commit();
+		} else if (preference.getKey().equalsIgnoreCase(AUDIO_MAX_PREFERENCE)) {
+			Preferences.audioMax = (Integer) newValue;
+			editor.putInt(AUDIO_MAX_PREFERENCE, Preferences.audioMax);
+			editor.putString("type", "audio_max");
 			editor.commit();
 		} else if (preference.getKey().equalsIgnoreCase(ZOOM_LEVEL_PREFERENCE)) {
 			Preferences.mapZoom = (Integer) newValue;

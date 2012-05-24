@@ -54,8 +54,7 @@ public class SeekBarPreference extends DialogPreference implements
 
 	private int mMin = 200;
 
-	private static final String CLASS_TAG = SeekBarPreference.class
-			.getCanonicalName();
+	private static final String CLASS_TAG = SeekBarPreference.class.getCanonicalName();
 
 	private SharedPreferences settings;
 
@@ -91,16 +90,14 @@ public class SeekBarPreference extends DialogPreference implements
 		mValueText = new TextView(mContext);
 		mValueText.setGravity(Gravity.CENTER_HORIZONTAL);
 		mValueText.setTextSize(32);
-		params = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.FILL_PARENT,
+		params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
 		layout.addView(mValueText, params);
 
 		mSeekBar = new SeekBar(mContext);
 		mSeekBar.setOnSeekBarChangeListener(this);
 		layout.addView(mSeekBar, new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.FILL_PARENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT));
+				LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
 		if (shouldPersist())
 			mValue = getPersistedInt(mDefault);
@@ -126,8 +123,7 @@ public class SeekBarPreference extends DialogPreference implements
 		if (restore)
 			mValue = shouldPersist() ? getPersistedInt(mDefault) : mMin;
 		else
-			mValue = ((Integer) defaultValue > mMin) ? (Integer) defaultValue
-					: mMin;
+			mValue = ((Integer) defaultValue > mMin) ? (Integer) defaultValue : mMin;
 	}
 
 	public void onProgressChanged(SeekBar seek, int value, boolean fromTouch) {
@@ -199,6 +195,10 @@ public class SeekBarPreference extends DialogPreference implements
 			mMin = 0;
 		else if (type.equals("totalReports"))
 			mMin = 10;
+		else if (type.equals("audio_len"))
+			mMin = 60;
+		else if (type.equals("audio_max"))
+			mMin = 0;
 		else
 			mMin = 20;
 
@@ -216,7 +216,11 @@ public class SeekBarPreference extends DialogPreference implements
 			inc = 10;
 		else if (type.equals("photo"))
 			inc = 10;
-
+		else if (type.equals("audio_len"))
+			inc = 10;
+		else if (type.equals("audio_max"))
+			inc = 1;
+		
 		Log.d(CLASS_TAG, "Inc" + inc);
 		return inc;
 	}
