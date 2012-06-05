@@ -142,10 +142,8 @@ public class MainHttpClient {
 			schemeRegistry.register(new Scheme("https", new TrustedSocketFactory(
 					Preferences.domain, false), 443));
 		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -175,7 +173,6 @@ public class MainHttpClient {
 			return response;
 
 		} catch (final Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Preferences.httpRunning = false;
@@ -202,7 +199,6 @@ public class MainHttpClient {
 					httpost.setEntity(new UrlEncodedFormEntity(data, HTTP.UTF_8));
 
 				} catch (final UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					Preferences.httpRunning = false;
 					return null;
@@ -347,13 +343,24 @@ public class MainHttpClient {
 					Log.d(CLASS_TAG, "Report has no image");
 				}
 
-				
-				if (Preferences.isRecord) {
-					File file = new File(params.get("record"));
-					if (file.exists()) {
-						entity.addPart("record", new FileBody(new File(
-								params.get("record"))));
+				/** Aman */
+				try {
+					if (Integer.parseInt(params.get("total_audios")) > 0) {
+
+						for (int j = 0; j < Preferences.fileNameAudio.size(); j++) {
+
+							if (!TextUtils.isEmpty(params.get("filenameaudio" + j))) {
+								File file = new File(params.get("filenameaudio" + j));
+								if (file.exists()) {
+									entity.addPart("incident_photo[" + j + "]", new FileBody(new File(
+											params.get("filenameaudio" + j))));
+								}
+							}
+						}
+
 					}
+				} catch (Exception e) {
+					Log.d(CLASS_TAG, "Report has no Audio Recording");
 				}
 
 				// NEED THIS NOW TO FIX ERROR 417
@@ -513,7 +520,6 @@ public class MainHttpClient {
 		try {
 			reader = new BufferedReader(new InputStreamReader(in, "UTF-8"), 1024);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		final StringBuilder sb = new StringBuilder();

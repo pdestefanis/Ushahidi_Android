@@ -715,6 +715,12 @@ public class Settings extends PreferenceActivity implements
 			editor.putInt("PhotoWidth", Preferences.photoWidth);
 			editor.putString("type", "photo");
 			editor.commit();
+		} else if (preference.getKey().equalsIgnoreCase(REPORT_IMAGE_COUNT_PREFERENCE)) {
+			Preferences.reportImageCount = (Integer) newValue;
+			editor.putString("type", "reportImage");
+			editor.putInt("report_image_count_temp", Preferences.reportImageCount);
+			editor.putString("report_image_count", Preferences.reportImageCount + "");
+			editor.commit();
 		} else if (preference.getKey().equalsIgnoreCase(AUDIO_LENGTH_PREFERENCE)) {
 			Preferences.audioLength = (Integer) newValue;
 			editor.putInt(AUDIO_LENGTH_PREFERENCE, Preferences.audioLength);
@@ -749,12 +755,6 @@ public class Settings extends PreferenceActivity implements
 			Preferences.AutoUpdateDelay = (Integer) newValue;
 			editor.putString("type", "update");
 			editor.putInt("AutoUpdateDelay", Preferences.AutoUpdateDelay);
-			editor.commit();
-		} else if (preference.getKey().equalsIgnoreCase(REPORT_IMAGE_COUNT_PREFERENCE)) {
-			Preferences.reportImageCount = (Integer) newValue;
-			editor.putString("type", "reportImage");
-			editor.putInt("report_image_count_temp", Preferences.reportImageCount);
-			editor.putString("report_image_count", Preferences.reportImageCount + "");
 			editor.commit();
 		} else if (preference.getKey().equalsIgnoreCase(TOTAL_REPORTS_PREFERENCE)) {
 			Preferences.totalReports = (Integer) newValue;

@@ -137,6 +137,7 @@ public class SeekBarPreference extends DialogPreference implements
 		getmMin();
 		String t = "";
 		if (value < mMin) {
+			value = mMin;
 			t = String.valueOf(mMin);
 		} else {
 			t = String.valueOf(value);
@@ -220,7 +221,7 @@ public class SeekBarPreference extends DialogPreference implements
 			inc = 10;
 		else if (type.equals("audio_max"))
 			inc = 1;
-		
+
 		Log.d(CLASS_TAG, "Inc" + inc);
 		return inc;
 	}
