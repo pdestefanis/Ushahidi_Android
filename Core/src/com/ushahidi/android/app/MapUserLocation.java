@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -476,7 +478,9 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 			locationTolerance = 5;
 		}
 
-		setDeviceLocation();
+		// Aman Stop locating on resume
+		if (!didFindLocation)
+			setDeviceLocation();
 	}
 
 	@Override
@@ -535,6 +539,13 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 					Log.i(getClass().getSimpleName(),
 							String.format("%d, %d >> %f, %f", x, y, latitude, longitude));
 					locationChanged(latitude, longitude, true, false);
+
+					SharedPreferences preferences = getPreferences(0);
+					Editor editor = preferences.edit();
+					editor.putString("latitude", latitude + "");
+					editor.putString("longitude", longitude + "");
+					editor.commit();
+
 					// TODO Aman use this while telling the user location cant
 					// be set automatically.
 					stopLocating();

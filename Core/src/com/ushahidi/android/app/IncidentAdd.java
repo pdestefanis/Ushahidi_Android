@@ -1610,6 +1610,9 @@ public class IncidentAdd extends MapUserLocation {
 					Double.valueOf(prefs.getString("longitude", DEFAULT_LONGITUDE + ""))
 							.doubleValue(), true, false);
 
+			stopLocating();
+			didFindLocation = true;
+
 		} else {
 			Log.d(CLASS_TAG, "else updating to 0,0");
 			mapView.refreshDrawableState();
@@ -1730,6 +1733,7 @@ public class IncidentAdd extends MapUserLocation {
 		}
 
 		/** Aman Setting Lat and Longi on location changed */
+		Log.d(CLASS_TAG, "location changed");
 		mCurrentLatitude = String.valueOf(latitude);
 		mCurrentLongitude = String.valueOf(longitude);
 
