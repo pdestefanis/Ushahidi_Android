@@ -107,8 +107,7 @@ public class MainHttpClient {
 
 	private static MultipartEntity entity;
 
-	private static final String CLASS_TAG = MainHttpClient.class
-			.getSimpleName();
+	private static final String CLASS_TAG = MainHttpClient.class.getSimpleName();
 
 	private int timeoutConnection = 60000;
 
@@ -120,18 +119,15 @@ public class MainHttpClient {
 
 		httpParameters = new BasicHttpParams();
 		httpParameters.setParameter(ConnManagerPNames.MAX_TOTAL_CONNECTIONS, 1);
-		httpParameters.setParameter(
-				ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE,
+		httpParameters.setParameter(ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE,
 				new ConnPerRouteBean(1));
 
-		httpParameters.setParameter(HttpProtocolParams.USE_EXPECT_CONTINUE,
-				false);
+		httpParameters.setParameter(HttpProtocolParams.USE_EXPECT_CONTINUE, false);
 		HttpProtocolParams.setVersion(httpParameters, HttpVersion.HTTP_1_1);
 		HttpProtocolParams.setContentCharset(httpParameters, "utf8");
 
 		// Set the timeout in milliseconds until a connection is established.
-		HttpConnectionParams.setConnectionTimeout(httpParameters,
-				timeoutConnection);
+		HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
 
 		// in milliseconds which is the timeout for waiting for data.
 		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
@@ -139,12 +135,12 @@ public class MainHttpClient {
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 
 		// http scheme
-		schemeRegistry.register(new Scheme("http", PlainSocketFactory
-				.getSocketFactory(), 80));
+		schemeRegistry
+				.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
 		// https scheme
 		try {
-			schemeRegistry.register(new Scheme("https",	
-					new TrustedSocketFactory(Preferences.domain, false), 443));
+			schemeRegistry.register(new Scheme("https", new TrustedSocketFactory(
+					Preferences.domain, false), 443));
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -153,8 +149,8 @@ public class MainHttpClient {
 			e.printStackTrace();
 		}
 
-		httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(
-				httpParameters, schemeRegistry), httpParameters);
+		httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParameters,
+				schemeRegistry), httpParameters);
 
 	}
 
@@ -187,8 +183,8 @@ public class MainHttpClient {
 
 	}
 
-	public static HttpResponse PostURL(String URL, List<NameValuePair> data,
-			String Referer) throws IOException {
+	public static HttpResponse PostURL(String URL, List<NameValuePair> data, String Referer)
+			throws IOException {
 		Preferences.httpRunning = true;
 		// Dipo Fix
 		try {
@@ -201,8 +197,7 @@ public class MainHttpClient {
 			if (data != null) {
 				try {
 					// NEED THIS NOW TO FIX ERROR 417
-					httpost.getParams().setBooleanParameter(
-							"http.protocol.expect-continue", false);
+					httpost.getParams().setBooleanParameter("http.protocol.expect-continue", false);
 
 					httpost.setEntity(new UrlEncodedFormEntity(data, HTTP.UTF_8));
 
@@ -248,8 +243,7 @@ public class MainHttpClient {
 	public static String SendMultiPartData(String URL, MultipartEntity postData)
 			throws IOException {
 		Log.d(CLASS_TAG, "URL::" + URL);
-		Log.d(CLASS_TAG,
-				"PostFileUpload(): upload file to server. send multipart");
+		Log.d(CLASS_TAG, "PostFileUpload(): upload file to server. send multipart");
 
 		// Dipo Fix
 		try {
@@ -259,8 +253,7 @@ public class MainHttpClient {
 			if (postData != null) {
 				Log.i(CLASS_TAG, "PostFileUpload(): ");
 				// NEED THIS NOW TO FIX ERROR 417
-				httpost.getParams().setBooleanParameter(
-						"http.protocol.expect-continue", false);
+				httpost.getParams().setBooleanParameter("http.protocol.expect-continue", false);
 				httpost.setEntity(postData);
 				// Header
 				// httpost.addHeader("Authorization","Basic "+
@@ -298,8 +291,7 @@ public class MainHttpClient {
 
 		Log.d(CLASS_TAG, "URL::" + URL);
 
-		Log.d(CLASS_TAG,
-				"PostFileUpload(): upload file to server. post file upload");
+		Log.d(CLASS_TAG, "PostFileUpload(): upload file to server. post file upload");
 
 		entity = new MultipartEntity();
 		// Dipo Fix
@@ -310,43 +302,30 @@ public class MainHttpClient {
 			if (params != null) {
 
 				entity.addPart("task", new StringBody(params.get("task")));
-				entity.addPart(
-						"incident_title",
-						new StringBody(params.get("incident_title"), Charset
-								.forName("UTF-8")));
+				entity.addPart("incident_title", new StringBody(params.get("incident_title"),
+						Charset.forName("UTF-8")));
 				entity.addPart("incident_description",
-						new StringBody(params.get("incident_description"),
-								Charset.forName("UTF-8")));
-				entity.addPart("incident_date",
-						new StringBody(params.get("incident_date")));
-				entity.addPart("incident_hour",
-						new StringBody(params.get("incident_hour")));
-				entity.addPart("incident_minute",
-						new StringBody(params.get("incident_minute")));
-				entity.addPart("incident_ampm",
-						new StringBody(params.get("incident_ampm")));
+						new StringBody(params.get("incident_description"), Charset.forName("UTF-8")));
+				entity.addPart("incident_date", new StringBody(params.get("incident_date")));
+				entity.addPart("incident_hour", new StringBody(params.get("incident_hour")));
+				entity.addPart("incident_minute", new StringBody(params.get("incident_minute")));
+				entity.addPart("incident_ampm", new StringBody(params.get("incident_ampm")));
 				entity.addPart("incident_category",
 						new StringBody(params.get("incident_category")));
-				entity.addPart("latitude",
-						new StringBody(params.get("latitude")));
-				entity.addPart("longitude",
-						new StringBody(params.get("longitude")));
-				entity.addPart(
-						"location_name",
-						new StringBody(params.get("location_name"), Charset
-								.forName("UTF-8")));
-				entity.addPart(
-						"person_first",
-						new StringBody(params.get("person_first"), Charset
-								.forName("UTF-8")));
-				entity.addPart(
-						"person_last",
-						new StringBody(params.get("person_last"), Charset
-								.forName("UTF-8")));
-				entity.addPart(
-						"person_email",
-						new StringBody(params.get("person_email"), Charset
-								.forName("UTF-8")));
+				entity.addPart("latitude", new StringBody(params.get("latitude")));
+				entity.addPart("longitude", new StringBody(params.get("longitude")));
+				entity.addPart("location_name", new StringBody(params.get("location_name"),
+						Charset.forName("UTF-8")));
+				entity.addPart("person_first",
+						new StringBody(params.get("person_first"), Charset.forName("UTF-8")));
+				entity.addPart("person_last",
+						new StringBody(params.get("person_last"), Charset.forName("UTF-8")));
+				entity.addPart("person_email",
+						new StringBody(params.get("person_email"), Charset.forName("UTF-8")));
+				entity.addPart("device_id",
+						new StringBody(params.get("device_id"), Charset.forName("UTF-8")));
+				entity.addPart("gsm_id",
+						new StringBody(params.get("gsm_id"), Charset.forName("UTF-8")));
 
 				/** Aman */
 				try {
@@ -357,10 +336,8 @@ public class MainHttpClient {
 							if (!TextUtils.isEmpty(params.get("filename" + j))) {
 								File file = new File(params.get("filename" + j));
 								if (file.exists()) {
-									entity.addPart(
-											"incident_photo[" + j + "]",
-											new FileBody(new File(params
-													.get("filename" + j))));
+									entity.addPart("incident_photo[" + j + "]", new FileBody(new File(
+											params.get("filename" + j))));
 								}
 							}
 						}
@@ -371,8 +348,7 @@ public class MainHttpClient {
 				}
 
 				// NEED THIS NOW TO FIX ERROR 417
-				httpost.getParams().setBooleanParameter(
-						"http.protocol.expect-continue", false);
+				httpost.getParams().setBooleanParameter("http.protocol.expect-continue", false);
 				httpost.setEntity(entity);
 
 				HttpResponse response = httpClient.execute(httpost);
@@ -403,23 +379,24 @@ public class MainHttpClient {
 		return 10;
 	}
 
-	public static byte[] fetchImage(String address)
-			throws MalformedURLException, IOException {
+	public static byte[] fetchImage(String address) throws MalformedURLException,
+			IOException {
 		InputStream in = null;
 		OutputStream out = null;
 
 		try {
 
-			// This next line is a hack to force all image downloads to be done over HTTP
-			// if the default protocol for the site is HTTPS. Not doing so, when using 
+			// This next line is a hack to force all image downloads to be done over
+			// HTTP
+			// if the default protocol for the site is HTTPS. Not doing so, when using
 			// self-signed certificates generates an error in Android.
-			// To properly fix, a custom SSL connection, using a custom keystore, needs
+			// To properly fix, a custom SSL connection, using a custom keystore,
+			// needs
 			// to be used.
-			
+
 			address = address.replaceAll("https", "http");
-			
-			in = new BufferedInputStream(new URL(address).openStream(),
-					IO_BUFFER_SIZE);
+
+			in = new BufferedInputStream(new URL(address).openStream(), IO_BUFFER_SIZE);
 
 			final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
 			out = new BufferedOutputStream(dataStream, 4 * 1024);
@@ -443,16 +420,15 @@ public class MainHttpClient {
 
 	}
 
-	public static byte[] fetchImage2(String address)
-			throws MalformedURLException, IOException {
+	public static byte[] fetchImage2(String address) throws MalformedURLException,
+			IOException {
 		InputStream in = null;
 		OutputStream out = null;
 		HttpResponse response;
 
 		try {
 			response = GetURL(address);
-			in = new BufferedInputStream(response.getEntity().getContent(),
-					IO_BUFFER_SIZE);
+			in = new BufferedInputStream(response.getEntity().getContent(), IO_BUFFER_SIZE);
 
 			final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
 			out = new BufferedOutputStream(dataStream, 4 * 1024);
@@ -483,14 +459,13 @@ public class MainHttpClient {
 	 * {@link #IO_BUFFER_SIZE}.
 	 * 
 	 * @param in
-	 *            The input stream to copy from.
+	 *          The input stream to copy from.
 	 * @param out
-	 *            The output stream to copy to.
+	 *          The output stream to copy to.
 	 * @throws IOException
-	 *             If any error occurs during the copy.
+	 *           If any error occurs during the copy.
 	 */
-	private static void copy(InputStream in, OutputStream out)
-			throws IOException {
+	private static void copy(InputStream in, OutputStream out) throws IOException {
 		byte[] b = new byte[4 * 1024];
 		int read;
 		while ((read = in.read(b)) != -1) {
@@ -502,7 +477,7 @@ public class MainHttpClient {
 	 * Closes the specified stream.
 	 * 
 	 * @param stream
-	 *            The stream to close.
+	 *          The stream to close.
 	 */
 	private static void closeStream(Closeable stream) {
 		if (stream != null) {
@@ -527,8 +502,7 @@ public class MainHttpClient {
 		String text = "";
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(in, "UTF-8"),
-					1024);
+			reader = new BufferedReader(new InputStreamReader(in, "UTF-8"), 1024);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
