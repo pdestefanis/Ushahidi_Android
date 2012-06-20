@@ -511,7 +511,7 @@ public class IncidentAdd extends MapUserLocation {
 					mBtnStop.setEnabled(true);
 
 					recorder = new MediaRecorder();
-					recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+					recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
 					recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 					recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 					recorder.setOutputFile(audiofile);
