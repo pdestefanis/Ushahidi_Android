@@ -44,9 +44,9 @@ public class Preferences {
 
 	public static int totalReports = 30;
 
-	// public static String fileName = "";
-
 	public static ArrayList<String> fileName = new ArrayList<String>();
+
+	public static ArrayList<String> fileNameAudio = new ArrayList<String>();
 
 	public static int isCheckinEnabled = 0;
 
@@ -57,6 +57,10 @@ public class Preferences {
 	public static int photoWidth = 200;
 
 	public static int reportImageCount = 6;
+
+	public static int audioLength = 120;
+
+	public static int audioMax = 2;
 
 	public static int mapZoom = 11;
 
@@ -103,8 +107,10 @@ public class Preferences {
 		deploymentLatitude = settings.getString("default_latitude_preference", "13.69947");
 		deploymentLongitude = settings.getString("default_longitude_preference", "-89.2216");
 		photoWidth = settings.getInt("PhotoWidth", 200);
-		mapZoom = settings.getInt("mapZoom", 11);
 		reportImageCount = settings.getInt("report_image_count_temp", 6);
+		audioLength = settings.getInt("audio_length_preference", 200);
+		audioMax = settings.getInt("audio_max_preference", 200);
+		mapZoom = settings.getInt("mapZoom", 11);
 		appRunsFirstTime = settings.getInt("AppRunsFirstTime", appRunsFirstTime);
 		username = settings.getString("username", "");
 		password = settings.getString("password", "");

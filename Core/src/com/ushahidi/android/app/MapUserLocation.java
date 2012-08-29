@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 
 import com.google.android.maps.GeoPoint;
@@ -24,7 +27,8 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-public abstract class MapUserLocation extends MapActivity implements LocationListener {
+public abstract class MapUserLocation extends MapActivity implements
+		LocationListener {
 
 	public static final String PREFS_NAME = "UshahidiService";
 
@@ -35,7 +39,7 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 	protected static final int FIVE_MINUTES = 5 * ONE_MINUTE;
 
 	protected static final int ACCURACY_THRESHOLD = Preferences.locationTolerance * 1000; // in
-																																												// meters
+																							// meters
 
 	protected int gpsTimeout = 0;
 
@@ -65,7 +69,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 
 	/*
 	 * Subclasses must implement a method which updates any relevant interface
-	 * elements when the location changes. e.g. TextViews displaying the location.
+	 * elements when the location changes. e.g. TextViews displaying the
+	 * location.
 	 */
 	protected abstract void locationChanged(double latitude, double longitude,
 			boolean doReverseGeocode, boolean valueFromNetworkProvider);
@@ -75,7 +80,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 	 * longitude);
 	 */
 	/* Override this to set a custom marker */
-	protected UpdatableMarker createUpdatableMarker(Drawable marker, GeoPoint point) {
+	protected UpdatableMarker createUpdatableMarker(Drawable marker,
+			GeoPoint point) {
 		return new MapMarker(marker, point);
 	}
 
@@ -138,7 +144,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 		 * if (!gpsAvailable) { useNetworkProvider(); return; }
 		 */
 
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+				0, this);
 		startTimer();
 	}
 
@@ -161,7 +168,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 		 */
 
 		Log.d(TAG, "requestLocationUpdates(LocationManager.NETWORK_PROVIDER)");
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+		locationManager.requestLocationUpdates(
+				LocationManager.NETWORK_PROVIDER, 0, 0, this);
 	}
 
 	protected void getLastKnownLocation() {
@@ -172,8 +180,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
 			if (lastGPSLocation != null) {
-				locationChanged(lastGPSLocation.getLatitude(), lastGPSLocation.getLongitude(),
-						true, false);
+				locationChanged(lastGPSLocation.getLatitude(),
+						lastGPSLocation.getLongitude(), true, false);
 				return;
 			}
 
@@ -181,8 +189,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
 			if (lastNetLocation != null) {
-				locationChanged(lastNetLocation.getLatitude(), lastNetLocation.getLongitude(),
-						true, true);
+				locationChanged(lastNetLocation.getLatitude(),
+						lastNetLocation.getLongitude(), true, true);
 			}
 
 			// setBestLocation(lastNetLocation, lastGPSLocation);
@@ -213,8 +221,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 	 * 
 	 * @Override public void onFinish() {
 	 * 
-	 * if(!didFindLocation) { useNetworkProvider(); } } }; countDownTimer.start();
-	 * }
+	 * if(!didFindLocation) { useNetworkProvider(); } } };
+	 * countDownTimer.start(); }
 	 */
 
 	private void startTimer() {
@@ -250,8 +258,8 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 	 * 
 	 * @Override protected Void doInBackground(Void... params) { Log.d(TAG,
 	 * "AsyncTimerTask - doInBackground"); //Looper.prepare(); //Looper.loop();
-	 * countDownTimer = new AsyncTimer(60 * 1000L, 1000L); countDownTimer.start();
-	 * //Looper.myLooper().quit(); return null; }
+	 * countDownTimer = new AsyncTimer(60 * 1000L, 1000L);
+	 * countDownTimer.start(); //Looper.myLooper().quit(); return null; }
 	 * 
 	 * @Override protected void onPostExecute(Void result) { Log.d(TAG,
 	 * "AsyncTimerTask - onPostExecute"); super.onPostExecute(result); }
@@ -271,7 +279,21 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 		public void onFinish() {
 			Log.d(TAG, "<AsyncTimer> - onFinish");
 			if (!didFindLocation) {
-				useNetworkProvider();
+				// TODO:Aman Finding
+
+				boolean netAvailable = locationManager
+						.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+				
+				if (!netAvailable) {
+					Toast.makeText(
+							MapUserLocation.this,
+							"Your location cannot be determined automatically. Please select a location in the map",
+							Toast.LENGTH_SHORT).show();
+					return;
+				} else {
+					useNetworkProvider();
+				}
+
 			}
 		}
 
@@ -291,16 +313,19 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(getString(R.string.location_disabled))
 				.setMessage(getString(R.string.location_reenable))
-				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						startActivity(new Intent(
-								android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-					}
-				}).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				}).create().show();
+				.setPositiveButton(android.R.string.yes,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								startActivity(new Intent(
+										android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+							}
+						})
+				.setNegativeButton(android.R.string.no,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						}).create().show();
 	}
 
 	public void stopLocating() {
@@ -322,15 +347,18 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 		}
 	}
 
-	protected void updateMarker(double latitude, double longitude, boolean center) {
+	protected void updateMarker(double latitude, double longitude,
+			boolean center) {
 		updateMarker(getPoint(latitude, longitude), center);
 	}
 
 	protected void updateMarker(GeoPoint point, boolean center) {
 		if (updatableMarker == null) {
-			Drawable marker = getResources().getDrawable(R.drawable.map_marker_green);
+			Drawable marker = getResources().getDrawable(
+					R.drawable.map_marker_green);
 
-			marker.setBounds(0, 0, marker.getIntrinsicWidth(), marker.getIntrinsicHeight());
+			marker.setBounds(0, 0, marker.getIntrinsicWidth(),
+					marker.getIntrinsicHeight());
 
 			// mapController.setZoom(Preferences.mapZoom);
 
@@ -350,9 +378,9 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 	 * Convert latitude and longitude to a GeoPoint
 	 * 
 	 * @param latitude
-	 *          Latitude
+	 *            Latitude
 	 * @param longitude
-	 *          Longitude
+	 *            Longitude
 	 * @return GeoPoint
 	 */
 	protected GeoPoint getPoint(double latitude, double longitude) {
@@ -360,23 +388,24 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 	}
 
 	/*
-	 * protected void setBestLocation(Location location1, Location location2) { if
-	 * (location1 != null && location2 != null) { boolean location1Newer =
+	 * protected void setBestLocation(Location location1, Location location2) {
+	 * if (location1 != null && location2 != null) { boolean location1Newer =
 	 * location1.getTime() - location2.getTime() > FIVE_MINUTES; boolean
-	 * location2Newer = location2.getTime() - location1.getTime() > FIVE_MINUTES;
-	 * boolean location1MoreAccurate = location1.getAccuracy() < location2
-	 * .getAccuracy(); boolean location2MoreAccurate = location2.getAccuracy() <
-	 * location1 .getAccuracy(); if (location1Newer || location1MoreAccurate) {
-	 * locationChanged(location1.getLatitude(), location1.getLongitude(), true); }
-	 * else if (location2Newer || location2MoreAccurate) {
-	 * locationChanged(location2.getLatitude(), location2.getLongitude(), true); }
-	 * } else if (location1 != null) { locationChanged(location1.getLatitude(),
-	 * location1.getLongitude(), true); } else if (location2 != null) {
-	 * locationChanged(location2.getLatitude(), location2.getLongitude(), true); }
-	 * }
+	 * location2Newer = location2.getTime() - location1.getTime() >
+	 * FIVE_MINUTES; boolean location1MoreAccurate = location1.getAccuracy() <
+	 * location2 .getAccuracy(); boolean location2MoreAccurate =
+	 * location2.getAccuracy() < location1 .getAccuracy(); if (location1Newer ||
+	 * location1MoreAccurate) { locationChanged(location1.getLatitude(),
+	 * location1.getLongitude(), true); } else if (location2Newer ||
+	 * location2MoreAccurate) { locationChanged(location2.getLatitude(),
+	 * location2.getLongitude(), true); } } else if (location1 != null) {
+	 * locationChanged(location1.getLatitude(), location1.getLongitude(), true);
+	 * } else if (location2 != null) { locationChanged(location2.getLatitude(),
+	 * location2.getLongitude(), true); } }
 	 */
 
-	private class MapMarker extends ItemizedOverlay<OverlayItem> implements UpdatableMarker {
+	private class MapMarker extends ItemizedOverlay<OverlayItem> implements
+			UpdatableMarker {
 		private OverlayItem myOverlayItem;
 
 		// private long lastTouchTime = -1;
@@ -404,16 +433,18 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 		@Override
 		public boolean onTouchEvent(MotionEvent event, MapView mapView) {
 			/*
-			 * final int action = event.getAction(); final int x = (int) event.getX();
-			 * final int y = (int) event.getY(); if (action ==
-			 * MotionEvent.ACTION_DOWN) { long thisTime = System.currentTimeMillis();
-			 * if (thisTime - lastTouchTime < 250) { lastTouchTime = -1; GeoPoint
-			 * geoPoint = mapView.getProjection().fromPixels( (int) event.getX(),
-			 * (int) event.getY()); double latitude = geoPoint.getLatitudeE6() / 1E6;
+			 * final int action = event.getAction(); final int x = (int)
+			 * event.getX(); final int y = (int) event.getY(); if (action ==
+			 * MotionEvent.ACTION_DOWN) { long thisTime =
+			 * System.currentTimeMillis(); if (thisTime - lastTouchTime < 250) {
+			 * lastTouchTime = -1; GeoPoint geoPoint =
+			 * mapView.getProjection().fromPixels( (int) event.getX(), (int)
+			 * event.getY()); double latitude = geoPoint.getLatitudeE6() / 1E6;
 			 * double longitude = geoPoint.getLongitudeE6() / 1E6;
-			 * Log.i(getClass().getSimpleName(), String.format( "%d, %d >> %f, %f", x,
-			 * y, latitude, longitude)); locationChanged(latitude, longitude, true);
-			 * stopLocating(); return true; } else { lastTouchTime = thisTime; } }
+			 * Log.i(getClass().getSimpleName(), String.format(
+			 * "%d, %d >> %f, %f", x, y, latitude, longitude));
+			 * locationChanged(latitude, longitude, true); stopLocating();
+			 * return true; } else { lastTouchTime = thisTime; } }
 			 */
 			return super.onTouchEvent(event, mapView);
 		}
@@ -426,8 +457,10 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 
 	public void onLocationChanged(Location location) {
 		if (location != null) {
-			locationChanged(location.getLatitude(), location.getLongitude(), true, false);
-			if (location.hasAccuracy() && (location.getAccuracy() < ACCURACY_THRESHOLD)) {
+			locationChanged(location.getLatitude(), location.getLongitude(),
+					true, false);
+			if (location.hasAccuracy()
+					&& (location.getAccuracy() < ACCURACY_THRESHOLD)) {
 				// accuracy is within ACCURACY_THRESHOLD, de-activate location
 				// detection
 				stopLocating();
@@ -476,7 +509,9 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 			locationTolerance = 5;
 		}
 
-		setDeviceLocation();
+		// Aman Stop locating on resume
+		if (!didFindLocation)
+			setDeviceLocation();
 	}
 
 	@Override
@@ -503,9 +538,9 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 		@Override
 		public boolean onTap(GeoPoint p, MapView map) {
 			/*
-			 * if (isPinch) { return false; } else { Log.i(TAG, "TAP: "+p); if (p !=
-			 * null) { updateMarker(p, true); return true; // We handled the tap }
-			 * else { return false; // Null GeoPoint } }
+			 * if (isPinch) { return false; } else { Log.i(TAG, "TAP: "+p); if
+			 * (p != null) { updateMarker(p, true); return true; // We handled
+			 * the tap } else { return false; // Null GeoPoint } }
 			 */
 			return false;
 		}
@@ -528,13 +563,20 @@ public abstract class MapUserLocation extends MapActivity implements LocationLis
 				if (thisTime - lastTouchTime < 250) {
 					isNetworkLocation = false;
 					lastTouchTime = -1;
-					GeoPoint geoPoint = mapView.getProjection().fromPixels((int) event.getX(),
-							(int) event.getY());
+					GeoPoint geoPoint = mapView.getProjection().fromPixels(
+							(int) event.getX(), (int) event.getY());
 					double latitude = geoPoint.getLatitudeE6() / 1E6;
 					double longitude = geoPoint.getLongitudeE6() / 1E6;
-					Log.i(getClass().getSimpleName(),
-							String.format("%d, %d >> %f, %f", x, y, latitude, longitude));
+					Log.i(getClass().getSimpleName(), String.format(
+							"%d, %d >> %f, %f", x, y, latitude, longitude));
 					locationChanged(latitude, longitude, true, false);
+
+					SharedPreferences preferences = getPreferences(0);
+					Editor editor = preferences.edit();
+					editor.putString("latitude", latitude + "");
+					editor.putString("longitude", longitude + "");
+					editor.commit();
+
 					// TODO Aman use this while telling the user location cant
 					// be set automatically.
 					stopLocating();

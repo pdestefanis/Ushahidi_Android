@@ -38,6 +38,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -46,10 +48,13 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.telephony.SmsManager;
 import android.text.Editable;
@@ -60,6 +65,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -68,6 +74,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -91,19 +98,16 @@ public class IncidentAdd extends MapUserLocation {
 	 * present it is trusted reporter, id number 4 but will change to specific
 	 * 'uncategorized' category when it is ready on the server
 	 */
+
 	private static final String UNCATEGORIZED_CATEGORY_ID = "4";
 
 	private static final String UNCATEGORIZED_CATEGORY_TITLE = "uncategorized";
 
 	private static final int INCIDENT_CLEAR = Menu.FIRST + 1;
 
-	//private static final int SETTINGS = Menu.FIRST + 2;
-
 	private static final int ABOUT = Menu.FIRST + 3;
 
 	private static final int LIST_INCIDENTS = 2;
-
-	private static final int  REQUEST_CODE_SETTINGS = 2;
 
 	private static final int REQUEST_CODE_ABOUT = 3;
 
@@ -148,10 +152,6 @@ public class IncidentAdd extends MapUserLocation {
 
 	private ImageView mSelectedPhoto;
 
-	// private EditText mLatitude;
-
-	// private EditText mLongitude;
-
 	private TextView activityTitle;
 
 	private Button mBtnSend;
@@ -163,6 +163,13 @@ public class IncidentAdd extends MapUserLocation {
 	private Button mPickDate;
 
 	private Button mBtnPicture;
+
+	// Aman
+	private Button mBtnStart;
+
+	private Button mBtnStop;
+
+	private LinearLayout mLlAudioList;
 
 	private IncidentScrollView mScrollView;
 
@@ -181,6 +188,9 @@ public class IncidentAdd extends MapUserLocation {
 	private static final int DIALOG_INVALID_LOCATION = 9;
 
 	private static final int PHOTO_CHANGE = 66;
+
+	private static final int AUDIO_CHANGE = 67;
+
 	private Vector<String> mVectorCategories = new Vector<String>();
 
 	private Vector<String> mCategoriesId = new Vector<String>();
@@ -220,7 +230,18 @@ public class IncidentAdd extends MapUserLocation {
 	private int ImagesAddedCount = 0; // Aman Counter of images added in report
 	private int ImageIndex = 0;
 
+	private int audioCount = 0;
+	private Calendar currentDate;
+	private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+	private int audioAddedCount = 0;
+	private int audioIndex = 0;
+	private boolean isRecording = false;
+
 	private Gallery gal;
+
+	private MediaRecorder recorder;
+	private String audiofile;
+	private TextView audioName[] = new TextView[16];
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -230,6 +251,7 @@ public class IncidentAdd extends MapUserLocation {
 		// load settings
 		Preferences.loadSettings(IncidentAdd.this);
 		initComponents();
+
 	}
 
 	@Override
@@ -313,6 +335,15 @@ public class IncidentAdd extends MapUserLocation {
 		mBtnPicture = (Button) findViewById(R.id.btnPicture);
 		mBtnAddCategory = (Button) findViewById(R.id.add_category);
 		mBtnSend = (Button) findViewById(R.id.incident_add_btn);
+
+		// Aman
+		mBtnStart = (Button) findViewById(R.id.btnStart);
+		mBtnStop = (Button) findViewById(R.id.btnStop);
+		// mBtnPause.setEnabled(false);
+		mBtnStop.setEnabled(false);
+
+		mLlAudioList = (LinearLayout) findViewById(R.id.llAudioList);
+
 		mPickDate = (Button) findViewById(R.id.pick_date);
 		mPickTime = (Button) findViewById(R.id.pick_time);
 		/*
@@ -340,12 +371,6 @@ public class IncidentAdd extends MapUserLocation {
 
 			public void onScrollChanged(IncidentScrollView scrollView, int x, int y, int oldx,
 					int oldy) {
-
-				// Log.d(TAG,
-				// "x: "+x+", oldx: "+oldx+", y: "+y+", oldy: "+oldy);
-
-				// Log.d(TAG,
-				// "mapZoomButtonsController: "+mapZoomButtonsController);
 
 				if (mapZoomButtonsController != null) {
 					mapZoomButtonsController.setVisible(false);
@@ -386,12 +411,6 @@ public class IncidentAdd extends MapUserLocation {
 					mError = true;
 				}
 
-				// validate lat long
-				// Log.d(CLASS_TAG, "current latitude:"+mCurrentLongitude);
-				// if {
-				// mErrorMessage += getString(R.string.empty_longitude) + "\n";
-				// mError = true;
-				// }
 				/**
 				 * try { Double.parseDouble(mLatitude.getText().toString()); } catch
 				 * (NumberFormatException ex) { mErrorMessage +=
@@ -423,10 +442,6 @@ public class IncidentAdd extends MapUserLocation {
 
 		mBtnPicture.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				/*
-				 * (!TextUtils.isEmpty(Preferences.fileName.get(i))) {
-				 * ImageManager.deleteImage(Preferences.fileName.get(i), ""); } }
-				 */
 
 				/** Aman Edit */
 				int maxImage;
@@ -456,9 +471,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		mBtnAddCategory.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-
 				showDialog(DIALOG_MULTIPLE_CATEGORY);
-				// mCounter++;
 			}
 		});
 
@@ -474,8 +487,140 @@ public class IncidentAdd extends MapUserLocation {
 			}
 		});
 
+		mBtnStart.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+
+				currentDate = Calendar.getInstance();
+
+				String fileName = formatter.format(currentDate.getTime()) + "_"
+						+ Preferences.DeviceID;
+
+				if (audioAddedCount >= Preferences.audioMax) {
+					Toast.makeText(IncidentAdd.this,
+							"You can add maximum of " + Preferences.audioMax + " audio messages only",
+							Toast.LENGTH_SHORT).show();
+				} else {
+
+					File sampleDir = new File(Environment.getExternalStorageDirectory(),
+							IncidentAdd.this.getPackageName()).getAbsoluteFile();
+
+					audiofile = sampleDir.getPath() + "/" + fileName + ".3gpp";
+
+					mBtnStart.setEnabled(false);
+					mBtnStop.setEnabled(true);
+
+					recorder = new MediaRecorder();
+					recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+					recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+					recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+					recorder.setOutputFile(audiofile);
+					try {
+						recorder.prepare();
+					} catch (IllegalStateException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					recorder.start();
+					isRecording = true;
+					AutoStopTask th = new AutoStopTask();
+					th.start();
+				}
+
+			}
+		});
+
+		mBtnStop.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+
+				isRecording = false;
+
+				mBtnStop.setEnabled(false);
+
+				try {
+					recorder.stop();
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				recorder.release();
+				addRecordingToMediaLibrary();
+
+			}
+		});
+
 		mCalendar = Calendar.getInstance();
 		updateDisplay();
+	}
+
+	class AutoStopTask extends Thread {
+
+		@Override
+		public void run() {
+			try {
+				sleep(Preferences.audioLength * 1000);
+				runOnUiThread(new Runnable() {
+					public void run() {
+						if (isRecording)
+							mBtnStop.performClick();
+					}
+				});
+
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
+	protected void addRecordingToMediaLibrary() {
+
+		ContentValues values = new ContentValues();
+		values.put(MediaStore.Audio.Media.TITLE, "audio" + audioCount + ".3gpp");
+		values.put(MediaStore.Audio.Media.DATA, audiofile);
+		ContentResolver contentResolver = getContentResolver();
+
+		Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		Uri newUri = contentResolver.insert(base, values);
+
+		sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
+		Toast.makeText(this, "New Recording Saved", Toast.LENGTH_LONG).show();
+
+		SharedPreferences.Editor editor = getPreferences(0).edit();
+		editor.putString("audio" + audioCount, audiofile);
+		editor.commit();
+
+		Preferences.fileNameAudio.add(audiofile);
+
+		File sampleDir = new File(Environment.getExternalStorageDirectory(),
+				IncidentAdd.this.getPackageName()).getAbsoluteFile();
+
+		audioName[audioAddedCount] = new TextView(IncidentAdd.this);
+		audioName[audioAddedCount].setText((audioCount + 1) + "."
+				+ audiofile.substring((sampleDir.getPath() + "/").length()));
+		audioName[audioAddedCount].setId(audioAddedCount);
+		audioName[audioAddedCount].setTextSize(18);
+		audioName[audioAddedCount].setTextColor(Color.BLACK);
+		audioName[audioAddedCount].setPadding(3, 3, 3, 3);
+
+		mLlAudioList.addView(audioName[audioAddedCount]);
+		audioName[audioAddedCount].setVisibility(View.VISIBLE);
+
+		audioName[audioAddedCount].setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				audioIndex = v.getId();
+				audioName[audioIndex].setTextColor(Color.RED);
+				showDialog(AUDIO_CHANGE);
+			}
+		});
+
+		audioCount++;
+		audioAddedCount++;
+
+		mBtnStart.setEnabled(true);
+
 	}
 
 	private void addReports() {
@@ -544,7 +689,13 @@ public class IncidentAdd extends MapUserLocation {
 		Log.d(CLASS_TAG, "clearFields(): clearing fields");
 		ImageCount = -1;
 		ImagesAddedCount = 0;
-		// IsLocationSet = true; // Set Location flag to set.
+
+		audioCount = 0;
+		audioAddedCount = 0;
+
+		mBtnStart.setEnabled(true);
+		mBtnStop.setEnabled(false);
+
 		mBtnPicture = (Button) findViewById(R.id.btnPicture);
 		mBtnAddCategory = (Button) findViewById(R.id.add_category);
 
@@ -557,8 +708,6 @@ public class IncidentAdd extends MapUserLocation {
 		mCurrentLatitude = "";
 		mCurrentLongitude = "";
 
-		// mLatitude.setText("");
-		// mLongitude.setText("");
 		if (mVectorCategories != null)
 			mVectorCategories.clear();
 		mBtnAddCategory.setText(R.string.incident_add_category);
@@ -585,6 +734,12 @@ public class IncidentAdd extends MapUserLocation {
 				editor.putString("photo" + i, "");
 			}
 		}
+
+		if (Preferences.fileNameAudio != null) {
+			for (int i = 0; i < Preferences.fileNameAudio.size(); i++) {
+				editor.putString("audio" + i, "");
+			}
+		}
 		editor.commit();
 
 		// delete unset photo
@@ -606,6 +761,30 @@ public class IncidentAdd extends MapUserLocation {
 			gal = (Gallery) findViewById(R.id.capturePhotos);
 			gal.setAdapter(captureImageTemplate);
 		}
+
+		// delete audio
+		if (Preferences.fileNameAudio != null) {
+			for (int i = 0; i < Preferences.fileNameAudio.size(); i++) {
+				if (!TextUtils.isEmpty(Preferences.fileNameAudio.get(i))) {
+					File file = new File(Preferences.fileNameAudio.get(i));
+					if (file.exists() && file.delete()) {
+						Log.i("IncidentAdd", "File deleted " + file.getName());
+					}
+				}
+			}
+			Preferences.fileNameAudio.clear();
+		}
+
+		// TODO: //Will Delete all temp
+		// File dir = new File(Environment.getExternalStorageDirectory(),
+		// IncidentAdd.this.getPackageName()).getAbsoluteFile();
+		// if (dir.isDirectory()) {
+		// String[] children = dir.list();
+		// for (int i = 0; i < children.length; i++) {
+		// new File(dir, children[i]).delete();
+		// }
+		// }
+
 	}
 
 	// discard reports
@@ -831,6 +1010,33 @@ public class IncidentAdd extends MapUserLocation {
 			dialog.setCancelable(false);
 			return dialog;
 		}
+		case AUDIO_CHANGE: {
+			AlertDialog dialog = (new AlertDialog.Builder(this)).create();
+			dialog.setTitle("Remove Audio");
+			dialog.setMessage("Press OK to remove selected audio or Cancel to Return");
+			dialog.setButton("OK", new Dialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					if (audioIndex >= 0) {
+						Preferences.fileNameAudio.remove(audioIndex - 1);
+
+						if (Preferences.fileNameAudio != null) {
+							audioName[audioIndex].setVisibility(View.GONE);
+							audioAddedCount--;
+						}
+						audioName[audioIndex].setTextColor(Color.BLACK);
+					}
+					dialog.dismiss();
+				}
+			});
+			dialog.setButton2("Cancel", new Dialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					audioName[audioIndex].setTextColor(Color.BLACK);
+					dialog.dismiss();
+				}
+			});
+			dialog.setCancelable(false);
+			return dialog;
+		}
 		case DIALOG_CHOOSE_IMAGE_METHOD: {
 			AlertDialog dialog = (new AlertDialog.Builder(this)).create();
 			dialog.setTitle(getString(R.string.choose_method));
@@ -950,7 +1156,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		}
 
-			// @inoran
+		// @inoran
 		case DIALOG_REPORT_OPENGEOSMS_PROGRASS: {
 			sendSMSProgressDialog = new ProgressDialog(this);
 			sendSMSProgressDialog.setTitle(getString(R.string.checkin_progress_title));
@@ -971,7 +1177,7 @@ public class IncidentAdd extends MapUserLocation {
 
 		}
 
-			// @inoran
+		// @inoran
 		case DIALOG_REPORT_PIC_VIA_INTERNET: {
 			return new AlertDialog.Builder(this).setMessage(mErrorMessage)
 					.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -1260,6 +1466,15 @@ public class IncidentAdd extends MapUserLocation {
 			Log.d(CLASS_TAG, ("filename" + j + "::" + Preferences.fileName.get(j)));
 		}
 
+		mParams.put("total_audios", Preferences.fileNameAudio.size() + ""); // Aman
+		for (int j = 0; j < Preferences.fileNameAudio.size(); j++) {
+			mParams.put("filenameaudio" + j, Preferences.fileNameAudio.get(j));
+			Log.d(CLASS_TAG, ("filenameaudio" + j + "::" + Preferences.fileNameAudio.get(j)));
+		}
+
+		// if (Preferences.isRecord)
+		// mParams.put("record", Preferences.audiofile);
+
 		try {
 			final int status = MainHttpClient.PostFileUpload(urlBuilder.toString(), mParams);
 			Log.i(CLASS_TAG, "Statuses: " + status);
@@ -1339,6 +1554,11 @@ public class IncidentAdd extends MapUserLocation {
 		if (draft) {
 			Util.showToast(this, R.string.message_saved_as_draft);
 		}
+
+		for (int i = 0; i < Preferences.fileNameAudio.size(); i++) {
+			audioName[i].setVisibility(View.GONE);
+		}
+
 		super.onPause();
 	}
 
@@ -1390,6 +1610,9 @@ public class IncidentAdd extends MapUserLocation {
 					Double.valueOf(prefs.getString("longitude", DEFAULT_LONGITUDE + ""))
 							.doubleValue(), true, false);
 
+			stopLocating();
+			didFindLocation = true;
+
 		} else {
 			Log.d(CLASS_TAG, "else updating to 0,0");
 			mapView.refreshDrawableState();
@@ -1412,6 +1635,35 @@ public class IncidentAdd extends MapUserLocation {
 
 			}
 			this.setSelectedCategories(mVectorCategories);
+		}
+
+		// Aman Resuming audio files
+		audioCount = audioAddedCount = Preferences.fileNameAudio.size();
+
+		String dir = Environment.getExternalStorageDirectory()
+				+ getBaseContext().getPackageName();
+
+		for (int i = 0; i < Preferences.fileNameAudio.size(); i++) {
+
+			audioName[i] = new TextView(IncidentAdd.this);
+			audioName[i].setText((i + 1) + "."
+					+ Preferences.fileNameAudio.get(i).substring(dir.length() + 2));
+			audioName[i].setId(i);
+			audioName[i].setTextSize(18);
+			audioName[i].setTextColor(Color.BLACK);
+			audioName[i].setPadding(3, 3, 3, 3);
+
+			mLlAudioList.addView(audioName[i]);
+			audioName[i].setVisibility(View.VISIBLE);
+
+			audioName[i].setOnClickListener(new OnClickListener() {
+
+				public void onClick(View v) {
+					audioIndex = v.getId();
+					audioName[audioIndex].setTextColor(Color.RED);
+					showDialog(AUDIO_CHANGE);
+				}
+			});
 		}
 
 		// Aman Show images on resume also
@@ -1481,6 +1733,7 @@ public class IncidentAdd extends MapUserLocation {
 		}
 
 		/** Aman Setting Lat and Longi on location changed */
+		Log.d(CLASS_TAG, "location changed");
 		mCurrentLatitude = String.valueOf(latitude);
 		mCurrentLongitude = String.valueOf(longitude);
 
@@ -1710,4 +1963,5 @@ public class IncidentAdd extends MapUserLocation {
 
 		}
 	}
+
 }

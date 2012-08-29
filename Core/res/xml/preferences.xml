@@ -74,6 +74,24 @@
         android:text=" images"
         android:title="@string/txt_report_images_count" />
     <com.ushahidi.android.app.ui.SeekBarPreference
+        android:defaultValue="120"
+        android:dialogMessage="Maximum Audio Recording Length"
+        android:dialogTitle="Audio Recording Length"
+        android:key="audio_length_preference"
+        android:max="600"
+        android:summary="Maximum length of recording in seconds"
+        android:text=" seconds"
+        android:title="Maximum Recording Length" />
+    <com.ushahidi.android.app.ui.SeekBarPreference
+        android:defaultValue="2"
+        android:dialogMessage="Maximum Audio Recordings per Report"
+        android:dialogTitle="Maximum Recordings"
+        android:key="audio_max_preference"
+        android:max="16"
+        android:summary="Maximum Number of Audio Recordings in a Report"
+        android:text=" Recordings"
+        android:title="Maximum Recordings" />
+    <com.ushahidi.android.app.ui.SeekBarPreference
         android:defaultValue="30"
         android:dialogMessage="The total number of reports to fetch from the selected deployment."
         android:dialogTitle="@string/total_reports"
